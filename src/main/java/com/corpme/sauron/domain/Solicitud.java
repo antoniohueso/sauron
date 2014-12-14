@@ -34,22 +34,22 @@ public class Solicitud {
     String descripcion;
 
     @Column(name="fecha_inicio_desarrollo")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy",timezone="CET")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy/MM/dd",timezone="CET")
     Date fechaIniDesarrollo;
 
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy",timezone="CET")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy/MM/dd",timezone="CET")
     @Column(name="fecha_fin_desarrollo")
     Date fechaFinDesarrollo;
 
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy",timezone="CET")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy/MM/dd",timezone="CET")
     @Column(name="fecha_inicio_pruebas")
     Date fechaIniPruebas;
 
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy",timezone="CET")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy/MM/dd",timezone="CET")
     @Column(name="fecha_fin_pruebas")
     Date fechaFinPruebas;
 
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy",timezone="CET")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy/MM/dd",timezone="CET")
     @Column(name="fecha_implantacion")
     Date fechaImplantacion;
 
@@ -70,21 +70,6 @@ public class Solicitud {
 
     @Column(name = "observaciones")
     String observaciones;
-
-    @OneToMany(mappedBy = "solicitud")
-    Set<Equipo> equipo;
-
-    @OneToMany(mappedBy = "solicitud")
-    Set<IssueSolicitud> issues;
-
-    @OneToMany(mappedBy = "solicitud")
-    Set<Comentario> comentarios;
-
-    @OneToMany(mappedBy = "solicitud")
-    Set<LogTrabajo> worklog;
-
-    @OneToMany(mappedBy = "solicitud")
-    Set<Actividad> actividad;
 
     public Long getId() {
         return id;
@@ -188,47 +173,6 @@ public class Solicitud {
 
     public void setInformecalidad(String informecalidad) {
         this.informecalidad = informecalidad;
-    }
-
-
-    public Set<Equipo> getEquipo() {
-        return equipo;
-    }
-
-    public void setEquipo(Set<Equipo> equipo) {
-        this.equipo = equipo;
-    }
-
-    public Set<IssueSolicitud> getIssues() {
-        return issues;
-    }
-
-    public void setIssues(Set<IssueSolicitud> issues) {
-        this.issues = issues;
-    }
-
-    public Set<Comentario> getComentarios() {
-        return comentarios;
-    }
-
-    public void setComentarios(Set<Comentario> comentarios) {
-        this.comentarios = comentarios;
-    }
-
-    public Set<LogTrabajo> getWorklog() {
-        return worklog;
-    }
-
-    public void setWorklog(Set<LogTrabajo> worklog) {
-        this.worklog = worklog;
-    }
-
-    public Set<Actividad> getActividad() {
-        return actividad;
-    }
-
-    public void setActividad(Set<Actividad> actividad) {
-        this.actividad = actividad;
     }
 
     public Date getFechaImplantacion() {

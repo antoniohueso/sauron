@@ -1,6 +1,7 @@
 package com.corpme.sauron.web;
 
 import com.corpme.sauron.domain.Component;
+import com.corpme.sauron.domain.Solicitud;
 import com.corpme.sauron.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,5 +44,11 @@ public class SolicitudController {
     @RequestMapping(method = RequestMethod.POST, value = "/components")
     public @ResponseBody Iterable<Component> searchComponents(@RequestBody Map<String,Object> body) {
         return jiraService.components(new Long((Integer)body.get("projectId")));
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public @ResponseBody Iterable<Solicitud> search(@RequestBody Map<String,Object> body) {
+
+        return solicitudesService.search(body);
     }
 }

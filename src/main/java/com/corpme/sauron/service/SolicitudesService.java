@@ -1,8 +1,6 @@
 package com.corpme.sauron.service;
 
-import com.corpme.sauron.domain.EstadoSolicitud;
-import com.corpme.sauron.domain.EstadoSolicitudRepository;
-import com.corpme.sauron.domain.SolicitudRepository;
+import com.corpme.sauron.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +17,13 @@ public class SolicitudesService {
     SolicitudRepository solicitudRepository;
 
     @Autowired
+    SolicitudRepositoryExtends solicitudRepositoryExtends;
+
+    @Autowired
     EstadoSolicitudRepository estadoSolicitudRepository;
+
+    @Autowired
+    TipoSolicitudRepository tipoSolicitudRepository;
 
     Logger logger = Logger.getLogger(getClass().getName());
 
@@ -46,6 +50,26 @@ public class SolicitudesService {
 
         return resumen;
 
+    }
+
+    public Iterable<Solicitud> search(Map<String,Object> filtro) {
+
+        EstadoSolicitud estadoSolicitud = null;
+        TipoSolicitud tipoSolicitud = null;
+
+        if(filtro!=null) {
+            Integer estadoId = (Integer)filtro.get("estado");
+            if(estadoId != null) {
+                estadoSolicitud = estadoSolicitudRepository.findOne(new Long(estadoId));
+            }
+
+            Integer tipoId = (Integer)filtro.get("tipo");
+            if(tipoId != null) {
+                tipoSolicitud = tipoSolicitudRepository.findOne(new Long(tipoId));
+            }
+        }
+
+        return solicitudRepositoryExtends.search(estadoSolicitud,tipoSolicitud);
     }
 
 }

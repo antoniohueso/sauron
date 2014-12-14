@@ -1,0 +1,30 @@
+- Cuando se para una tarea ponerle estado 'Parada' y guardar el estado anterior
+
+- En planificación de desarrollo y de calidad chequear las vacacioes y si el periodo coincide con las vacaciones de
+algun miembro del equipo avisar con un mensaje.
+
+- Al finalizar mostrar las tareas asignadas con más detalle
+
+- No dejar finalizar si hay tareas que están sin finalizar o si no tienen una versión asignada y no son una tarea técnica
+
+- Imputar
+
+- Comentarios
+
+- Controlar que las fechas sean válidas y si no dar error
+
+- El DatePicker por defecto ahora aparece abierto y encima de la ventana modal
+
+- En los comentarios, en el textarea limitar el número de botones del editor a negrita y algo más
+
+- Ojo, ¿al cerrar debería preguntar si desea desasignar las tareas, hay que tener en cuenta que una tarea podría dejar
+de estar asignada a una solicitud para asignarla a otra?
+
+X Las modales si pinchas fuera no detecta el evento de cierre y no cambia el valor del flag visible por lo que
+luego no se abre, controlar el evento close
+
+X No funcionaba datepicker en una ventana modal
+
+X Al asignar equipo si asigno a Pablo Fernández y a Karlangas no almacena la información.
+
+X No me ordena los equipos al cargar la información

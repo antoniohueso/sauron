@@ -80,6 +80,9 @@ angular.module('sauronApp').factory('RESTService', function ($q, $http, $rootSco
             },
             searchFilterComponents: function (projectId) {
                 return rest_client(url + '/components','POST',projectId);
+            },
+            search: function (filter) {
+                return rest_client(url,'POST',filter);
             }
         }
     }

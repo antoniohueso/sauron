@@ -6,6 +6,8 @@ angular.module('sauronApp').controller('SolicitudesCtrl'
         function init() {
             setVisible(false);
             $scope.onProjectChange = onProjectChange;
+            $scope.onSearch = onSearch;
+            $scope.moment = moment;
             refresh();
         }
 
@@ -24,18 +26,35 @@ angular.module('sauronApp').controller('SolicitudesCtrl'
 
                 setVisible(true);
             });
-        };
+        }
 
         function onProjectChange() {
             if($scope.filtro.project == null) {
                 $scope.components = [];
             }
             else {
-                console.log($scope.filtro.project.id);
                 RESTService.solicitudes.searchFilterComponents({ projectId:$scope.filtro.project.id}).then(function (resp) {
                     $scope.components = $filter('orderBy')(resp, '+name');
                 });
             }
+        }
+
+        function onSearch() {
+            console.log($scope.filtro);
+
+            var filtro = $scope.filtro!=null?angular.copy($scope.filtro):{};
+
+            if(filtro.estado) {
+                filtro.estado = filtro.estado.id;
+            }
+
+            if(filtro.tipo) {
+                filtro.tipo = filtro.tipo.id;
+            }
+
+            RESTService.solicitudes.search(filtro).then(function (resp) {
+                $scope.solicitudes = resp;
+            });
         }
 
 

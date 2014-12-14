@@ -94,6 +94,9 @@
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <span>Solicitudes</span>
+                        <div class="pull-right">
+                            <span style="font-style: italic; font-size: small">Total {{solicitudes!=null?solicitudes.length:0}}</span>
+                        </div>
                     </div>
                     <div class="panel-body">
                         <div data-ng-if="!solicitudes || solicitudes.length == 0" class="col-md-12">
@@ -102,9 +105,38 @@
                                 </span> Ningún resultado obtenido</h3>
                             </div>
                         </div>
-                        <div data-ng-if="solicitudes && solicitudes.length > 0"
-                             class="row" data-ng-repeat="s in solicitudes">
-                        </div>
+                        <table data-ng-if="solicitudes && solicitudes.length > 0" class="table">
+                            <tr data-ng-repeat="s in solicitudes">
+                                <td>
+                                    <div class="row" >
+                                        <div class="col-md-11">
+                                            <span class="text-warning">ID: {{s.id}}</span>
+                                            <span class="text-info" style="font-style: italic;"> - {{s.titulo}}</span>
+                                        </div>
+                                        <div class="dropdown col-md-1">
+                                            <a class="btn btn-primary btn-xs pull-right" data-toggle="dropdown" aria-haspopup="true" role="button"
+                                               aria-expanded="false">
+                                                <span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li>Prueba</li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <span class="label label-default">{{s.estadoSolicitud.nombre}}</span>
+                                            <span data-ng-if="s.fechaIniDesarrollo != null" class="label label-info">
+                                                F.Plan. desa: {{moment(s.fechaIniDesarrollo).format('ddd DD MMM YYYY')}} a {{moment(s.fechaFinDesarrollo).format('ddd DD MMM YYYY')}}</span>
+                                            <span data-ng-if="s.fechaIniPruebas != null" class="label label-primary">
+                                                F.Plan. pruebas: {{moment(s.fechaIniPruebas).format('ddd DD MMM YYYY')}} a {{moment(s.fechaFinPruebas).format('ddd DD MMM YYYY')}}</span>
+                                            <span data-ng-if="s.fechaImplantacion != null" class="label label-success">F.Implantación: {{moment(s.fechaImplantacion).format('ddd DD MMM YYYY')}}</span>
+                                        </div>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
                     </div>
                 </div>
             </div>
