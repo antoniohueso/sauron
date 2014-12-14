@@ -67,6 +67,23 @@ angular.module('sauronApp').factory('RESTService', function ($q, $http, $rootSco
         }
     }
 
+    /*****************************************************************
+     * Catálogo de solicitudes
+     *****************************************************************/
+    var solicitudes = function () {
+
+        var url = endpoint + '/solicitudes';
+
+        return {
+            searchFilters: function () {
+                return rest_client(url);
+            },
+            searchFilterComponents: function (projectId) {
+                return rest_client(url + '/components','POST',projectId);
+            }
+        }
+    }
+
 
     /*****************************************************************
      * Cliente Rest de tipos de solicitudes
@@ -202,6 +219,8 @@ angular.module('sauronApp').factory('RESTService', function ($q, $http, $rootSco
      *****************************************************************/
     return {
         home: new home(),
+        solicitudes: new solicitudes(),
+
         solicitud: new solicitud(),
         tipoSolicitud: new tipoSolicitud(),
         user: new user(),

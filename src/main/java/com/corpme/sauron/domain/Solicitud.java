@@ -9,14 +9,14 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Table(name = "solicitud1")
+@Table(name = "solicitud")
 public class Solicitud {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @NotNull(message = "El tipo de solicitud1 es obligatoria")
+    @NotNull(message = "El tipo de solicitud es obligatoria")
     @ManyToOne
     @JoinColumn(name = "tiposolicitud_id")
     TipoSolicitud tipoSolicitud;
@@ -71,19 +71,19 @@ public class Solicitud {
     @Column(name = "observaciones")
     String observaciones;
 
-    @OneToMany(mappedBy = "solicitud1")
+    @OneToMany(mappedBy = "solicitud")
     Set<Equipo> equipo;
 
-    @OneToMany(mappedBy = "solicitud1")
+    @OneToMany(mappedBy = "solicitud")
     Set<IssueSolicitud> issues;
 
-    @OneToMany(mappedBy = "solicitud1")
+    @OneToMany(mappedBy = "solicitud")
     Set<Comentario> comentarios;
 
-    @OneToMany(mappedBy = "solicitud1")
+    @OneToMany(mappedBy = "solicitud")
     Set<LogTrabajo> worklog;
 
-    @OneToMany(mappedBy = "solicitud1")
+    @OneToMany(mappedBy = "solicitud")
     Set<Actividad> actividad;
 
     public Long getId() {

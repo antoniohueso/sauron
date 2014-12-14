@@ -1,5 +1,7 @@
 package com.corpme.sauron.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,6 +16,7 @@ public class Component {
 
     @ManyToOne
     @JoinColumn(name = "project_id")
+    @JsonIgnore
     Project project;
 
     public Long getId() {

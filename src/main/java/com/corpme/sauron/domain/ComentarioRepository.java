@@ -15,11 +15,11 @@ public interface ComentarioRepository extends CrudRepository<Comentario, Long> {
 
     @Modifying
     @Query(value = "delete from Comentario c where c not in :lista and c.solicitud = :solicitud")
-    public void deleteComentariosNotInList(@Param("solicitud1") Solicitud solicitud
+    public void deleteComentariosNotInList(@Param("solicitud") Solicitud solicitud
             , @Param("lista") Collection<Comentario> comentarios);
 
     @Modifying
     @Query(value = "delete from Comentario c where c.solicitud = :solicitud")
-    public void deleteAllComentariosOfSolicitud(@Param("solicitud1") Solicitud solicitud);
+    public void deleteAllComentariosOfSolicitud(@Param("solicitud") Solicitud solicitud);
 
 }

@@ -2,13 +2,14 @@ package com.corpme.sauron.service;
 
 import com.corpme.sauron.domain.EstadoSolicitud;
 import com.corpme.sauron.domain.EstadoSolicitudRepository;
-import com.corpme.sauron.domain.Solicitud;
 import com.corpme.sauron.domain.SolicitudRepository;
-import com.corpme.sauron.service.bean.ResumenSolicitudesResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Service

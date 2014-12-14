@@ -20,6 +20,10 @@ App.config(function($routeProvider, $locationProvider, $provide,
 			templateUrl : 'app/home/home.html',
 			controller : 'HomeCtrl'
 		})
+		.when('/solicitudes', {
+			templateUrl : 'app/solicitud/solicitudes.html',
+			controller : 'SolicitudesCtrl'
+		})
 		.otherwise({
 			redirectTo : function(){
 				console.log("Error de url: ",arguments);
@@ -77,6 +81,6 @@ App.run(function($rootScope,$location){
 	$rootScope.errorModal=$("#errormodal").modal({backdrop: false,show:false});
 	
 	//$location.path("/solicitudes/edit/1/planificarpruebas");
-	$location.path("/");
+	$location.path("/solicitudes");
 	
 });
