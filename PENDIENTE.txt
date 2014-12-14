@@ -1,3 +1,5 @@
+- Poner botón de limpiar filtro en la barra
+
 - Cuando se para una tarea ponerle estado 'Parada' y guardar el estado anterior
 
 - En planificación de desarrollo y de calidad chequear las vacacioes y si el periodo coincide con las vacaciones de
