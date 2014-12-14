@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout :: head"></head>
+    <body>
+
+        <div th:replace="layout :: header"></div>
+
+
+        <div class="container main-content">
+
+            <!-- Titulo y botonera -->
+            <div class="row page-panel-titulo">
+                <!-- Titulo -->
+                <h3 class="page-titulo col-md-8">
+                    <span class="glyphicon glyphicon-list-alt"></span><span>Solicitudes de desarrollo</span> 
+                </h3>
+
+                <!-- Botonera -->    
+                <div class="pull-right">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default">Buscar <span class="glyphicon glyphicon-search"></span></button>
+                        <a type="button" href="/solicitudes/new" class="btn btn-primary">Nueva <span class="glyphicon glyphicon-file"></span></a>
+                    </div>	
+                </div>
+            </div>	
+
+            
+            
+            <!-- Listado -->
+            <div class="row page-listado">
+
+                <div class="resaltado-italica">
+                    <span class="text-left">** existe un filtro seleccionado (eliminar filtro)</span>
+                    <span class="pull-right" th:text="${'Total solicitudes: '+solicitudes.size()}"></span>
+
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Solicitud</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        <tr th:each="s : ${solicitudes}">
+                            <td th:text="${s.id}"></td>
+                            <td th:text="${s.titulo}" style="width: 40%;"></td>
+                            <td th:text="${s.tipoSolicitud.nombre}"></td>
+                            <td th:text="${s.estadoSolicitud.nombre}"></td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-warning btn-xs" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+                                        Acción
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a th:href="${'/solicitudes/'+s.id}">Editar solicitud</a></li>
+                                        <li><a th:text="${s.estadoSolicitud.id==0?'Asignar equipo':'Equipo asignado'}"
+                                               th:href="${'/solicitudes/'+s.id+'/equipo'}">Equipo</a></li>
+
+
+                                    </ul>
+                                </div>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>  
+
+        <div th:replace="layout :: libs"></div>
+    </body>
+</html>

@@ -1,0 +1,53 @@
+<div class="modal-dialog" style="width: 55em;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-ng-click="close()">
+                <span aria-hidden="true">X</span><span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-list-alt"></span>
+                <span> {{form.id==null?'Nueva solicitud':'Modificar solicitud'}}</span>
+            </h4>
+        </div>
+        <div id="msg-modal-body" class="modal-body">
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Título*</label>
+                        <input data-ng-model="form.titulo" type="text" autofocus="autofocus"
+                               class="form-control" placeholder="Título de la solicitud" required="required"/>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Tipo solicitud*</label>
+                        <select
+                                data-ng-model="form.tipoSolicitud"
+                                data-ng-options="t.nombre for t in tiposSolicitud"
+                                class="form-control">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Descripción*</label>
+                        <textarea id="descripcion" class="form-control"></textarea>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-ng-click="close()">Cerrar</button>
+            <button data-ng-click="onSave()" type="button" class="btn btn-primary"><span
+                    class="glyphicon glyphicon-floppy-disk"></span> Guardar los cambios
+            </button>
+        </div>
+    </div>
+
+</div>
+
+
+

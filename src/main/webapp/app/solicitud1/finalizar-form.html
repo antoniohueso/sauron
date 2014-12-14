@@ -1,0 +1,70 @@
+<div class="modal-dialog" style="width: 70em;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-ng-click="close()">
+                <span aria-hidden="true">X</span><span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title">
+                <span class="glyphicon glyphicon-ok"></span>
+                <span>Finalizar solicitud</span>
+            </h4>
+        </div>
+        <div id="msg-modal-body" class="modal-body">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div style="border-bottom-style: solid; border-bottom-width: thin; border-bottom-color: #28a4c9;"
+                         class="page-subtitulo text-info"><strong>Solicitud:</strong> {{form.id}} - {{form.titulo}}</div>
+                </div>
+            </div>
+
+            <div class="row page-form">
+
+                <div class="col-md-12">
+
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a href="#informe" data-ng-click="openTab($event)"
+                               role="tab" data-toggle="tab"
+                               aria-controls="informe" aria-expanded="true">Informe de calidad*</a></li>
+                        <li role="presentation">
+                            <a href="#observaciones"
+                               data-ng-click="openTab($event)" role="tab"
+                               data-toggle="tab" aria-controls="observaciones">Observaciones</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="informe" style="padding: 0.3em;">
+
+                            <div class="form-group">
+                                <label>Fecha estimada implantación
+                                    <span style="font-size: small;font-style: italic"> (A rellenar por el responsable de desarrollo)</span>
+                                </label>
+                                <input style="width: 20em;" id="fimplantacion" data-ng-model="form.fechaImplantacion" type="text" autofocus="autofocus"
+                                       class="form-control" placeholder="Fecha estimada de implantación"/>
+                            </div>
+
+                            <div class="form-group">
+                                <textarea id="informe-text"></textarea>
+                            </div>
+
+
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="observaciones" style="padding: 0.3em;">
+                            <textarea id="observaciones-text"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-ng-click="close()">Cerrar</button>
+            <button data-ng-click="onSave()" type="button" class="btn btn-primary"><span
+                    class="glyphicon glyphicon-floppy-disk"></span> Guardar los cambios
+            </button>
+        </div>
+    </div>
+
+</div>

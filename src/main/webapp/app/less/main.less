@@ -1,0 +1,93 @@
+@charset "UTF-8";
+
+@separador-page-panel-listado:#f2f2f2;
+
+.main-content{
+	margin-top:6em;
+}
+
+a {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+/*********************************************************************
+Helpers
+**********************************************************************/
+.border-radius (@radius) {
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+  border-radius: @radius;
+}
+
+/*********************************************************************
+Propiedades generales de una vista
+**********************************************************************/
+
+.page-titulo {
+  margin: 0;
+  padding: 0;
+  font-size: 1.5em;
+  font-weight: 300;
+  span {
+    padding-right:0.3em;
+  }
+}
+
+
+.page-subtitulo {
+  margin: 0;
+  padding: 0;
+  font-size: 1.1em;
+  font-weight: 300;
+  span {
+    padding-right:0.3em;
+  }
+}
+
+@bgprimary:bg-success;
+
+.resaltado-italica {
+    font-style: italic; 
+    font-size: 0.9em;
+}
+.resaltado-menor {
+    color:gray;
+}
+
+.glyphicon-label-left {
+    padding-left: 0.4em; 
+}
+
+.page-listado {
+    margin-top: 2em;
+    .page-listado-with-panel {
+        border: none;
+        margin-top: 0.7em;
+    
+        .panel-body {
+            border-bottom-style: solid;
+            border-bottom-width: thin;
+            border-bottom-color: @separador-page-panel-listado;
+            .label-panel-listado {
+                font-weight: 800;
+            }
+        }
+        
+    }
+}
+
+.datepicker{z-index:1151 !important;}
+
+.page-form {
+  margin-top: 2em;
+}
+
+.border-item {
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+}

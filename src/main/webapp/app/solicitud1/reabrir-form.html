@@ -1,0 +1,30 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-ng-click="close()">
+                <span aria-hidden="true">X</span><span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
+                <span>Atención</span>
+            </h4>
+        </div>
+        <div id="msg-modal-body" class="modal-body text-warning">
+            <p>
+                Estás intentando reabrir la solicitud <strong>ID: {{form.id}} - {{form.titulo}}</strong>.
+            </p>
+
+            <p>
+                La solicitud quedará en estado 'probando' después de ser reabierta.
+            </p>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-ng-click="close()">Cerrar</button>
+            <button data-ng-click="onOk()" type="button" class="btn btn-primary"><span
+                    class="glyphicon glyphicon-ok"></span> Continuar
+            </button>
+        </div>
+    </div>
+
+</div>

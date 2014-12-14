@@ -1,0 +1,57 @@
+<div data-ng-show="visible">
+
+
+    <div class="row">
+
+        <!-- Filtro -->
+        <div class="col-md-8">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <span>Catálogo de solicitudes</span>
+                </div>
+                <div class="panel-body">
+                    <div class="row" data-ng-repeat="rs in resumenSolicitudes">
+                        <div class="col-md-9">
+                            <span>{{rs[0].nombre}}</span>
+                        </div>
+                        <div class="col-md-3">
+                            <span class="pull-right">{{rs[1]}}</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cuadro de mandos columna derecha -->
+        <div class="col-md-4">
+
+            <!-- Resumen de solicitudes -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <span>Resumen de solicitudes</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row" data-ng-repeat="rs in resumenSolicitudes">
+                                <div class="col-md-9">
+                                    <span>{{rs[0].nombre}}</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="pull-right">{{rs[1]}}</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+

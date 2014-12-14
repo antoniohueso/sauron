@@ -1,0 +1,49 @@
+<div class="modal-dialog" style="width: 60em;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-ng-click="close()">
+                <span aria-hidden="true">X</span><span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-folder-close"></span>
+                <span> Cerrar</span>
+            </h4>
+        </div>
+        <div id="msg-modal-body" class="modal-body">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div style="border-bottom-style: solid; border-bottom-width: thin; border-bottom-color: #28a4c9;"
+                         class="page-subtitulo text-info"><strong>Solicitud:</strong> {{form.id}} - {{form.titulo}}</div>
+                </div>
+            </div>
+
+            <div class="row page-form">
+                <div class="col-md-12">
+                    <div class="alert alert-warning" role="alert">
+                        <p><span class="glyphicon glyphicon-warning-sign"></span>
+                            <span>Las solicitudes de desarrollo que son cerradas son solicitudes que finalmente no serán implantadas.</span>
+                            <span> Si esta solicitud debe ser implantada has de llegar hasta el estado 'Finalizada'.</span>
+                        </p>
+                        <p>Para continuar debes introducir la causa del cierre.</p>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <textarea id="comentario-cerrar" class="form-control"></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-ng-click="close()">Cerrar</button>
+            <button data-ng-click="onSave()" type="button" class="btn btn-primary"><span
+                    class="glyphicon glyphicon-floppy-disk"></span> Guardar los cambios
+            </button>
+        </div>
+    </div>
+
+</div>
+
+
+
