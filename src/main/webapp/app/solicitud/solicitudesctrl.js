@@ -1,5 +1,5 @@
 angular.module('sauronApp').controller('SolicitudesCtrl'
-    , function ($scope, $rootScope, $location, RESTService, $filter) {
+    , function ($scope, $rootScope, $location, RESTService, $filter,$q) {
 
         init();
 
@@ -17,13 +17,18 @@ angular.module('sauronApp').controller('SolicitudesCtrl'
 
         function refresh() {
 
-            RESTService.solicitudes.searchFilters().then(function (resp) {
+            var restarr = [
+                RESTService.solicitudes.tipos(),
+                RESTService.solicitudes.users(),
+                RESTService.solicitudes.projects(),
+                RESTService.solicitudes.estados()
+            ];
 
-                $scope.estados = resp.estados;
-                $scope.users = $filter('orderBy')(resp.users, '+displayName');
-                $scope.tipos = $filter('orderBy')(resp.tipos, '+nombre');
-                $scope.projects = $filter('orderBy')(resp.projects, '+name');
-
+            $q.all(restarr).then(function (resp) {
+                $scope.tipos = $filter('orderBy')(resp[0], '+nombre');
+                $scope.users = $filter('orderBy')(resp[1], '+displayName');
+                $scope.projects = $filter('orderBy')(resp[2], '+name');
+                $scope.estados = resp[3];
                 setVisible(true);
             });
         }
@@ -33,7 +38,7 @@ angular.module('sauronApp').controller('SolicitudesCtrl'
                 $scope.components = [];
             }
             else {
-                RESTService.solicitudes.searchFilterComponents({ projectId:$scope.filtro.project.id}).then(function (resp) {
+                RESTService.solicitudes.components({ projectId:$scope.filtro.project.id}).then(function (resp) {
                     $scope.components = $filter('orderBy')(resp, '+name');
                 });
             }

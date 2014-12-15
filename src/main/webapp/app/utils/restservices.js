@@ -75,14 +75,23 @@ angular.module('sauronApp').factory('RESTService', function ($q, $http, $rootSco
         var url = endpoint + '/solicitudes';
 
         return {
-            searchFilters: function () {
-                return rest_client(url);
-            },
-            searchFilterComponents: function (projectId) {
-                return rest_client(url + '/components','POST',projectId);
-            },
             search: function (filter) {
                 return rest_client(url,'POST',filter);
+            },
+            projects: function () {
+                return rest_client(url + '/projects');
+            },
+            components: function (projectId) {
+                return rest_client(url + '/components','POST',projectId);
+            },
+            tipos: function () {
+                return rest_client(url + "/tipos");
+            },
+            users: function () {
+                return rest_client(url + "/users");
+            },
+            estados: function () {
+                return rest_client(url + "/estados");
             }
         }
     }

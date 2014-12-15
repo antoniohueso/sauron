@@ -1,0 +1,56 @@
+<div data-ng-show="visible">
+
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <span class="col-md-9">{{titulo}}</span>
+                        <div class="col-md-3">
+                            <div class="pull-right">
+
+                            <a class="btn btn-primary btn-xs pull-right" data-ng-click="onSave()">
+                                <span class="glyphicon glyphicon-floppy-disk"></span>
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Título*</label>
+                                <input data-ng-model="form.titulo" type="text" autofocus="autofocus"
+                                       class="form-control" placeholder="Título de la solicitud" required="required"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Tipo solicitud*</label>
+                                <select
+                                        data-ng-model="form.tipoSolicitud"
+                                        data-ng-options="t.nombre for t in tipos"
+                                        class="form-control">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Descripción*</label>
+                                <textarea id="descripcion" class="form-control"></textarea>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        </div>
+    </div>
+</div>
+
+

@@ -1,7 +1,6 @@
 package com.corpme.sauron.web;
 
-import com.corpme.sauron.domain.Component;
-import com.corpme.sauron.domain.Solicitud;
+import com.corpme.sauron.domain.*;
 import com.corpme.sauron.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,27 +27,37 @@ public class SolicitudController {
 
     @Autowired JiraService jiraService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody Map search() {
+    @RequestMapping(method = RequestMethod.POST)
+    public @ResponseBody Iterable<Solicitud> search(@RequestBody Map<String,Object> body) {
+        return solicitudesService.search(body);
+    }
 
-        Map result = new HashMap<String,Object>();
-
-        result.put("estados",estadoSolicitudService.estados());
-        result.put("users",usersService.assignableUsers());
-        result.put("tipos", tipoSolicitudesService.tiposSolicitud());
-        result.put("projects",jiraService.projects());
-
-        return result;
+    @RequestMapping(method = RequestMethod.GET,value = "/projects")
+    public @ResponseBody Iterable<Project> projects() {
+        return jiraService.projects();
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/components")
-    public @ResponseBody Iterable<Component> searchComponents(@RequestBody Map<String,Object> body) {
+    public @ResponseBody Iterable<Component> components(@RequestBody Map<String,Object> body) {
         return jiraService.components(new Long((Integer)body.get("projectId")));
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody Iterable<Solicitud> search(@RequestBody Map<String,Object> body) {
 
-        return solicitudesService.search(body);
+
+    @RequestMapping(method = RequestMethod.GET,value = "/tipos")
+    public @ResponseBody Iterable<TipoSolicitud> tipos() {
+        return tipoSolicitudesService.tiposSolicitud();
     }
+
+    @RequestMapping(method = RequestMethod.GET,value = "/users")
+    public @ResponseBody Iterable<User> users() {
+        return usersService.assignableUsers();
+    }
+
+    @RequestMapping(method = RequestMethod.GET,value = "/estados")
+    public @ResponseBody Iterable<EstadoSolicitud> estados() {
+        return estadoSolicitudService.estados();
+    }
+
+
 }

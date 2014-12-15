@@ -10,4 +10,4 @@ Para arrancar spring en modo producción:
 
 Ejemplo de desarrollo
 
--javaagent:c:/Users/ahg/Documents/idea_workspace/custodes/lib/springloaded-1.2.1.RELEASE.jar -noverify -noverify -Dspring.profiles.active=casa
+-javaagent:c:/Users/ahg/Documents/idea_workspace/sauron/lib/springloaded-1.2.1.RELEASE.jar -noverify -Dspring.profiles.active=casa
