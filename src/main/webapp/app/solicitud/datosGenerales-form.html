@@ -6,12 +6,16 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <div class="row">
-                        <span class="col-md-9">{{titulo}}</span>
+                        <span class="col-md-9">
+                            <span class="glyphicon glyphicon-list-alt"></span>
+                            <span> {{form.id==null?'Nueva solicitud':'Modificar solicitud'}}</span>
+                        </span>
                         <div class="col-md-3">
                             <div class="pull-right">
 
-                            <a class="btn btn-primary btn-xs pull-right" data-ng-click="onSave()">
+                            <a class="btn btn-default btn-xs pull-right" data-ng-click="onSave()">
                                 <span class="glyphicon glyphicon-floppy-disk"></span>
+                                <span>Guardar los cambios </span>
                             </a>
                             </div>
                         </div>

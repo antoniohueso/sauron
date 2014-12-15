@@ -24,6 +24,14 @@ App.config(function($routeProvider, $locationProvider, $provide,
 			templateUrl : 'app/solicitud/solicitudes.html',
 			controller : 'SolicitudesCtrl'
 		})
+		.when('/solicitudes/new', {
+			templateUrl : 'app/solicitud/datosGenerales-form.html',
+			controller : 'DatosGeneralesCtrl'
+		})
+		.when('/solicitudes/:id/datosgenerales', {
+			templateUrl : 'app/solicitud/datosGenerales-form.html',
+			controller : 'DatosGeneralesCtrl'
+		})
 		.otherwise({
 			redirectTo : function(){
 				console.log("Error de url: ",arguments);
@@ -80,7 +88,7 @@ App.run(function($rootScope,$location){
 	 *****************************************************************/
 	$rootScope.errorModal=$("#errormodal").modal({backdrop: false,show:false});
 	
-	//$location.path("/solicitudes/edit/1/planificarpruebas");
+	//$location.path("/solicitudes/8/datosgenerales");
 	$location.path("/solicitudes");
 	
 });

@@ -15,8 +15,6 @@
                             </a>
                         </div>
                     </div>
-
-
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -130,6 +128,9 @@
                                             <span data-ng-if="s.fechaIniPruebas != null" class="label label-primary">
                                                 F.Plan. pruebas: {{moment(s.fechaIniPruebas).format('ddd DD MMM YYYY')}} a {{moment(s.fechaFinPruebas).format('ddd DD MMM YYYY')}}</span>
                                             <span data-ng-if="s.fechaImplantacion != null" class="label label-success">F.Implantación: {{moment(s.fechaImplantacion).format('ddd DD MMM YYYY')}}</span>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <a href="/#/solicitudes/{{s.id}}/datosgenerales"><span class="badge">Editar</span></a>
                                         </div>
 
                                     </div>

@@ -1,15 +1,17 @@
-angular.module('sauronApp').directive('DatosGeneralesCtrl'
-    , function (RESTService, $filter, $root$scope,$q) {
-
-        init();
+angular.module('sauronApp').controller('DatosGeneralesCtrl'
+    , function (RESTService, $filter, $rootScope,$scope,$routeParams,$q) {
 
         var editor = null;
 
+        init();
 
         function init() {
             setVisible(false);
 
             editor = CKEDITOR.replace("descripcion", {});
+
+            $scope.form = {};
+            $scope.onSave = onSave;
 
             refresh();
         }
@@ -20,8 +22,25 @@ angular.module('sauronApp').directive('DatosGeneralesCtrl'
                 RESTService.solicitudes.tipos()
             ];
 
+            if($routeParams.id != null) {
+                restarr.push(
+                    RESTService.solicitudes.findById($routeParams.id)
+                );
+            }
+
             $q.all(restarr).then(function (resp) {
                 $scope.tipos = $filter('orderBy')(resp[0], '+nombre');
+
+                if(resp.length > 1) {
+                    $scope.form = resp[1];
+                    editor.setData($scope.form.descripcion);
+
+                    angular.forEach($scope.tipos, function (ts) {
+                        if (ts.id == $scope.form.tipoSolicitud.id) {
+                            $scope.form.tipoSolicitud = ts;
+                        }
+                    });
+                }
             });
 
             setVisible(true);
@@ -30,92 +49,34 @@ angular.module('sauronApp').directive('DatosGeneralesCtrl'
         function setVisible(visible) {
             $scope.visible = visible;
         }
-        
 
-                        if($scope.updateRow && $scope.updateRow.id) {
-                            RESTService.solicitud.findById($scope.updateRow.id).then(function (resp) {
-                                $scope.form = resp;
-                                editor.setData($scope.form.descripcion);
+        function onSave() {
 
-                                angular.forEach($scope.tiposSolicitud, function (ts) {
-                                    if (ts.id == $scope.form.tipoSolicitud.id) {
-                                        $scope.form.tipoSolicitud = ts;
-                                    }
-                                });
-                                element.modal({backdrop:false});
-                            });
-                        }
-                        else {
-                            $scope.form = {};
-                            editor.setData('');
-                            element.modal('show');
-                        }
-                    }
-                }
-            });
-
-            /******************************************************************
-             * Evento para grabar los datos del formulario de nueva solicitud1
-             ******************************************************************/
-            $scope.onSave = function () {
-
-                var solicitud = angular.copy($scope.form);
-
-                solicitud.descripcion = editor.getData();
-
-                RESTService.solicitud.saveDatosGenerales(solicitud).then(function (o) {
-
-                    if (solicitud.id == null) {
-                        $scope.dataset.push(o);
-                        $root$scope.alertOk('Solicitud creada', ['Solicitud ID: ' + o.id]);
-                        $scope.form = {};
-                        editor.setData('');
-                    }
-                    else {
-                        updateRow($scope,o);
-                        $root$scope.alertOk('Solicitud modificada', ['Solicitud ID: ' + o.id]);
-                    }
-
-                    $scope.close();
-
-
-                });
-            };
-
-            /******************************************************************
-             * Al cerrar la ventana modal cambia el valor del atributo 'show'
-             ******************************************************************/
-            $scope.close = function() {
-                element.modal('hide');
-                $scope.show=false;
+            var solicitud = {
+                id: $scope.form.id,
+                titulo: $scope.form.titulo,
+                descripcion: $scope.form.descripcion,
+                tipoSolicitudId: $scope.form.tipoSolicitud?$scope.form.tipoSolicitud.id:null
             };
 
 
-        }
 
+            solicitud.descripcion = editor.getData();
 
+            RESTService.solicitudes.saveDatosGenerales(solicitud).then(function (o) {
 
-        /******************************************************************
-         * Modifica la fila del dataset
-         ******************************************************************/
-        function updateRow($scope,row) {
-            var index = 0;
-            angular.forEach($scope.dataset,function(o){
-                if(o.id == row.id) {
-                    $scope.dataset[index] = row;
+                if (solicitud.id == null) {
+                    //$scope.dataset.push(o);
+                    $rootScope.alertOk('Solicitud creada', ['Solicitud ID: ' + o.id]);
+                    $scope.form = {};
+                    editor.setData('');
                 }
-                index++;
+                else {
+                    $rootScope.alertOk('Solicitud modificada', ['Solicitud ID: ' + o.id]);
+                }
+
             });
         }
 
-        return {
-            $scope: {
-                dataset:'=',
-                updateRow:'=',
-                show:'='
-            },
-            link:link,
-            templateUrl: 'app/solicitud1/datosGenerales-form.html'
-        };
 
     });

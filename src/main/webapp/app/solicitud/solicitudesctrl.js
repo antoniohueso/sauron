@@ -5,6 +5,7 @@ angular.module('sauronApp').controller('SolicitudesCtrl'
 
         function init() {
             setVisible(false);
+            $scope.filtro = {};
             $scope.onProjectChange = onProjectChange;
             $scope.onSearch = onSearch;
             $scope.moment = moment;
@@ -28,7 +29,7 @@ angular.module('sauronApp').controller('SolicitudesCtrl'
                 $scope.tipos = $filter('orderBy')(resp[0], '+nombre');
                 $scope.users = $filter('orderBy')(resp[1], '+displayName');
                 $scope.projects = $filter('orderBy')(resp[2], '+name');
-                $scope.estados = resp[3];
+                $scope.estados = $filter('orderBy')(resp[3], '+id');
                 setVisible(true);
             });
         }
@@ -50,11 +51,11 @@ angular.module('sauronApp').controller('SolicitudesCtrl'
             var filtro = $scope.filtro!=null?angular.copy($scope.filtro):{};
 
             if(filtro.estado) {
-                filtro.estado = filtro.estado.id;
+                filtro.estadoId = filtro.estado.id;
             }
 
             if(filtro.tipo) {
-                filtro.tipo = filtro.tipo.id;
+                filtro.tipoSolicitudId = filtro.tipo.id;
             }
 
             RESTService.solicitudes.search(filtro).then(function (resp) {

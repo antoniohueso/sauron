@@ -81,8 +81,8 @@ angular.module('sauronApp').factory('RESTService', function ($q, $http, $rootSco
             projects: function () {
                 return rest_client(url + '/projects');
             },
-            components: function (projectId) {
-                return rest_client(url + '/components','POST',projectId);
+            components: function (o) {
+                return rest_client(url + '/components','GET',o);
             },
             tipos: function () {
                 return rest_client(url + "/tipos");
@@ -92,6 +92,12 @@ angular.module('sauronApp').factory('RESTService', function ($q, $http, $rootSco
             },
             estados: function () {
                 return rest_client(url + "/estados");
+            },
+            findById: function (id) {
+                return rest_client(url + '/'+id, 'GET');
+            },
+            saveDatosGenerales: function (o) {
+                return rest_client(url + '/datosgenerales', 'POST', o);
             }
         }
     }
@@ -173,7 +179,7 @@ angular.module('sauronApp').factory('RESTService', function ($q, $http, $rootSco
     /*****************************************************************
      * Helper: Cliente rest
      *****************************************************************/
-    function rest_client(url, method, data, notjson) {
+    function rest_client(url, method, data, jsonParam) {
 
         if (!method) method = 'GET';
 
@@ -184,7 +190,7 @@ angular.module('sauronApp').factory('RESTService', function ($q, $http, $rootSco
         var data = data;
         var params = '';
 
-        if(notjson === true) {
+        if(!jsonParam || jsonParam != true) {
             headers = null;
             var params = data;
             var data = null;

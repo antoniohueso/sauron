@@ -1,11 +1,14 @@
 package com.corpme.sauron.web;
 
+import com.corpme.sauron.config.ApplicationException;
 import com.corpme.sauron.domain.*;
 import com.corpme.sauron.service.*;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -27,9 +30,31 @@ public class SolicitudController {
 
     @Autowired JiraService jiraService;
 
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    public @ResponseBody Solicitud getById(@PathVariable Long id) {
+        return solicitudesService.findById(id);
+    }
+
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody Iterable<Solicitud> search(@RequestBody Map<String,Object> body) {
-        return solicitudesService.search(body);
+    public @ResponseBody Iterable<Solicitud> search(
+            @RequestParam(required = false) Long estadoId,
+            @RequestParam(required = false) Long tipoSolicitudId,
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String titulo
+            ) {
+        return solicitudesService.search(estadoId,tipoSolicitudId,id,titulo);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/datosgenerales")
+    @Transactional
+    public @ResponseBody Solicitud datosGenerales(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String titulo,
+            @RequestParam(required = false) String descripcion,
+            @RequestParam(required = false) Long tipoSolicitudId) {
+
+        return solicitudesService.saveDatosGenerales(id,titulo,descripcion,tipoSolicitudId);
     }
 
     @RequestMapping(method = RequestMethod.GET,value = "/projects")
@@ -37,11 +62,10 @@ public class SolicitudController {
         return jiraService.projects();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/components")
-    public @ResponseBody Iterable<Component> components(@RequestBody Map<String,Object> body) {
-        return jiraService.components(new Long((Integer)body.get("projectId")));
+    @RequestMapping(method = RequestMethod.GET, value = "/components")
+    public @ResponseBody Iterable<Component> components(@RequestParam long projectId) {
+        return jiraService.components(projectId);
     }
-
 
 
     @RequestMapping(method = RequestMethod.GET,value = "/tipos")
