@@ -30,6 +30,9 @@ public class SolicitudController {
 
     @Autowired JiraService jiraService;
 
+    - EL EDITOR HACERLO COMO DIRECTIVE PARA QUE NO SE PIERDA LA INFORMACION
+    - El LISTADO DE SOLICITUDES NO CACHEA BIEN EL FILTRO
+
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public @ResponseBody Solicitud getById(@PathVariable Long id) {

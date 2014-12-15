@@ -14,6 +14,7 @@ angular.module('sauronApp').controller('DatosGeneralesCtrl'
             $scope.onSave = onSave;
 
             refresh();
+
         }
 
         function refresh() {
