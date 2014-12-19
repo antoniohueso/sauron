@@ -1,7 +1,7 @@
 /*********************************************************************
  * Creación del módulo de aplicación sauronApp
  *********************************************************************/
-var App = angular.module('sauronApp',['ngResource', 'ngRoute','ngSanitize']);
+var App = angular.module('sauronApp',['ngResource', 'ngRoute','ngSanitize','ngCookies']);
 
 
 
@@ -47,7 +47,7 @@ App.config(function($routeProvider, $locationProvider, $provide,
 /*********************************************************************
  * Listener Run de la App
  *********************************************************************/
-App.run(function($rootScope,$location){
+App.run(function($rootScope,$location,$http,$cookies){
 	
 	console.log("Sauron Ok!");
 
@@ -89,6 +89,53 @@ App.run(function($rootScope,$location){
 	$rootScope.errorModal=$("#errormodal").modal({backdrop: false,show:false});
 	
 	//$location.path("/solicitudes/8/datosgenerales");
-	$location.path("/solicitudes");
-	
+	//$location.path("/solicitudes");
+
+
+	$http(
+		{
+			url: '/jira',
+			method: 'POST',
+			data: {
+				type:'POST',
+				url:'/rest/auth/1/session',
+				params: {
+					username:'ahg',
+					password:'ahg191907'
+				}
+			},
+			headers:  {
+				'Content-Type': 'application/json'
+			}
+		}).success(function (resp) {
+			console.log("Siii : ",resp.session.name+'='+resp.session.value);
+
+			$http(
+				{
+					url: '/jira',
+					method: 'POST',
+					data: {
+						url:'/rest/api/2/issue/RFC-1',
+						loginsession:resp.session.name+'='+resp.session.value
+					},
+					headers:  {
+						'Content-Type': 'application/json'
+					}
+				}).success(function (resp) {
+					console.log("Siii : ",resp);
+
+
+
+				}).error(function (err, status) {
+					console.log("Se ha producido un error http: ", err);
+				});
+
+
+
+		}).error(function (err, status) {
+			console.log("Se ha producido un error http: ", err);
+		});
+
+	//RestService.rest_client('http://10.0.100.118:8085/jira')
+
 });

@@ -8,7 +8,7 @@ angular.module('sauronApp').controller('DatosGeneralesCtrl'
         function init() {
             setVisible(false);
 
-            editor = CKEDITOR.replace("descripcion", {});
+            //editor = CKEDITOR.replace("descripcion", {});
 
             $scope.form = {};
             $scope.onSave = onSave;
@@ -34,7 +34,8 @@ angular.module('sauronApp').controller('DatosGeneralesCtrl'
 
                 if(resp.length > 1) {
                     $scope.form = resp[1];
-                    editor.setData($scope.form.descripcion);
+
+                    //editor.setData($scope.form.descripcion);
 
                     angular.forEach($scope.tipos, function (ts) {
                         if (ts.id == $scope.form.tipoSolicitud.id) {
@@ -61,16 +62,12 @@ angular.module('sauronApp').controller('DatosGeneralesCtrl'
             };
 
 
-
-            solicitud.descripcion = editor.getData();
-
             RESTService.solicitudes.saveDatosGenerales(solicitud).then(function (o) {
 
                 if (solicitud.id == null) {
                     //$scope.dataset.push(o);
                     $rootScope.alertOk('Solicitud creada', ['Solicitud ID: ' + o.id]);
                     $scope.form = {};
-                    editor.setData('');
                 }
                 else {
                     $rootScope.alertOk('Solicitud modificada', ['Solicitud ID: ' + o.id]);

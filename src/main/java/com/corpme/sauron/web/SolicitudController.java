@@ -30,13 +30,6 @@ public class SolicitudController {
 
     @Autowired JiraService jiraService;
 
-    - EL EDITOR HACERLO COMO DIRECTIVE PARA QUE NO SE PIERDA LA INFORMACION
-    - El LISTADO DE SOLICITUDES NO CACHEA BIEN EL FILTRO
-
-    - El filtro debe guardarse en rootScope cuando se llame a las otros forms y no cuando se haga la selección, si se
-    llama desde el catálogo de solicitudes se pone a null, etc, etc
-
-
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public @ResponseBody Solicitud getById(@PathVariable Long id) {
         return solicitudesService.findById(id);

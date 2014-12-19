@@ -175,7 +175,6 @@ angular.module('sauronApp').factory('RESTService', function ($q, $http, $rootSco
         }
     };
 
-
     /*****************************************************************
      * Helper: Cliente rest
      *****************************************************************/
