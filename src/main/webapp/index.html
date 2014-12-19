@@ -27,47 +27,6 @@
 </head>
 <body>
 
-<div>
-
-    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed"
-                        data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span> <span
-                        class="icon-bar"></span> <span class="icon-bar"></span> <span
-                        class="icon-bar"></span>
-                </button>
-                <h4 >
-                    <a  href="#">
-                        <span class="glyphicon glyphicon-eye-open"></span> Sauron</a>
-                </h4>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="/#/solicitudes">
-                            Catálogo de solicitudes <span class="glyphicon glyphicon-folder-open"></span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/#/solicitudes/new">
-                            Nueva solicitud <span class="glyphicon glyphicon-list-alt"></span>
-                        </a>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <!-- <li><a href="/profile" th:text="${session.loggeduser.displayName}"></a></li>  -->
-                    <li><a href="/logout">Logout <span class="glyphicon glyphicon-log-out"></span></a></li>
-                </ul>
-            </div>
-            <!--/.nav-collapse -->
-
-        </div>
-    </div>
-
-</div>
-
 <div id="main-content" class="container main-content" data-ng-view="">
 
 </div>
@@ -113,12 +72,8 @@
 <script src="/resources/bootstrap/js/bootstrap.min.js"></script>
 <script src="/resources/datepicker/js/bootstrap-datepicker.js"></script>
 <script src="/resources/angular/angular.min.js"></script>
-<script src="/resources/angular/angular-resource.min.js"></script>
 <script src="/resources/angular/angular-route.min.js"></script>
-<script src="/resources/angular/angular-cookies.min.js"></script>
-<script src="/resources/angular/angular-sanitize.min.js"></script>
 <script src="/resources/angular/angular-locale_es-es.js"></script>
-<script src="/resources/ckeditor/ckeditor.js"></script>
 <script src="/resources/moment/moment-with-locales.min.js"></script>
 
 <!-- set options before less.js script -->
@@ -126,31 +81,16 @@
 
 <!-- App -->
 <script src="/app/sauronapp.js"></script>
-<script src="/app/utils/utils.js"></script>
 <script src="/app/utils/restservices.js"></script>
 
 <script src="/app/directives/datepickerdirective.js"></script>
-<script src="/app/directives/editordirective.js"></script>
+
+<script src="/app/rfc/rfcctrl.js"></script>
+<script src="/app/error/errorctrl.js"></script>
 
 <script src="/app/home/homectrl.js"></script>
 <script src="/app/solicitud/solicitudesctrl.js"></script>
 <script src="/app/solicitud/datosGeneralesctrl.js"></script>
-
-<!--
-<script src="/app/solicitud1/solicitudesctrl.js"></script>
-
-<script src="/app/solicitud1/datosGeneralesDirective.js"></script>
-<script src="/app/solicitud1/equipoDirective.js"></script>
-<script src="/app/solicitud1/planificacionDesarrolloDirective.js"></script>
-<script src="/app/solicitud1/enviarQAfDirective.js"></script>
-<script src="/app/solicitud1/planificacionQADirective.js"></script>
-<script src="/app/solicitud1/finalizarDirective.js"></script>
-<script src="/app/solicitud1/reabrirDirective.js"></script>
-<script src="/app/solicitud1/pararDirective.js"></script>
-<script src="/app/solicitud1/reanudarDirective.js"></script>
-<script src="/app/solicitud1/cerrarDirective.js"></script>
-<script src="/app/solicitud1/comentarDirective.js"></script>
--->
 
 <!-- Fin App -->
 

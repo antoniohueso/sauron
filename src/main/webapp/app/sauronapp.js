@@ -1,7 +1,7 @@
 /*********************************************************************
  * Creación del módulo de aplicación sauronApp
  *********************************************************************/
-var App = angular.module('sauronApp',['ngResource', 'ngRoute','ngSanitize','ngCookies']);
+var App = angular.module('sauronApp',['ngRoute']);
 
 
 
@@ -17,27 +17,20 @@ App.config(function($routeProvider, $locationProvider, $provide,
 	 *****************************************************************/
 	$routeProvider
 		.when('/', {
-			templateUrl : 'app/home/home.html',
+			templateUrl : 'app/home/error.html',
 			controller : 'HomeCtrl'
 		})
-		.when('/solicitudes', {
-			templateUrl : 'app/solicitud/solicitudes.html',
-			controller : 'SolicitudesCtrl'
+		.when('/rfcs/:id', {
+			templateUrl : 'app/rfc/rfc.html',
+			controller : 'RfcCtrl'
 		})
-		.when('/solicitudes/new', {
-			templateUrl : 'app/solicitud/datosGenerales-form.html',
-			controller : 'DatosGeneralesCtrl'
-		})
-		.when('/solicitudes/:id/datosgenerales', {
-			templateUrl : 'app/solicitud/datosGenerales-form.html',
-			controller : 'DatosGeneralesCtrl'
+		.when('/error', {
+			templateUrl : 'app/error/error.html',
+			controller : 'ErrorCtrl'
 		})
 		.otherwise({
-			redirectTo : function(){
-				console.log("Error de url: ",arguments);
-				return '/error';
-		}
-	});
+			redirectTo : '/error'
+		});
 
 	// $locationProvider.html5Mode(true);
 
@@ -47,7 +40,7 @@ App.config(function($routeProvider, $locationProvider, $provide,
 /*********************************************************************
  * Listener Run de la App
  *********************************************************************/
-App.run(function($rootScope,$location,$http,$cookies){
+App.run(function($rootScope,$location,$http,RESTService){
 	
 	console.log("Sauron Ok!");
 
@@ -89,53 +82,8 @@ App.run(function($rootScope,$location,$http,$cookies){
 	$rootScope.errorModal=$("#errormodal").modal({backdrop: false,show:false});
 	
 	//$location.path("/solicitudes/8/datosgenerales");
-	//$location.path("/solicitudes");
+	//$location.path("/rfcs");
 
 
-	$http(
-		{
-			url: '/jira',
-			method: 'POST',
-			data: {
-				type:'POST',
-				url:'/rest/auth/1/session',
-				params: {
-					username:'ahg',
-					password:'ahg191907'
-				}
-			},
-			headers:  {
-				'Content-Type': 'application/json'
-			}
-		}).success(function (resp) {
-			console.log("Siii : ",resp.session.name+'='+resp.session.value);
-
-			$http(
-				{
-					url: '/jira',
-					method: 'POST',
-					data: {
-						url:'/rest/api/2/issue/RFC-1',
-						loginsession:resp.session.name+'='+resp.session.value
-					},
-					headers:  {
-						'Content-Type': 'application/json'
-					}
-				}).success(function (resp) {
-					console.log("Siii : ",resp);
-
-
-
-				}).error(function (err, status) {
-					console.log("Se ha producido un error http: ", err);
-				});
-
-
-
-		}).error(function (err, status) {
-			console.log("Se ha producido un error http: ", err);
-		});
-
-	//RestService.rest_client('http://10.0.100.118:8085/jira')
 
 });
