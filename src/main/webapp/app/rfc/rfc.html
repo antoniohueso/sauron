@@ -6,21 +6,226 @@
 
         <div class="col-md-12">
 
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <span>{{issue.issuekey}} - {{issue.summary}}</span>
-                </div>
-                <div class="panel-body">
-                    <div class="row" data-ng-repeat="rs in resumenSolicitudes">
-                        <div class="col-md-9">
-                            <span>{{rs[0].nombre}}</span>
-                        </div>
-                        <div class="col-md-3">
-                            <span class="pull-right">{{rs[1]}}</span>
-                        </div>
+            <div class="row">
 
-                    </div>
+                <div class="rfc-epigrafe text-info col-md-12">
+                    <span>1. Datos de la solicitud</span>
                 </div>
+
+                <div class="col-md-12">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th class="text-info">
+                                <span class="glyphicon glyphicon-list"></span>
+                                <span>Solicitud</span>
+                            </th>
+                            <th>
+                                <span class="text-info">{{issue.issuekey}} - {{issue.summary}}</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-info">
+                                <span></span>
+                                <span>Estado</span>
+                            </th>
+                            <td>
+                                <span class="label label-success">{{issue.status.name}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="text-info">
+                                <span></span>
+                                <span>Tipo</span>
+                            </th>
+                            <td>
+                                <span class="badge">{{issue.issuetype.name}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th colspan="2" class="text-info">
+                                <span class="glyphicon glyphicon-user"></span>
+                                <span>Equipo</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-info">Desarrollo</th>
+                            <td>
+                                <div data-ng-repeat="u in issue.equipodesarrollo">
+                                    {{u.displayName}} (<a href="mailto:{{u.emailAddress}}">{{u.emailAddress}}</a>)
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="text-info">Calidad</th>
+                            <td>
+                                <div data-ng-repeat="u in issue.equipocalidad">
+                                    {{u.displayName}} (<a href="mailto:{{u.emailAddress}}">{{u.emailAddress}}</a>)
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th colspan="2" class="text-info">
+                                <span class="glyphicon glyphicon-book"></span>
+                                <span>Planificación</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-info">Desarrollo</th>
+                            <td>{{issue.fInicioDesa}} a {{issue.fFinDesa}}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-info">Calidad</th>
+                            <td>{{issue.fInicioTest}} a {{issue.fFinTest}}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-info">Implantación</th>
+                            <td colspan="2">{{issue.fPasoProd}}</td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="rfc-epigrafe text-info col-md-12">
+                    <span>2. Descripción</span>
+                </div>
+                <div class="col-md-12">
+                    <div data-ng-bind-html="issue.description"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="rfc-epigrafe text-info col-md-12">
+                    <span>3. Proyectos afectados</span>
+                </div>
+                <div class="col-md-12" data-ng-repeat="p in issue.impacto">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th class="text-info">
+                                <span>{{p.project.name}}</span>
+                            </th>
+                            <th class="text-info">
+                                <span>{{p.components}}</span>
+                            </th>
+                        </tr>
+                    </table>
+                    <table class="table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Issue</th>
+                            <th>Versión</th>
+                            <th>Estado</th>
+                        </tr>
+
+                        <tr data-ng-repeat="i in p.issues">
+                            <td>{{i.issuekey}}</td>
+                            <td>{{i.summary}}</td>
+                            <td>
+                                <div data-ng-repeat="v in i.fixVersions" class="label label-warning">{{v.name}}</div>
+                            </td>
+                            <td><span class="label label-success">{{i.status.name}}</span></td>
+                        </tr>
+                    </table>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="rfc-epigrafe text-info col-md-12">
+                    <span>4. Solución</span>
+                </div>
+                <div class="col-md-12">
+                    <table data-ng-if="issue.solucion != null || issue.docfuncional != null"
+                           class="table table-bordered">
+                        <tr data-ng-if="issue.solucion != null">
+                            <th width="30%">Descripción</th>
+                            <td  data-ng-bind-html="issue.solucion" class="col-md-12">
+                            </td>
+                        </tr>
+                        <tr data-ng-if="issue.docfuncional != null">
+                            <th>Documentación funcional y técnica</th>
+                            <td  class="col-md-12">
+                                <a href="{{issue.docfuncional}}">Acuerdo funcional y técnico</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="rfc-epigrafe text-info col-md-12">
+                    <span>5. Informe de calidad</span>
+                </div>
+
+                <div class="col-md-12">
+                    <table class="table table-bordered">
+
+                        <tr>
+                            <th>Planes de pruebas</th>
+                            <td  class="col-md-12">
+                                <a href="{{issue.planpruebas}}">{{issue.planpruebas}}</a>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th width="20%">Riesgos</th>
+                            <td  class="col-md-12">
+                                <div class="alert alert-warning">
+                                    <div data-ng-repeat="r in issue.riesgos">
+                                        <span class="glyphicon glyphicon-ok"></span>
+                                        <span>{{r.value}}</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr data-ng-if="issue.observaciones != null">
+                            <th width="20%">Observaciones</th>
+                            <td  class="col-md-12">
+                                <div class="alert alert-warning">
+                                    <span data-ng-bind-html="issue.observaciones"></span>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <div class="rfc-epigrafe text-info col-md-12">
+                    <span>6. Implantación</span>
+                </div>
+
+                <div class="col-md-12">
+                    <table class="table table-bordered">
+
+                        <tr>
+                            <th>Plan de paso a producción</th>
+                            <td  class="col-md-12">
+                                <div data-ng-bind-html="issue.planpasoprod" class="alert alert-success"></div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th width="20%">Plan de marcha atrás</th>
+                            <td  class="col-md-12">
+                                <div data-ng-bind-html="issue.planmarchaatras" class="alert alert-danger"></div>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+
+
             </div>
 
         </div>

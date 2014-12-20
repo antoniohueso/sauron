@@ -1,7 +1,7 @@
 /*********************************************************************
  * Creación del módulo de aplicación sauronApp
  *********************************************************************/
-var App = angular.module('sauronApp',['ngRoute']);
+var App = angular.module('sauronApp',['ngRoute','ngSanitize']);
 
 
 
@@ -44,7 +44,6 @@ App.run(function($rootScope,$location,$http,RESTService){
 	
 	console.log("Sauron Ok!");
 
-
 	moment.locale('es');
 
 	/*****************************************************************
@@ -80,7 +79,8 @@ App.run(function($rootScope,$location,$http,RESTService){
 	 * appliación.
 	 *****************************************************************/
 	$rootScope.errorModal=$("#errormodal").modal({backdrop: false,show:false});
-	
+
+
 	//$location.path("/solicitudes/8/datosgenerales");
 	//$location.path("/rfcs");
 

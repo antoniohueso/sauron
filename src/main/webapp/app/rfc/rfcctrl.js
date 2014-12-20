@@ -15,11 +15,9 @@ angular.module('sauronApp').controller('RfcCtrl'
         function refresh() {
 
             RESTService.issue($routeParams.id).then(function (resp) {
-
-                $scope.issue = resp.fields;
-                $scope.issue.issuekey = resp.key;
-
+                $scope.issue = resp;
                 setVisible(true);
+                console.log($scope.issue);
             });
         };
 
