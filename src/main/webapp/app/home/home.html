@@ -5,36 +5,34 @@
     <div class="row">
 
         <!-- Cuadro de mandos columna central -->
-        <div class="col-md-8">
+        <div class="col-md-12">
 
-        </div>
-
-        <!-- Cuadro de mandos columna derecha -->
-        <div class="col-md-4">
-
-            <!-- Resumen de solicitudes -->
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12" data-ng-repeat="r in arr" data-ng-if="r.data != 'anomalia' || (data[r.data].length > 0 && r.data == 'anomalia')">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <span>Resumen de solicitudes</span>
+                            <span>{{r.label}}</span>
+                            <span class="pull-right">Total: {{data[r.data].length}}</span>
                         </div>
                         <div class="panel-body">
-                            <div class="row" data-ng-repeat="rs in resumenSolicitudes">
-                                <div class="col-md-9">
-                                    <span>{{rs[0].nombre}}</span>
-                                </div>
-                                <div class="col-md-3">
-                                    <span class="pull-right">{{rs[1]}}</span>
-                                </div>
 
-                            </div>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Solicitud</th>
+                                    <th>%</th>
+                                </tr>
+                                <tr data-ng-repeat="t in data[r.data]" data-ng-include="'app/issue/issue.html'">
+
+                                </tr>
+                            </table>
+
+
                         </div>
                     </div>
                 </div>
+
+
             </div>
-
-
         </div>
     </div>
 </div>

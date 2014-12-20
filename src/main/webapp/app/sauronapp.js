@@ -17,7 +17,7 @@ App.config(function($routeProvider, $locationProvider, $provide,
 	 *****************************************************************/
 	$routeProvider
 		.when('/', {
-			templateUrl : 'app/home/error.html',
+			templateUrl : 'app/home/home.html',
 			controller : 'HomeCtrl'
 		})
 		.when('/rfcs/:id', {
