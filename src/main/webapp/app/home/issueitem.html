@@ -1,0 +1,25 @@
+<td style="width: 80%;">
+    <div class="text-info" style="font-style: italic;">
+        <a href="/#/rfcs/{{t.issuekey}}" target="_blank">{{t.issuekey}} - {{t.summary}}</a>
+    </div>
+    <div>
+        <span class="label label-warning">{{t.status.name}}</span>
+        <span class="label label-primary">{{t.fInicioDesaStr}} / {{t.fFinDesaStr}}</span>
+        <span class="label label-info">{{t.fInicioTestStr}} / {{t.fFinTestStr}}</span>
+        <span class="label label-success">{{t.fPasoProdStr}}</span>
+    </div>
+    <div class="text-danger" data-ng-if="t.anomalia!=null">
+        {{t.anomalia}}
+    </div>
+</td>
+<td style="width: 20%;">
+    <div class="progress">
+        <div class="progress-bar progress-bar-{{t.percStr}}" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+             aria-valuenow="{{t.perc}}"
+             style="width: {{t.perc}}%;">
+            <span class="sr-only">{{t.perc}}%</span>
+        </div>
+    </div>
+    <span class="badge">Issues  : {{t.issuelinks.length}}</span>
+    <span class="badge">Completadas: {{t.tareasfinalizadas}}</span>
+</td>

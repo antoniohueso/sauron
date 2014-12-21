@@ -24,6 +24,14 @@ App.config(function($routeProvider, $locationProvider, $provide,
 			templateUrl : 'app/rfc/rfc.html',
 			controller : 'RfcCtrl'
 		})
+		.when('/issues/:id', {
+			templateUrl : 'app/issue/worklog.html',
+			controller : 'IssueCtrl'
+		})
+		.when('/worklogs', {
+			templateUrl : 'app/worklog/worklog.html',
+			controller : 'WorklogCtrl'
+		})
 		.when('/error', {
 			templateUrl : 'app/error/error.html',
 			controller : 'ErrorCtrl'

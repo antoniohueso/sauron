@@ -92,7 +92,7 @@
                     <span>2. Descripción</span>
                 </div>
                 <div class="col-md-12">
-                    <div data-ng-bind-html="issue.description"></div>
+                    <div class="well" data-ng-bind-html="issue.description"></div>
                 </div>
             </div>
 
@@ -120,7 +120,7 @@
                         </tr>
 
                         <tr data-ng-repeat="i in p.issues">
-                            <td>{{i.issuekey}}</td>
+                            <td><a href="/#/issues/{{i.issuekey}}" target="_blank">{{i.issuekey}}</a></td>
                             <td>{{i.summary}}</td>
                             <td>
                                 <div data-ng-repeat="v in i.fixVersions" class="label label-warning">{{v.name}}</div>
@@ -150,7 +150,7 @@
                         <tr data-ng-if="issue.docfuncional != null">
                             <th>Documentación funcional y técnica</th>
                             <td  class="col-md-12">
-                                <a href="{{issue.docfuncional}}">Acuerdo funcional y técnico</a>
+                                <a href="{{issue.docfuncional}}" target="_blank">Acuerdo funcional y técnico</a>
                             </td>
                         </tr>
                     </table>
@@ -169,7 +169,7 @@
                         <tr>
                             <th>Planes de pruebas</th>
                             <td  class="col-md-12">
-                                <a href="{{issue.planpruebas}}">{{issue.planpruebas}}</a>
+                                <a href="{{issue.planpruebas}}" target="_blank">{{issue.planpruebas}}</a>
                             </td>
                         </tr>
 

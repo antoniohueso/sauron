@@ -207,23 +207,86 @@ angular.module('sauronApp').factory('RESTService', function ($q, $http, $rootSco
 
     }
 
-    function rfcs() {
+    function search(jql,maxResults) {
         var url = '/rest/api/2/search';
 
-
         var params = {
-                jql: 'project = RFC and status not in (Closed,"En producción")',
-                maxResults: 1000
+            jql: jql,
+            maxResults: (maxResults?maxResults:1000),
+            fields: [
+                '*all'
+            ]
         };
 
         var deferred = $q.defer();
 
         jira_rest_client(url,'POST',params).then(function(result){
-            deferred.resolve(parse_issues(result.issues));
+
+            var data = [];
+            var total = result.total;
+            var maxResults = result.maxResults;
+
+            if(total <= maxResults) {
+                console.log("Total: ",total," MaxResults: ",maxResults," ","No itera ");
+                deferred.resolve(result.issues);
+            }
+            else {
+                Array.prototype.push.apply(data,result.issues);
+
+                var num = Math.floor(total / maxResults) + ((total % maxResults) != 0?1:0);
+                console.log("Total: ",total," MaxResults: ",maxResults," ","Itera: ",num);
+
+                var arr = [];
+
+                for(var i = 1 ; i < num; i++) {
+                    arr.push(jira_rest_client(url,'POST', {
+                        jql: jql,
+                        maxResults: maxResults,
+                        startAt: maxResults * i,
+                        fields: [
+                            '*all'
+                        ]
+                    }));
+                }
+
+                $q.all(arr).then(function (result) {
+                    angular.forEach(result,function(r){
+                        Array.prototype.push.apply(data,r.issues);
+                    });
+                    deferred.resolve(data);
+                });
+            }
+
         });
 
         return deferred.promise;
     }
+
+    function rfcs() {
+
+        var deferred = $q.defer();
+
+        search('project = RFC and status not in (Closed,"En producción")').then(function(result){
+            deferred.resolve(parse_issues(result));
+        });
+
+        return deferred.promise;
+    }
+
+    function worklogs(fdesde,fhasta) {
+
+        var deferred = $q.defer();
+
+        search(
+            'key in workedIssues("'+fdesde.format('YYYY/MM/DD')+'","'+fhasta.format('YYYY/MM/DD')
+            +'","Desarrollo Servicios Centrales")').then(function(result){
+                deferred.resolve(result);
+        });
+
+        return deferred.promise;
+    }
+
+
 
 
 
@@ -233,7 +296,9 @@ angular.module('sauronApp').factory('RESTService', function ($q, $http, $rootSco
     return {
 
         rfc:rfc,
-        rfcs:rfcs
+        rfcs:rfcs,
+        issue:rfc,
+        worklogs:worklogs
     }
 
 });
