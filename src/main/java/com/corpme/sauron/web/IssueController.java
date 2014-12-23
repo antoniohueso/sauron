@@ -29,8 +29,6 @@ public class IssueController {
     public @ResponseBody Iterable<Issue> issues() {
         Iterable<Issue> issueIterable =  issueRepository.findAll();
 
-        logger.info("TOTAL: "+Lists.newArrayList(issueIterable).size());
-
         return issueIterable;
     }
 

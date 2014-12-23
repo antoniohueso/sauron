@@ -5,6 +5,7 @@ angular.module('sauronApp').controller('RfcCtrl'
 
         function init() {
             setVisible(false);
+            $scope.moment = moment;
             refresh();
         }
 
@@ -14,7 +15,15 @@ angular.module('sauronApp').controller('RfcCtrl'
 
         function refresh() {
             RESTService.rfc($routeParams.id).then(function (resp) {
-                $scope.issue = resp;
+                $scope.rfc = resp;
+
+                $scope.rfc.solucion = "FALTA LA SOLUCIÓN!!!!";
+
+                $scope.rfc.docfuncional = "FALTA LA DOC. FUNCIONAL!!!!";
+
+                $scope.rfc.observaciones = $scope.rfc.observaciones.replace(/(\r\n|\n|\r)/gm, '<br/>');
+                $scope.rfc.planpasoprod = $scope.rfc.planpasoprod.replace(/(\r\n|\n|\r)/gm, '<br/>');
+                $scope.rfc.planmarchaatras = $scope.rfc.planmarchaatras.replace(/(\r\n|\n|\r)/gm, '<br/>');
                 setVisible(true);
             });
         };

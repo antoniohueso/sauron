@@ -8,10 +8,7 @@ import com.corpme.sauron.service.RfcService;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.Map;
@@ -33,9 +30,12 @@ public class RfcController {
     public @ResponseBody Iterable<Rfc> rfcs() {
         Iterable<Rfc> rfcIterable =  rfcService.rfcs();
 
-        logger.info("TOTAL: "+Lists.newArrayList(rfcIterable).size());
-
         return rfcIterable;
+    }
+
+    @RequestMapping(method = RequestMethod.GET,value = "/{key}")
+    public @ResponseBody Rfc rfc(@PathVariable String key) {
+        return rfcService.rfc(key);
     }
 
 

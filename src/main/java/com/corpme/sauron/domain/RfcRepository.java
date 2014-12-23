@@ -18,5 +18,6 @@ public interface RfcRepository extends CrudRepository<Rfc, Long> {
             "where i.status.id not in(6,10003)")
     Iterable<Rfc> findRfcsEnCurso();
 
+    Rfc findByIssuekey(String issuekey);
 
 }

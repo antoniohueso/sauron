@@ -24,15 +24,12 @@ public class RfcService {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     public Iterable<Rfc> rfcs() {
-
         Iterable<Rfc> rfcs = rfcRepository.findRfcsEnCurso();
         return rfcs;
     }
 
-    public Iterable<Issue> issues() {
-
-        Iterable<Issue> issues = issueRepository.findAll();
-        return issues;
+    public Rfc rfc(String key) {
+        return rfcRepository.findByIssuekey(key);
     }
 
 

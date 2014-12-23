@@ -43,6 +43,7 @@ CREATE OR REPLACE VIEW rfc AS
 				 i.updated as updated,
 				 i.duedate as duedate,
 				 i.issuestatus as status_id,
+		     i.issuetype as issuetype_id,
 				 i.priority as priority_id,
 				 IFNULL(i.timeestimate,0) as timeestimate,
 				 IFNULL(i.timeoriginalestimate,0) as timeoriginalestimate,

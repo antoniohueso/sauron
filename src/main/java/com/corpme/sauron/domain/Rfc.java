@@ -45,6 +45,10 @@ public class Rfc {
     Status status;
 
     @ManyToOne
+    @JoinColumn(name = "issuetype_id")
+    Type type;
+
+    @ManyToOne
     @JoinColumn(name = "priority_id")
     Priority priority;
 
@@ -192,6 +196,14 @@ public class Rfc {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public Priority getPriority() {

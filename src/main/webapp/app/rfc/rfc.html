@@ -20,7 +20,7 @@
                                 <span>Solicitud</span>
                             </th>
                             <th>
-                                <span class="text-info">{{issue.issuekey}} - {{issue.summary}}</span>
+                                <span class="text-info">{{rfc.issuekey}} - {{rfc.summary}}</span>
                             </th>
                         </tr>
                         <tr>
@@ -29,7 +29,7 @@
                                 <span>Estado</span>
                             </th>
                             <td>
-                                <span class="label label-success">{{issue.status.name}}</span>
+                                <span class="label label-success">{{rfc.status.name}}</span>
                             </td>
                         </tr>
                         <tr>
@@ -38,7 +38,7 @@
                                 <span>Tipo</span>
                             </th>
                             <td>
-                                <span class="badge">{{issue.issuetype.name}}</span>
+                                <span class="label label-default">{{rfc.type.name}}</span>
                             </td>
                         </tr>
                         <tr>
@@ -50,16 +50,16 @@
                         <tr>
                             <th class="text-info">Desarrollo</th>
                             <td>
-                                <div data-ng-repeat="u in issue.equipodesarrollo">
-                                    {{u.displayName}} (<a href="mailto:{{u.emailAddress}}">{{u.emailAddress}}</a>)
+                                <div data-ng-repeat="e in rfc.equipodesarrollo">
+                                    {{e.user.displayName}} (<a href="mailto:{{e.user.emailAddress}}">{{e.user.emailAddress}}</a>)
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <th class="text-info">Calidad</th>
                             <td>
-                                <div data-ng-repeat="u in issue.equipocalidad">
-                                    {{u.displayName}} (<a href="mailto:{{u.emailAddress}}">{{u.emailAddress}}</a>)
+                                <div data-ng-repeat="e in rfc.equipocalidad">
+                                    {{e.user.displayName}} (<a href="mailto:{{e.user.emailAddress}}">{{e.user.emailAddress}}</a>)
                                 </div>
                             </td>
                         </tr>
@@ -71,15 +71,15 @@
                         </tr>
                         <tr>
                             <th class="text-info">Desarrollo</th>
-                            <td>{{issue.fInicioDesaStr}} a {{issue.fFinDesaStr}}</td>
+                            <td>{{moment(rfc.fInicioDesarrollo).format('dd, DD MMM YYYY')}} a {{moment(rfc.fFinDesarrollo).format('dd, DD MMM YYYY')}}</td>
                         </tr>
                         <tr>
                             <th class="text-info">Calidad</th>
-                            <td>{{issue.fInicioTestStr}} a {{issue.fFinTestStr}}</td>
+                            <td>{{moment(rfc.fInicioCalidad).format('dd, DD MMM YYYY')}} a {{moment(rfc.fFinCalidad).format('dd, DD MMM YYYY')}}</td>
                         </tr>
                         <tr>
                             <th class="text-info">Implantación</th>
-                            <td colspan="2">{{issue.fPasoProdStr}}</td>
+                            <td colspan="2">{{moment(rfc.fPasoProd).format('dd, DD MMM YYYY')}}</td>
                         </tr>
                     </table>
 
@@ -92,7 +92,7 @@
                     <span>2. Descripción</span>
                 </div>
                 <div class="col-md-12">
-                    <div class="well" data-ng-bind-html="issue.description"></div>
+                    <div class="well" data-ng-bind-html="rfc.description"></div>
                 </div>
             </div>
 
@@ -100,38 +100,27 @@
                 <div class="rfc-epigrafe text-info col-md-12">
                     <span>3. Proyectos afectados</span>
                 </div>
-                <div class="col-md-12" data-ng-repeat="p in issue.impacto">
-                    <table class="table table-bordered">
-                        <tr>
-                            <th class="text-info">
-                                <span>{{p.project.name}}</span>
-                            </th>
-                            <th class="text-info">
-                                <span>{{p.components}}</span>
-                            </th>
-                        </tr>
-                    </table>
+                <div class="col-md-12">
                     <table class="table">
-                        <tr>
-                            <th>ID</th>
+                        <tr class="text-info">
+                            <th>Proyecto</th>
+                            <th>Componente</th>
                             <th>Issue</th>
                             <th>Versión</th>
                             <th>Estado</th>
                         </tr>
 
-                        <tr data-ng-repeat="i in p.issues">
-                            <td><a href="/#/issues/{{i.issuekey}}" target="_blank">{{i.issuekey}}</a></td>
-                            <td>{{i.summary}}</td>
+                        <tr data-ng-repeat="o in rfc.issuelinks">
+                            <td>{{o.issue.project.name}}</a></td>
+                            <td><div data-ng-repeat="c in o.issue.components" class="label label-default">{{c.component.name}}</div></a></td>
+                            <td style="width: 40%;"><a href="/#/issues/{{o.issue.issuekey}}" target="_blank">{{o.issue.issuekey}} - {{o.issue.summary}}</a></td>
                             <td>
-                                <div data-ng-repeat="v in i.fixVersions" class="label label-warning">{{v.name}}</div>
+                                <div data-ng-repeat="v in o.issue.versions" class="label label-warning">{{v.version.name}}</div>
                             </td>
-                            <td><span class="label label-success">{{i.status.name}}</span></td>
+                            <td class="col-md-2"><span class="label label-success">{{o.issue.status.name}}</span></td>
                         </tr>
                     </table>
 
-                            </td>
-                        </tr>
-                    </table>
                 </div>
             </div>
 
@@ -140,17 +129,17 @@
                     <span>4. Solución</span>
                 </div>
                 <div class="col-md-12">
-                    <table data-ng-if="issue.solucion != null || issue.docfuncional != null"
+                    <table data-ng-if="rfc.solucion != null || rfc.docfuncional != null"
                            class="table table-bordered">
-                        <tr data-ng-if="issue.solucion != null">
+                        <tr data-ng-if="rfc.solucion != null">
                             <th width="30%">Descripción</th>
-                            <td  data-ng-bind-html="issue.solucion" class="col-md-12">
+                            <td  data-ng-bind-html="rfc.solucion" class="col-md-12">
                             </td>
                         </tr>
-                        <tr data-ng-if="issue.docfuncional != null">
+                        <tr data-ng-if="rfc.docfuncional != null">
                             <th>Documentación funcional y técnica</th>
                             <td  class="col-md-12">
-                                <a href="{{issue.docfuncional}}" target="_blank">Acuerdo funcional y técnico</a>
+                                <a href="{{rfc.docfuncional}}" target="_blank">Acuerdo funcional y técnico</a>
                             </td>
                         </tr>
                     </table>
@@ -169,7 +158,7 @@
                         <tr>
                             <th>Planes de pruebas</th>
                             <td  class="col-md-12">
-                                <a href="{{issue.planpruebas}}" target="_blank">{{issue.planpruebas}}</a>
+                                <a href="{{rfc.planpruebas}}" target="_blank">{{rfc.planpruebas}}</a>
                             </td>
                         </tr>
 
@@ -177,19 +166,19 @@
                             <th width="20%">Riesgos</th>
                             <td  class="col-md-12">
                                 <div class="alert alert-warning">
-                                    <div data-ng-repeat="r in issue.riesgos">
+                                    <div data-ng-repeat="r in rfc.riesgos">
                                         <span class="glyphicon glyphicon-ok"></span>
-                                        <span>{{r.value}}</span>
+                                        <span>{{r.name}}</span>
                                     </div>
                                 </div>
                             </td>
                         </tr>
 
-                        <tr data-ng-if="issue.observaciones != null">
+                        <tr data-ng-if="rfc.observaciones != null">
                             <th width="20%">Observaciones</th>
                             <td  class="col-md-12">
                                 <div class="alert alert-warning">
-                                    <span data-ng-bind-html="issue.observaciones"></span>
+                                    <span data-ng-bind-html="rfc.observaciones"></span>
                                 </div>
                             </td>
                         </tr>
@@ -211,14 +200,14 @@
                         <tr>
                             <th>Plan de paso a producción</th>
                             <td  class="col-md-12">
-                                <div data-ng-bind-html="issue.planpasoprod" class="alert alert-success"></div>
+                                <div data-ng-bind-html="rfc.planpasoprod" class="alert alert-success"></div>
                             </td>
                         </tr>
 
                         <tr>
                             <th width="20%">Plan de marcha atrás</th>
                             <td  class="col-md-12">
-                                <div data-ng-bind-html="issue.planmarchaatras" class="alert alert-danger"></div>
+                                <div data-ng-bind-html="rfc.planmarchaatras" class="alert alert-danger"></div>
                             </td>
                         </tr>
 
