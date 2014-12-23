@@ -21,6 +21,9 @@ public class Project {
     @Column(name = "responsable")
     String responsable;
 
+    @Column(name = "projectcategory_id")
+    Long category_id;
+
     public Long getId() {
         return id;
     }
@@ -51,5 +54,13 @@ public class Project {
 
     public void setResponsable(String responsable) {
         this.responsable = responsable;
+    }
+
+    public Long getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(Long category_id) {
+        this.category_id = category_id;
     }
 }
