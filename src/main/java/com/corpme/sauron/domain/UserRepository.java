@@ -9,7 +9,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     User findByName(String name);
 
-    @Query("select u from User u where u.id in (select sc.id from SCUser sc)")
+    @Query("select u from User u where u.id in (select sc.id from SCUser sc) order by u.displayName")
     Iterable<User> findAllFromServiciosCentrales();
 
 }

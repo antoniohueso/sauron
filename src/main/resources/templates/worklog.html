@@ -9,11 +9,15 @@
 
     <div class="row">
         <h2 class="text-info col-md-12">Imputación de horas - anomalías</h2>
-        <h4  class="col-md-12">
+
+        <h4  th:if="${mes==null}" class="col-md-12">
             <span>Periodo:</span>
             <span th:text="${#calendars.format(fdesde,'EEEE dd/MMM/yyyy')}"></span>
             <span> a </span>
             <span th:text="${#calendars.format(fhasta,'EEEE dd/MMM/yyyy')}"></span>
+        </h4>
+        <h4  th:if="${mes!=null}" class="col-md-12">
+            <span th:text="${'Periodo: '+mes}"></span>
         </h4>
     </div>
 
