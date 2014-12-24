@@ -154,12 +154,8 @@ CREATE OR REPLACE VIEW issueversion AS
 
 CREATE OR REPLACE VIEW worklog AS
 select w.id as id, 
-w.author as author,
-au.display_name as author_desc,
-au.email_address as author_email,
-w.updateauthor as updateauthor,
-aup.display_name as updateauthor_desc,
-aup.email_address as updateauthor_email,
+au.id as author_id,
+aup.id as updateauthor_id,
 worklogbody as comment,
 w.created as created,
 w.updated as updated,
@@ -168,8 +164,7 @@ IFNULL(w.timeworked,0) as timespentseconds,
 w.issueid as issue_id
 from jiradb.worklog w 
 inner join jiradb.cwd_user au ON au.user_name = w.author
-left join jiradb.cwd_user aup ON aup.user_name = w.updateauthor
-inner join jiradb.jiraissue i ON i.id = w.issueid;
+left join jiradb.cwd_user aup ON aup.user_name = w.updateauthor;
 
 CREATE OR REPLACE VIEW scuser AS
 	select id,user_name,display_name,email_address from jiradb.cwd_user u

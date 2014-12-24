@@ -10,23 +10,13 @@ public class Worklog {
     @Id
     long id;
 
-    @Column(name = "author")
-    String author;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    User author;
 
-    @Column(name = "author_desc")
-    String authorDescription;
-
-    @Column(name = "author_email")
-    String authorEmail;
-
-    @Column(name = "updateauthor")
-    String updateAuthor;
-
-    @Column(name = "updateauthor_desc")
-    String updateAuthorDescripcion;
-
-    @Column(name = "updateauthor_email")
-    String updateAuthorEmail;
+    @ManyToOne
+    @JoinColumn(name = "updateauthor_id")
+    User updateAuthor;
 
     @Column(name = "comment")
     String comment;
@@ -43,7 +33,7 @@ public class Worklog {
     @Column(name = "timespentseconds")
     long timeSpentSeconds;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "issue_id")
     Issue issue;
 
@@ -55,19 +45,19 @@ public class Worklog {
         this.id = id;
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
-    public String getUpdateAuthor() {
+    public User getUpdateAuthor() {
         return updateAuthor;
     }
 
-    public void setUpdateAuthor(String updateAuthor) {
+    public void setUpdateAuthor(User updateAuthor) {
         this.updateAuthor = updateAuthor;
     }
 
@@ -118,37 +108,4 @@ public class Worklog {
     public void setIssue(Issue issue) {
         this.issue = issue;
     }
-
-    public String getAuthorDescription() {
-        return authorDescription;
-    }
-
-    public void setAuthorDescription(String authorDescription) {
-        this.authorDescription = authorDescription;
-    }
-
-    public String getUpdateAuthorDescripcion() {
-        return updateAuthorDescripcion;
-    }
-
-    public void setUpdateAuthorDescripcion(String updateAuthorDescripcion) {
-        this.updateAuthorDescripcion = updateAuthorDescripcion;
-    }
-
-    public String getAuthorEmail() {
-        return authorEmail;
-    }
-
-    public void setAuthorEmail(String authorEmail) {
-        this.authorEmail = authorEmail;
-    }
-
-    public String getUpdateAuthorEmail() {
-        return updateAuthorEmail;
-    }
-
-    public void setUpdateAuthorEmail(String updateAuthorEmail) {
-        this.updateAuthorEmail = updateAuthorEmail;
-    }
-
 }

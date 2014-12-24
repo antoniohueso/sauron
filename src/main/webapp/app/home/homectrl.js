@@ -46,6 +46,8 @@ angular.module('sauronApp').controller('HomeCtrl'
 
             RESTService.rfcs().then(function (issues) {
 
+                console.log(issues);
+
                 angular.forEach(issues, function (issue) {
 
                     issue.perc = Math.round(issue.tareasfinalizadas*100/issue.issuelinks.length);
