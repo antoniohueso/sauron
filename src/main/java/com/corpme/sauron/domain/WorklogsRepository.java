@@ -17,6 +17,12 @@ public interface WorklogsRepository extends Repository<Worklog, Long> {
             @Param("fhasta") Date fhasta,
             @Param("users") Iterable<User> users);
 
+    @Query("select w from Worklog w " +
+            "where w.started = :fecha and w.author in (:users)")
+    public List<Worklog> findWorklogsInDay(
+            @Param("fecha") Date fecha,
+            @Param("users") Iterable<User> users);
+
     @Query("select w from Worklog w join fetch w.author join fetch w.updateAuthor join fetch w.issue i " +
             "where w.started >= :fdesde and w.started <= :fhasta and w.author in (:users) " +
             "and (i.issuekey = 'GI-8'or i.issuekey = 'GI-9')")
@@ -24,5 +30,6 @@ public interface WorklogsRepository extends Repository<Worklog, Long> {
             @Param("fdesde") Date fdesde,
             @Param("fhasta") Date fhasta,
             @Param("users") Iterable<User> users);
+
 
 }

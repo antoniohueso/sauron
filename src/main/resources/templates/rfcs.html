@@ -8,7 +8,7 @@
 <div id="main-content" class="container main-content">
 
     <div class="row">
-        <h2 class="text-info col-md-12">Vacaciones</h2>
+        <h2 class="text-info col-md-12">Rfcs</h2>
     </div>
 
     <div class="row">
@@ -40,14 +40,24 @@
             monthNames:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
             dayNamesShort: ["D","L", "M", "X", "J", "V", "S"],
             eventSources: [
-                '/worklogs/vacaciones-events'
-            ],
+                '/rfcs/rfcs-events'
+            ],/*
             eventClick: function(calEvent, jsEvent, view) {
+
+                console.log(this);
 
                 console.log('Event: ' + calEvent.title, ' ' ,calEvent.imputado);
                 console.log('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
                 console.log('View: ' + view.name);
 
+            },*/
+            eventRender:function( event, element, view ) {
+                element.attr('title',event.title);
+                element.attr('data-toggle','tooltip');
+                element.attr('data-placement','top');
+                element.attr('href','/rfcs/'+event.data.issuekey);
+                element.attr('target','_blank');
+                element.tooltip();
             }
         });
 

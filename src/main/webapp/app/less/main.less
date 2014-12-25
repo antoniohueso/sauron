@@ -2,6 +2,8 @@
 
 @separador-page-panel-listado:#f2f2f2;
 
+@bgprimary:bg-success;
+
 .main-content{
 	margin-top:0.5em;
 }
@@ -11,8 +13,9 @@ a {
     text-decoration: none;
 }
 
-a:hover {
-    text-decoration: none;
+a:link,a:visited, a:hover, a:active {
+  color: inherit;
+  text-decoration: none;
 }
 
 .rfc-epigrafe {
@@ -22,41 +25,27 @@ a:hover {
   font-weight: 600;
 }
 
-/*********************************************************************
-Helpers
-**********************************************************************/
-.border-radius (@radius) {
-  -moz-border-radius: @radius;
-  -webkit-border-radius: @radius;
-  border-radius: @radius;
+.calendar-warning {
+  background-color: #ff9900;
 }
 
-/*********************************************************************
-Propiedades generales de una vista
-**********************************************************************/
+.calendar-danger {
+  background-color: #d9534f;
+}
 
-.page-titulo {
-  margin: 0;
-  padding: 0;
-  font-size: 1.5em;
-  font-weight: 300;
-  span {
-    padding-right:0.3em;
-  }
+.calendar-produccion {
+  background-color: #398439;
+}
+
+.calendar-calidad {
+  background-color: #ff9900;
+}
+
+.fc-title {
+  color: #ffffff;
 }
 
 
-.page-subtitulo {
-  margin: 0;
-  padding: 0;
-  font-size: 1.1em;
-  font-weight: 300;
-  span {
-    padding-right:0.3em;
-  }
-}
-
-@bgprimary:bg-success;
 
 .resaltado-italica {
     font-style: italic; 

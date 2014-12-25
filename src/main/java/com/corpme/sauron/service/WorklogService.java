@@ -6,6 +6,8 @@ import com.corpme.sauron.domain.UserRepository;
 import com.corpme.sauron.domain.Worklog;
 import com.corpme.sauron.domain.WorklogsRepository;
 import com.corpme.sauron.service.bean.CalendarEvent;
+import com.corpme.sauron.service.bean.UserEvents;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,15 +149,107 @@ public class WorklogService {
         return anomalias;
     }
 
+    public Collection<CalendarEvent> worklogEvents(Date fdesde,Date fhasta,User user) {
+
+        final DateFormat df = new SimpleDateFormat("EEEE dd/MM/yyyy");
+
+        final Calendar hasta = getComparableDate(fhasta);
+
+        final Calendar desde = getComparableDate(fdesde);
+
+        if(desde.after(hasta)) {
+            throw new ApplicationException("La fecha desde no puede ser mayor que la fecha hasta. F.Desde="
+                    +df.format(desde.getTime()) + ", F.Hasta="+df.format(hasta.getTime()));
+        }
+
+
+        Collection<User> users = new ArrayList();
+        users.add(user);
+        final Iterable<Worklog> worklogs = worklogsRepository.findWorklogs(fdesde, fhasta, users);
+
+        final HashMap<String,UserEvents> calendario = new HashMap();
+
+        final Calendar fecha = getComparableDate(fdesde);
+        while(!fecha.after(hasta)) {
+            int dayOfWeek = fecha.get(Calendar.DAY_OF_WEEK);
+            if(dayOfWeek != Calendar.SATURDAY && dayOfWeek != Calendar.SUNDAY) {
+
+                calendario.put(df.format(fecha.getTime()),new UserEvents(user,fecha.getTime()));
+
+            }
+            fecha.add(Calendar.DAY_OF_MONTH,1);
+        }
+
+        for(Worklog w : worklogs) {
+            UserEvents ue = calendario.get(df.format(w.getStarted()));
+            ue.addTotal(w.getTimeSpentSeconds());
+
+            String time = String.format("%02d:%02d",
+                    TimeUnit.SECONDS.toHours(w.getTimeSpentSeconds()),
+                    TimeUnit.SECONDS.toMinutes(w.getTimeSpentSeconds()) -
+                            TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(w.getTimeSpentSeconds())));
+
+            String className = null;
+            if(w.getIssue().getProject().getProjectkey().equals("GI")) {
+                className = "calendar-warning";
+            }
+
+            ue.getEvents().add(new CalendarEvent(
+                    "("+time+") " + w.getIssue().getIssuekey() + " - "+w.getIssue().getSummary(),
+                    w.getStarted(),
+                    new String[] {className},
+                    w.getIssue()
+                    ));
+        }
+
+        Collection<CalendarEvent> result = new ArrayList();
+
+        Calendar hoy = getComparableDate(new Date());
+
+        Iterable<User> usersServiciosCentrales = userRepository.findAllFromServiciosCentrales();
+
+        for(UserEvents ue : calendario.values()) {
+
+            //--- Si hay anomalías
+            if(ue.getTotal() / (60*60) < alarmaMin
+                    && (hoy.getTime().after(ue.getFecha()) || hoy.getTime().equals(ue.getFecha()))) {
+
+                //--- Si no tiene eventos ese día
+                if(ue.getEvents().size() == 0) {
+
+                    //--- Comprueba que exista alguna imputación ese día de alguien del grupo
+                    Iterable<Worklog> wlogs = worklogsRepository
+                            .findWorklogsInDay(ue.getFecha(), usersServiciosCentrales);
+                    String className = "calendar-danger";
+                    //--- Si no existe se presupone que es un día de fiesta
+                    if(Lists.newArrayList(wlogs).size() == 0) {
+                        className = "calendar-produccion";
+                    }
+
+                    ue.getEvents().add(new CalendarEvent("(00:00) ",ue.getFecha()
+                            ,new String[]{className},null));
+                }
+                else {
+                    //--- Pone en rojo las anomalías
+                    for (CalendarEvent e : ue.getEvents()) {
+                        e.setClassName(new String[]{"calendar-danger"});
+                    }
+                }
+            }
+
+            Collections.addAll(result,ue.getEvents().toArray(new CalendarEvent[ue.getEvents().size()]));
+        }
+
+        return result;
+    }
+
     public Iterable<CalendarEvent> vacaciones(Date fdesde,Date fhasta) {
 
         final DateFormat df = new SimpleDateFormat("EEEE dd/MM/yyyy");
 
-        final Calendar hasta = new GregorianCalendar();
-        hasta.setTime(fhasta);
+        final Calendar hasta = getComparableDate(fhasta);
 
-        final Calendar desde = new GregorianCalendar();
-        desde.setTime(fdesde);
+        final Calendar desde = getComparableDate(fdesde);
 
         if (desde.after(hasta)) {
             throw new ApplicationException("La fecha desde no puede ser mayor que la fecha hasta. F.Desde="
@@ -177,13 +271,28 @@ public class WorklogService {
                             TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(time)));
 
             if(w.getIssue().getIssuekey().equals("GI-9")) {
-                color = "#ff9900";
+                color = "calendar-warning";
                 title += "("+imputado+")";
             }
 
-            vacaciones.add(new CalendarEvent(title, w.getStarted(), color,imputado));
+            vacaciones.add(new CalendarEvent(title, w.getStarted(), new String []{color},imputado));
         }
 
         return vacaciones;
+    }
+
+    Calendar getComparableDate(Date fecha) {
+
+        if(fecha == null) return null;
+
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(fecha);
+
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return cal;
     }
 }

@@ -1,6 +1,8 @@
 package com.corpme.sauron.web;
 
 import com.corpme.sauron.config.ApplicationException;
+import com.corpme.sauron.domain.User;
+import com.corpme.sauron.service.UsersService;
 import com.corpme.sauron.service.WorklogService;
 import com.corpme.sauron.service.bean.CalendarEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -30,7 +29,33 @@ public class WorklogController {
     @Autowired
     WorklogService worklogService;
 
+    @Autowired
+    UsersService usersService;
+
     Logger logger = Logger.getLogger(getClass().getName());
+
+    @RequestMapping(method = RequestMethod.GET)
+    public String worklogs(Model model) {
+
+        model.addAttribute("users",usersService.usuariosServiciosCentrales());
+
+        return "worklogs";
+    }
+
+    @RequestMapping(method = RequestMethod.GET,value = "/worklog-events")
+    public @ResponseBody Iterable<CalendarEvent> worklogEvents(
+            @RequestParam String start, @RequestParam String end,@RequestParam Long userid) {
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+        User user = usersService.user(userid);
+
+        try {
+            return worklogService.worklogEvents(df.parse(start), df.parse(end), user);
+        } catch (ParseException e) {
+            throw new ApplicationException("Se ha producido un error al parsear las fechas: "+start + " y "+end);
+        }
+    }
 
     @RequestMapping(method = RequestMethod.GET,value = "/anomalias")
     public String anomalias(
@@ -52,6 +77,7 @@ public class WorklogController {
         return "worklog";
     }
 
+
     @RequestMapping(method = RequestMethod.GET,value = "/vacaciones")
     public String vacaciones(Model model) {
         return "vacaciones";
@@ -59,26 +85,16 @@ public class WorklogController {
 
     @RequestMapping(method = RequestMethod.GET,value = "/vacaciones-events")
     public @ResponseBody Iterable<CalendarEvent> vacacionesEvents(
-            @RequestParam String start, @RequestParam String end,Model model) {
+            @RequestParam String start, @RequestParam String end) {
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
         try {
-            helperCalculaFechas(null, df.parse(start), df.parse(end), model);
+            return worklogService.vacaciones(df.parse(start), df.parse(end));
         } catch (ParseException e) {
             throw new ApplicationException("Se ha producido un error al parsear las fechas: "+start + " y "+end);
         }
-
-        final Calendar fechaDesde = new GregorianCalendar();
-        final Map mmodel = model.asMap();
-        final Calendar fechaHasta = new GregorianCalendar();
-
-        fechaDesde.setTime((Date)mmodel.get("fdesde"));
-        fechaHasta.setTime((Date)mmodel.get("fhasta"));
-
-        return worklogService.vacaciones(fechaDesde.getTime(),fechaHasta.getTime());
     }
-
 
     void helperCalculaFechas(Integer mes,Date fdesde, Date fhasta,Model model) {
         final Calendar fechaDesde = new GregorianCalendar();

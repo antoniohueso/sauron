@@ -1458,7 +1458,7 @@ function EventManager(options) { // assumed to be a calendar
 					customData = source.data;
 				}
 
-				// use a copy of the custom data so we can modify the parameters
+				// use a copy of the qtip data so we can modify the parameters
 				// and not affect the passed-in object.
 				var data = $.extend({}, customData || {});
 
@@ -2806,7 +2806,7 @@ function formatDateWithChunk(date, chunk) {
 	}
 	else if ((token = chunk.token)) { // a token, like "YYYY"
 		if (tokenOverrides[token]) {
-			return tokenOverrides[token](date); // use our custom token
+			return tokenOverrides[token](date); // use our qtip token
 		}
 		return momentFormat(date, token);
 	}
@@ -2839,7 +2839,7 @@ function formatRange(date1, date2, formatStr, separator, isRTL) {
 
 	// Expand localized format strings, like "LL" -> "MMMM D YYYY"
 	formatStr = localeData.longDateFormat(formatStr) || formatStr;
-	// BTW, this is not important for `formatDate` because it is impossible to put custom tokens
+	// BTW, this is not important for `formatDate` because it is impossible to put qtip tokens
 	// or non-zero areas in Moment's localized format strings.
 
 	separator = separator || ' - ';
@@ -2937,7 +2937,7 @@ function formatSimilarChunk(date1, date2, chunk) {
 		// are the dates the same for this unit of measurement?
 		if (unit && date1.isSame(date2, unit)) {
 			return momentFormat(date1, token); // would be the same if we used `date2`
-			// BTW, don't support custom tokens
+			// BTW, don't support qtip tokens
 		}
 	}
 
@@ -3919,7 +3919,7 @@ MouseFollower.prototype = {
 
 /* A utility class for rendering <tr> rows.
 ----------------------------------------------------------------------------------------------------------------------*/
-// It leverages methods of the subclass and the View to determine custom rendering behavior for each row "type"
+// It leverages methods of the subclass and the View to determine qtip rendering behavior for each row "type"
 // (such as highlight rows, day rows, helper rows, etc).
 
 function RowRenderer(view) {
@@ -3933,7 +3933,7 @@ RowRenderer.prototype = {
 	cellHtml: '<td/>', // plain default HTML used for a cell when no other is available
 
 
-	// Renders the HTML for a row, leveraging custom cell-HTML-renderers based on the `rowType`.
+	// Renders the HTML for a row, leveraging qtip cell-HTML-renderers based on the `rowType`.
 	// Also applies the "intro" and "outro" cells, which are specified by the subclass and views.
 	// `row` is an optional row number.
 	rowHtml: function(rowType, row) {
@@ -3980,7 +3980,7 @@ RowRenderer.prototype = {
 	// Returns an HTML-rendering function given a specific `rendererName` (like cell, intro, or outro) and a specific
 	// `rowType` (like day, eventSkeleton, helperSkeleton), which is optional.
 	// If a renderer for the specific rowType doesn't exist, it will fall back to a generic renderer.
-	// We will query the View object first for any custom rendering functions, then the methods of the subclass.
+	// We will query the View object first for any qtip rendering functions, then the methods of the subclass.
 	getHtmlRenderer: function(rendererName, rowType) {
 		var view = this.view;
 		var generalName; // like "cellHtml"
@@ -4850,7 +4850,7 @@ $.extend(DayGrid.prototype, {
 
 
 	// Renders the HTML for a whole-day cell. Will eventually end up in the day-row's background.
-	// We go through a 'day' row type instead of just doing a 'bg' row type so that the View can do custom rendering
+	// We go through a 'day' row type instead of just doing a 'bg' row type so that the View can do qtip rendering
 	// specifically for whole-day rows, whereas a 'bg' might also be used for other purposes (TimeGrid bg for example).
 	dayCellHtml: function(row, col, date) {
 		return this.bgCellHtml(row, col, date);
