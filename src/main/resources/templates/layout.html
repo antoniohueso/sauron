@@ -15,9 +15,7 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
 
 
-    <link th:if="${@environment.getActiveProfiles()[0] != 'prod'}" rel="stylesheet/less" href="/resources/app/main.less"/>
-
-    <link th:if="${@environment.getActiveProfiles()[0] == 'prod'}" rel="stylesheet" href="/resources/app/main.css"/>
+    <link rel="stylesheet" href="/resources/app/main.css"/>
 
 
     <!-- APP -->
@@ -42,8 +40,9 @@
     <script src="/resources/app/functions.js"></script>
 
     <!-- set options before less.js script -->
-    <script th:if="${@environment.getActiveProfiles()[0] != 'prod'}" src="/resources/less/less.min.js"></script>
-
+    <!--
+    <script src="/resources/less/less.min.js"></script>
+    -->
 
 </head>
 
