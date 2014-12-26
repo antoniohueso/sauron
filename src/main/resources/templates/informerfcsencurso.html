@@ -35,6 +35,22 @@
                               th:each="e : ${rfc.equipodesarrollo}" th:text="${e.user.name}"></span>
                         <span class="label label-warning"
                               th:each="e : ${rfc.equipocalidad}" th:text="${e.user.name}"></span>
+                        <div class="label label-info" th:if="${h.key == 'En desarrollo'}">
+                            <span>F.Ini: </span>
+                            <span th:if="${rfc.fInicioDesarrollo!=null}" th:text="${#dates.format(rfc.fInicioDesarrollo,'EEEE, dd MMM yyyy')}"></span>
+                            <span>, F.Fin: </span>
+                            <span th:if="${rfc.fFinDesarrollo!=null}" th:text="${#dates.format(rfc.fFinDesarrollo,'EEEE, dd MMM yyyy')}"></span>
+                        </div>
+                        <div class="label label-info" th:if="${h.key == 'En pruebas'}">
+                            <span>F.Ini: </span>
+                            <span th:if="${rfc.fInicioCalidad!=null}" th:text="${#dates.format(rfc.fInicioCalidad,'EEEE, dd MMM yyyy')}"></span>
+                            <span>, F.Fin </span>
+                            <span th:if="${rfc.fFinCalidad!=null}" th:text="${#dates.format(rfc.fFinCalidad,'EEEE, dd MMM yyyy')}"></span>
+                        </div>
+                        <div class="label label-info" th:if="${h.key == 'Finalizadas' or h.key.startsWith('En producc')}">
+                            <span>F.Paso producción: </span>
+                            <span th:if="${rfc.fPasoProd!=null}" th:text="${#dates.format(rfc.fPasoProd,'EEEE, dd MMM yyyy')}"></span>
+                        </div>
                     </td>
                     <td><span class="label label-success" th:text="${rfc.status.name}"></span></td>
                     <td><span class="badge" th:text="${rfc.porcentajeCompletado + '%'}"></span></td>
