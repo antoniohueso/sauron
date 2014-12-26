@@ -34,8 +34,9 @@ public class WorklogController {
     Logger logger = Logger.getLogger(getClass().getName());
 
     @RequestMapping(method = RequestMethod.GET)
-    public String worklogs(Model model) {
+    public String worklogs(@RequestParam(required = false) Long userid,Model model) {
 
+        model.addAttribute("selectedUser",userid);
         model.addAttribute("users",usersService.usuariosServiciosCentrales());
 
         return "worklogs";

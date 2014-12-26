@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head">
+</head>
+
+<body>
+
+<div th:replace="layout :: menu ('disponibilidad')"></div>
+
+<div id="main-content" class="container main-content">
+
+    <div class="row">
+        <h2 class="text-info col-md-12">Listado de recursos disponibles (no asignados a una rfc)</h2>
+    </div>
+
+    <div class="row" id="content" >
+
+        <div class="col-md-12">
+
+            <table class="table">
+                <tr class="text-info">
+                    <th>Recurso</th>
+                    <th>Email</th>
+                </tr>
+
+                <tr th:each="u : ${users}">
+                    <td style="width: 40%;">
+                        <a th:href="${'/worklogs?userid='+u.id}" target="_blank"
+                                               th:text="${u.displayName}"></a>
+                    </td>
+                    <td>
+                        <a th:href="${'mailto:'+u.emailAddress}" th:text="${u.emailAddress}"></a>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+</body>
+</html>

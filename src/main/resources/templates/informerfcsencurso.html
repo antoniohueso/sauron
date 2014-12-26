@@ -5,15 +5,16 @@
 
 <body>
 
-<div th:replace="layout :: menu ('rfcs')"></div>
+<div th:replace="layout :: menu ('informeencurso')"></div>
 
 <div id="main-content" class="container main-content">
 
     <div class="row">
-        <h2 class="text-info col-md-12" th:text="${title}"></h2>
+        <h2 class="text-info col-md-12">Informe de rfcs en curso</h2>
     </div>
 
-    <div class="row" id="content" >
+    <div class="row" th:each="h : ${informe}">
+        <h4 class="text-info col-md-12" th:text="${h.key + ' ('+h.value.size()+')'} "></h4>
 
         <div class="col-md-12">
 
@@ -22,12 +23,13 @@
                     <th>Rfc</th>
                     <th>Equipo</th>
                     <th>Estado</th>
+                    <th>%</th>
                 </tr>
 
-                <tr th:each="rfc : ${rfcs}">
+                <tr th:each="rfc : ${h.value}">
                     <td style="width: 40%;">
-                        <a th:href="${'/rfcs/'+rfc.issuekey+ '?app'}" target="_blank"
-                                               th:text="${rfc.issuekey+ ' - ' + rfc.summary}"></a></td>
+                        <a th:href="${'/rfcs/'+rfc.issuekey + '?app'}" target="_blank"
+                           th:text="${rfc.issuekey+ ' - ' + rfc.summary}"></a></td>
                     <td>
                         <span class="label label-primary"
                               th:each="e : ${rfc.equipodesarrollo}" th:text="${e.user.name}"></span>
@@ -35,6 +37,8 @@
                               th:each="e : ${rfc.equipocalidad}" th:text="${e.user.name}"></span>
                     </td>
                     <td><span class="label label-success" th:text="${rfc.status.name}"></span></td>
+                    <td><span class="badge" th:text="${rfc.porcentajeCompletado + '%'}"></span></td>
+
                 </tr>
             </table>
 

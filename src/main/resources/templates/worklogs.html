@@ -7,6 +7,7 @@
 
 <div th:replace="layout :: menu ('worklogs')"></div>
 
+
 <div id="main-content" class="container main-content">
 
     <div class="row">
@@ -14,7 +15,9 @@
             <form class="form-inline">
                 <label><span>Recurso </span></label>
                 <select id="users" class="select form-control" style="width: 50%;">
-                    <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.displayName}"></option>
+                    <option th:each="u : ${users}" th:value="${u.id}"
+                            th:text="${u.displayName}"
+                            th:selected="${selectedUser eq u.id}"></option>
                 </select>
             </form>
         </div>

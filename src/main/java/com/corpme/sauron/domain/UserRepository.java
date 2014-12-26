@@ -12,4 +12,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Query("select u from User u where u.id in (select sc.id from SCUser sc) order by u.displayName")
     Iterable<User> findAllFromServiciosCentrales();
 
+    @Query("select u from User u where u.id in (select sc.id from SCUser sc) " +
+            " and u not in (select ed.user from RfcEquipoDesarrollo ed where ed.rfc.status.id not in(6,10003,10002)) " +
+            " and u not in (select ec.user from RfcEquipoCalidad ec where ec.rfc.status.id not in(6,10003,10002)) " +
+            "order by u.displayName")
+    Iterable<User> findDisponiblesFromServiciosCentrales();
+
 }

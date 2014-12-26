@@ -110,6 +110,10 @@ public class Rfc {
     @Column(name = "plan_marcha_atras")
     String planmarchaatras;
 
+    @Transient
+    int porcentajeCompletado = 0;
+
+
     public long getId() {
         return id;
     }
@@ -364,5 +368,13 @@ public class Rfc {
 
     public void setPlanmarchaatras(String planmarchaatras) {
         this.planmarchaatras = planmarchaatras;
+    }
+
+    public int getPorcentajeCompletado() {
+        return porcentajeCompletado;
+    }
+
+    public void setPorcentajeCompletado(int porcentajeCompletado) {
+        this.porcentajeCompletado = porcentajeCompletado;
     }
 }

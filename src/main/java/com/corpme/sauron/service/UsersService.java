@@ -24,6 +24,11 @@ public class UsersService {
         return userRepository.findAllFromServiciosCentrales();
     }
 
+    public Iterable<User> usuariosDisponibles() {
+        return userRepository.findDisponiblesFromServiciosCentrales();
+    }
+
+
     public User user(Long id) {
         return userRepository.findOne(id);
     }

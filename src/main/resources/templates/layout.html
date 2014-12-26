@@ -67,6 +67,11 @@
                         <span class="glyphicon glyphicon-calendar"> Rfcs</span>
                     </a>
                 </li>
+                <li th:class="${selected == 'informeencurso'?'active':''}">
+                    <a href="/rfcs/informe/rfcsencurso" >
+                        <span class="glyphicon glyphicon-bell"> Rfcs en curso</span>
+                    </a>
+                </li>
                 <li th:class="${selected == 'worklogs'?'active':''}">
                     <a href="/worklogs" >
                         <span class="glyphicon glyphicon-time"> Worklogs</span>
@@ -82,6 +87,12 @@
                         <span class="glyphicon glyphicon-warning-sign"> Worklog: anomalías</span>
                     </a>
                 </li>
+                <li th:class="${selected == 'disponibilidad'?'active':''}">
+                    <a href="/users/disponibilidad" >
+                        <span class="glyphicon glyphicon-user"> Disponibilidad</span>
+                    </a>
+                </li>
+
             </ul>
 
         </div>

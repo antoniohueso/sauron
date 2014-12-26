@@ -36,7 +36,19 @@ public interface RfcRepository extends CrudRepository<Rfc, Long> {
             " or i.fFinCalidad between :desde and :hasta " +
             " or i.fPasoProd between :desde and :hasta ")
     Iterable<Rfc> findRfcsByDate(@Param("desde") Date desde
-            ,@Param("hasta") Date hasta);
+            , @Param("hasta") Date hasta);
+
+    @Query(value = "" +
+            "select i " +
+            "from Rfc i " +
+            "join fetch i.status " +
+            "join fetch i.priority " +
+            "left join fetch i.reporter " +
+            "left join fetch i.assignee " +
+            "left join fetch i.project " +
+            "where i.fPasoProd between :desde and :hasta and i.status.id = 10003")
+    Iterable<Rfc> findRfcsEnProduccionByDate(@Param("desde") Date desde
+            , @Param("hasta") Date hasta);
 
     Rfc findByIssuekey(String issuekey);
 

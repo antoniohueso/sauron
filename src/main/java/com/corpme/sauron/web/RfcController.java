@@ -35,15 +35,17 @@ public class RfcController {
     @RequestMapping(method = RequestMethod.GET)
     public String resumenRfcs(Model model) {
 
-        Map<String,Collection> resumen =  rfcService.resumenRfcs();
+        Map<String, Collection> resumen = rfcService.resumenRfcs();
 
         model.addAllAttributes(resumen);
 
         return "rfcs";
     }
 
-    @RequestMapping(method = RequestMethod.GET,value = "/rfcs-events")
-    public @ResponseBody Iterable<CalendarEvent> rfcsEvents(
+    @RequestMapping(method = RequestMethod.GET, value = "/rfcs-events")
+    public
+    @ResponseBody
+    Iterable<CalendarEvent> rfcsEvents(
             @RequestParam String start, @RequestParam String end) {
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -51,20 +53,20 @@ public class RfcController {
         try {
             return rfcService.rfcsEvents(df.parse(start), df.parse(end));
         } catch (ParseException e) {
-            throw new ApplicationException("Se ha producido un error al parsear las fechas: "+start + " y "+end);
+            throw new ApplicationException("Se ha producido un error al parsear las fechas: " + start + " y " + end);
         }
 
     }
 
 
-    @RequestMapping(method = RequestMethod.GET,value = "/{key}")
-    public String rfc(@PathVariable String key,Model model) {
+    @RequestMapping(method = RequestMethod.GET, value = "/{key}")
+    public String rfc(@PathVariable String key, Model model) {
 
-        model.addAttribute("templateUtil",templateUtil);
+        model.addAttribute("templateUtil", templateUtil);
 
         Rfc rfc = rfcService.rfc(key);
-        if(rfc == null) {
-            throw new ApplicationException("La RFC "+key+ " no existe");
+        if (rfc == null) {
+            throw new ApplicationException("La RFC " + key + " no existe");
         }
 
         rfc.setDescription(rfc.getDescription().replaceAll("(\r\n|\n)", "<br/>"));
@@ -77,36 +79,46 @@ public class RfcController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/listado/{tipo}")
-    public String resumenRfcs(@PathVariable String tipo,Model model) {
+    public String resumenRfcs(@PathVariable String tipo, Model model) {
 
-        Map<String,Collection> resumen =  rfcService.resumenRfcs();
+        Map<String, Collection> resumen = rfcService.resumenRfcs();
 
         String template = "listadorfcs";
 
-        model.addAttribute("templateUtil",templateUtil);
+        model.addAttribute("templateUtil", templateUtil);
 
-        if(tipo.equals("vencidas")) {
-            model.addAttribute("title","Listado de rfcs vencidas");
-            model.addAttribute("rfcs",resumen.get(tipo));
-        }else if(tipo.equals("paradas")) {
-            model.addAttribute("title","Listado de rfcs paradas");
-            model.addAttribute("rfcs",resumen.get(tipo));
-        } else if(tipo.equals("pendientes")) {
-            model.addAttribute("title","Listado de rfcs pendientes");
-            model.addAttribute("rfcs",resumen.get(tipo));
-        } else if(tipo.equals("encurso")) {
-            model.addAttribute("title","Listado de rfcs en curso");
-            model.addAttribute("rfcs",resumen.get(tipo));
-        } else if(tipo.equals("anomalias")) {
-            model.addAttribute("title","Listado de rfcs con anomalías");
-            model.addAttribute("rfcs",resumen.get(tipo));
+        if (tipo.equals("vencidas")) {
+            model.addAttribute("title", "Listado de rfcs vencidas");
+            model.addAttribute("rfcs", resumen.get(tipo));
+        } else if (tipo.equals("paradas")) {
+            model.addAttribute("title", "Listado de rfcs paradas");
+            model.addAttribute("rfcs", resumen.get(tipo));
+        } else if (tipo.equals("pendientes")) {
+            model.addAttribute("title", "Listado de rfcs pendientes");
+            model.addAttribute("rfcs", resumen.get(tipo));
+        } else if (tipo.equals("encurso")) {
+            model.addAttribute("title", "Listado de rfcs en curso");
+            model.addAttribute("rfcs", resumen.get(tipo));
+        } else if (tipo.equals("anomalias")) {
+            model.addAttribute("title", "Listado de rfcs con anomalías");
+            model.addAttribute("rfcs", resumen.get(tipo));
             template = "listadorfcsanomalias";
-        }
-        else {
+        } else {
             throw new ApplicationException("La página solicitada no existe");
         }
 
 
         return template;
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/informe/rfcsencurso")
+    public String informeRfcEnCurso(Model model) {
+
+        Map<String, Collection<Rfc>> informe = rfcService.informeRfcsEnCurso();
+
+        model.addAttribute("informe",informe);
+
+        return "informerfcsencurso";
+    }
+
 }

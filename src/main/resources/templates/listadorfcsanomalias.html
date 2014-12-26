@@ -26,7 +26,7 @@
 
                 <tr th:each="o : ${rfcs}">
                     <td style="width: 40%;">
-                        <a th:href="${'/rfcs/'+o.rfc.issuekey}" target="_blank">
+                        <a th:href="${'/rfcs/'+o.rfc.issuekey+ '?app'}" target="_blank">
                             <div th:text="${o.rfc.issuekey+ ' - ' + o.rfc.summary}"></div>
                             <div class="label label-danger" th:text="${o.anomalia}"></div>
                         </a>
