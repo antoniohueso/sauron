@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head">
+</head>
+
+<body>
+
+<div id="main-content" class="container main-content">
+
+    <div class="row">
+
+        <div class="rfc-epigrafe text-info col-md-12">
+            <span>1. Datos de la solicitud</span>
+        </div>
+
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <tr>
+                    <th class="text-info">
+                        <span class="glyphicon glyphicon-list"></span>
+                        <span>Solicitud</span>
+                    </th>
+                    <th>
+                        <span class="text-info" th:text="${rfc.issuekey + ' - ' + rfc.summary}"></span>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="text-info">
+                        <span></span>
+                        <span>Estado</span>
+                    </th>
+                    <td>
+                        <span class="label label-success" th:text="${rfc.status.name}"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-info">
+                        <span>Tipo</span>
+                    </th>
+                    <td>
+                        <span class="label label-default" th:text="${rfc.type.name}"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-info">
+                        <span class="glyphicon glyphicon-user"></span>
+                        <span>Equipo</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="text-info">Desarrollo</th>
+                    <td>
+                        <div th:each="e : ${rfc.equipodesarrollo}">
+                            <span th:text="${e.user.displayName}"></span> (<a th:href="${'mailto:' + e.user.emailAddress}"
+                                                                              th:text="${e.user.emailAddress}"></a>)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-info">Calidad</th>
+                    <td>
+                        <div th:each="e : ${rfc.equipocalidad}">
+                            <span th:text="${e.user.displayName}"></span> (<a th:href="${'mailto:' + e.user.emailAddress}"
+                                                                              th:text="${e.user.emailAddress}"></a>)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-info">
+                        <span class="glyphicon glyphicon-book"></span>
+                        <span>Planificación</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="text-info">Desarrollo</th>
+                    <td>
+                        <span th:text="${#dates.format(rfc.fInicioDesarrollo,'EEEE, dd MMM yyyy')}"></span>
+                        <span> a </span>
+                        <span th:text="${#dates.format(rfc.fFinDesarrollo,'EEEE, dd MMM yyyy')}"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-info">Calidad</th>
+                    <td>
+                        <span th:text="${#dates.format(rfc.fInicioCalidad,'EEEE, dd MMM yyyy')}"></span>
+                        <span> a </span>
+                        <span th:text="${#dates.format(rfc.fFinCalidad,'EEEE, dd MMM yyyy')}"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-info">Implantación</th>
+                    <td colspan="2">
+                        <span th:text="${#dates.format(rfc.fPasoProd,'EEEE, dd MMM yyyy')}"></span>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="rfc-epigrafe text-info col-md-12">
+            <span>2. Descripción</span>
+        </div>
+        <div class="col-md-12">
+            <div class="well" th:utext="${rfc.description}"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="rfc-epigrafe text-info col-md-12">
+            <span>3. Proyectos afectados</span>
+        </div>
+        <div class="col-md-12">
+            <table class="table">
+                <tr class="text-info">
+                    <th>Proyecto</th>
+                    <th>Componente</th>
+                    <th>Issue</th>
+                    <th>Versión</th>
+                    <th>Estado</th>
+                </tr>
+
+                <tr th:each="o : ${rfc.issuelinks}">
+                    <td><span th:text="${o.issue.project.name}"></span></td>
+                    <td><div th:each="c : ${o.issue.components}" class="label label-default" th:text="${c.component.name}"></div></td>
+                    <td style="width: 40%;"><a th:href="${'/#/issues/'+o.issue.issuekey}" target="_blank"
+                                               th:text="${o.issue.issuekey+ ' - ' + o.issue.summary}"></a></td>
+                    <td>
+                        <div th:each="v : ${o.issue.versions}" class="label label-warning" th:text="${v.version.name}"></div>
+                    </td>
+                    <td class="col-md-2"><span class="label label-success" th:text="${o.issue.status.name}"></span></td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="rfc-epigrafe text-info col-md-12">
+            <span>4. Solución</span>
+        </div>
+        <div class="col-md-12">
+            <table th:if="${true}"
+                   class="table table-bordered">
+                <tr th:if="${true}">
+                    <th width="30%">Descripción</th>
+                    <td  th:utext="${'FALTA LA SOLUCION'}" class="col-md-12">
+                    </td>
+                </tr>
+                <tr th:if="${true}">
+                    <th>Documentación funcional y técnica</th>
+                    <td  class="col-md-12">
+                        <a th:href="${'FALTA LA DOC'}" target="_blank">(FALTA) Acuerdo funcional y técnico</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="rfc-epigrafe text-info col-md-12">
+            <span>5. Informe de calidad</span>
+        </div>
+
+        <div class="col-md-12">
+            <table class="table table-bordered">
+
+                <tr>
+                    <th>Planes de pruebas</th>
+                    <td  class="col-md-12">
+                        <a th:href="${rfc.planpruebas}" target="_blank" th:text="${rfc.planpruebas}"></a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th width="20%">Riesgos</th>
+                    <td  class="col-md-12">
+                        <div class="alert alert-warning">
+                            <div th:each="r : ${rfc.riesgos}">
+                                <span class="glyphicon glyphicon-ok"></span>
+                                <span th:text="${r.name}"></span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:if="${rfc.observaciones != null}">
+                    <th width="20%">Observaciones</th>
+                    <td  class="col-md-12">
+                        <div class="alert alert-warning">
+                            <span th:utext="${rfc.observaciones}"></span>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+
+
+    </div>
+
+    <div class="row">
+        <div class="rfc-epigrafe text-info col-md-12">
+            <span>6. Implantación</span>
+        </div>
+
+        <div class="col-md-12">
+            <table class="table table-bordered">
+
+                <tr>
+                    <th>Plan de paso a producción</th>
+                    <td  class="col-md-12">
+                        <div th:utext="${rfc.planpasoprod}" class="alert alert-success"></div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th width="20%">Plan de marcha atrás</th>
+                    <td  class="col-md-12">
+                        <div th:utext="${rfc.planmarchaatras}" class="alert alert-danger"></div>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+</html>

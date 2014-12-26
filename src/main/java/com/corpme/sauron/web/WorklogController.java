@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -51,96 +50,60 @@ public class WorklogController {
         User user = usersService.user(userid);
 
         try {
-            return worklogService.worklogEvents(df.parse(start), df.parse(end), user);
+            return worklogService.worklogEvents(df.parse(start), df.parse(end), user,false);
         } catch (ParseException e) {
             throw new ApplicationException("Se ha producido un error al parsear las fechas: "+start + " y "+end);
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET,value = "/anomalias")
-    public String anomalias(
-            @RequestParam(required = false) Integer mes,
-            @RequestParam(required = false) Date fdesde,
-            @RequestParam(required = false) Date fhasta,
-            Model model) {
+    @RequestMapping(method = RequestMethod.GET, value = "/anomalias")
+    public String anomalias(Model model) {
 
-        helperCalculaFechas(mes,fdesde,fhasta,model);
+        model.addAttribute("users",usersService.usuariosServiciosCentrales());
 
-        final Calendar fechaDesde = new GregorianCalendar();
-        final Map mmodel = model.asMap();
-        final Calendar fechaHasta = new GregorianCalendar();
+        return "anomalias";
+    }
 
-        fechaDesde.setTime((Date)mmodel.get("fdesde"));
-        fechaHasta.setTime((Date)mmodel.get("fhasta"));
-        model.addAttribute("anomalias", worklogService.worklogs(fechaDesde.getTime(),fechaHasta.getTime()));
+    @RequestMapping(method = RequestMethod.GET,value = "/anomalias-events")
+    public @ResponseBody Iterable<CalendarEvent> anomaliasEvents(
+            @RequestParam String start, @RequestParam String end,@RequestParam(required = false) Long userid) {
 
-        return "worklog";
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+        User user = null;
+
+        if( userid != null ) user = usersService.user(userid);
+
+        try {
+            return worklogService.anomalias(df.parse(start), df.parse(end), user);
+        } catch (ParseException e) {
+            throw new ApplicationException("Se ha producido un error al parsear las fechas: "+start + " y "+end);
+        }
     }
 
 
     @RequestMapping(method = RequestMethod.GET,value = "/vacaciones")
     public String vacaciones(Model model) {
+        model.addAttribute("users",usersService.usuariosServiciosCentrales());
         return "vacaciones";
     }
 
     @RequestMapping(method = RequestMethod.GET,value = "/vacaciones-events")
     public @ResponseBody Iterable<CalendarEvent> vacacionesEvents(
-            @RequestParam String start, @RequestParam String end) {
+            @RequestParam String start, @RequestParam String end,@RequestParam(required = false) Long userid) {
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
+        User user = null;
+
+        if( userid != null ) user = usersService.user(userid);
+
         try {
-            return worklogService.vacaciones(df.parse(start), df.parse(end));
+            return worklogService.vacaciones(df.parse(start), df.parse(end),user);
         } catch (ParseException e) {
             throw new ApplicationException("Se ha producido un error al parsear las fechas: "+start + " y "+end);
         }
     }
 
-    void helperCalculaFechas(Integer mes,Date fdesde, Date fhasta,Model model) {
-        final Calendar fechaDesde = new GregorianCalendar();
-        final Calendar fechaHasta = new GregorianCalendar();
-
-        if(mes == null && fdesde == null && fhasta == null) {
-            fechaDesde.set(Calendar.DAY_OF_MONTH,fechaDesde.getActualMinimum(Calendar.DAY_OF_MONTH));
-        }
-        else if(mes != null) {
-            fechaDesde.set(Calendar.MONTH,mes.intValue() - 1);
-            fechaHasta.set(Calendar.MONTH,mes.intValue() - 1);
-            fechaDesde.set(Calendar.DAY_OF_MONTH,fechaDesde.getActualMinimum(Calendar.DAY_OF_MONTH));
-            fechaHasta.set(Calendar.DAY_OF_MONTH,fechaDesde.getActualMaximum(Calendar.DAY_OF_MONTH));
-        }
-        else {
-            if(fdesde == null) {
-                fechaDesde.setTime(fhasta);
-                fechaHasta.setTime(fhasta);
-            }
-            else if(fhasta == null) {
-                fechaDesde.setTime(fdesde);
-                fechaHasta.setTime(fdesde);
-            }
-            else {
-                fechaDesde.setTime(fdesde);
-                fechaHasta.setTime(fhasta);
-            }
-        }
-
-
-        fechaHasta.set(Calendar.HOUR_OF_DAY, 0);
-        fechaHasta.set(Calendar.MINUTE, 0);
-        fechaHasta.set(Calendar.SECOND, 0);
-        fechaHasta.set(Calendar.MILLISECOND, 0);
-
-        fechaDesde.set(Calendar.HOUR_OF_DAY, 0);
-        fechaDesde.set(Calendar.MINUTE, 0);
-        fechaDesde.set(Calendar.SECOND, 0);
-        fechaDesde.set(Calendar.MILLISECOND, 0);
-
-        model.addAttribute("fdesde",fechaDesde.getTime());
-        model.addAttribute("fhasta",fechaHasta.getTime());
-        if(mes != null) {
-            DateFormat df = new SimpleDateFormat("MMMM 'de' yyyy");
-            model.addAttribute("mes",df.format(fechaDesde.getTime()));
-        }
-    }
 
 }

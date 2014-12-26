@@ -21,7 +21,7 @@ App.config(function($routeProvider, $locationProvider, $provide,
 			controller : 'HomeCtrl'
 		})
 		.when('/rfcs/:id', {
-			templateUrl : 'app/rfc/rfc.html',
+			templateUrl : 'app/rfc/kk.html',
 			controller : 'RfcCtrl'
 		})
 		.when('/issues/:id', {

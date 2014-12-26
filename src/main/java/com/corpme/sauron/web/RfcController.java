@@ -47,10 +47,19 @@ public class RfcController {
 
 
     @RequestMapping(method = RequestMethod.GET,value = "/{key}")
-    public @ResponseBody Rfc rfc(@PathVariable String key) {
-        return rfcService.rfc(key);
+    public String rfc(@PathVariable String key,Model model) {
+
+        Rfc rfc = rfcService.rfc(key);
+        if(rfc == null) {
+            throw new ApplicationException("La RFC "+key+ " no existe");
+        }
+
+        rfc.setDescription(rfc.getDescription().replaceAll("(\r\n|\n)", "<br/>"));
+        rfc.setPlanpasoprod(rfc.getPlanpasoprod().replaceAll("(\r\n|\n)", "<br/>"));
+        rfc.setPlanmarchaatras(rfc.getPlanmarchaatras().replaceAll("(\r\n|\n)", "<br/>"));
+
+        model.addAttribute("rfc", rfc);
+
+        return "rfc";
     }
-
-
-
 }
