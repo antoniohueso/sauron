@@ -3,6 +3,7 @@ package com.corpme.sauron.web;
 import com.corpme.sauron.config.ApplicationException;
 import com.corpme.sauron.domain.Rfc;
 import com.corpme.sauron.service.RfcService;
+import com.corpme.sauron.service.TemplateUtil;
 import com.corpme.sauron.service.bean.CalendarEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -24,10 +27,18 @@ public class RfcController {
     @Autowired
     RfcService rfcService;
 
+    @Autowired
+    TemplateUtil templateUtil;
+
     Logger logger = Logger.getLogger(getClass().getName());
 
     @RequestMapping(method = RequestMethod.GET)
     public String resumenRfcs(Model model) {
+
+        Map<String,Collection> resumen =  rfcService.resumenRfcs();
+
+        model.addAllAttributes(resumen);
+
         return "rfcs";
     }
 
@@ -49,6 +60,8 @@ public class RfcController {
     @RequestMapping(method = RequestMethod.GET,value = "/{key}")
     public String rfc(@PathVariable String key,Model model) {
 
+        model.addAttribute("templateUtil",templateUtil);
+
         Rfc rfc = rfcService.rfc(key);
         if(rfc == null) {
             throw new ApplicationException("La RFC "+key+ " no existe");
@@ -61,5 +74,39 @@ public class RfcController {
         model.addAttribute("rfc", rfc);
 
         return "rfc";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/listado/{tipo}")
+    public String resumenRfcs(@PathVariable String tipo,Model model) {
+
+        Map<String,Collection> resumen =  rfcService.resumenRfcs();
+
+        String template = "listadorfcs";
+
+        model.addAttribute("templateUtil",templateUtil);
+
+        if(tipo.equals("vencidas")) {
+            model.addAttribute("title","Listado de rfcs vencidas");
+            model.addAttribute("rfcs",resumen.get(tipo));
+        }else if(tipo.equals("paradas")) {
+            model.addAttribute("title","Listado de rfcs paradas");
+            model.addAttribute("rfcs",resumen.get(tipo));
+        } else if(tipo.equals("pendientes")) {
+            model.addAttribute("title","Listado de rfcs pendientes");
+            model.addAttribute("rfcs",resumen.get(tipo));
+        } else if(tipo.equals("encurso")) {
+            model.addAttribute("title","Listado de rfcs en curso");
+            model.addAttribute("rfcs",resumen.get(tipo));
+        } else if(tipo.equals("anomalias")) {
+            model.addAttribute("title","Listado de rfcs con anomalías");
+            model.addAttribute("rfcs",resumen.get(tipo));
+            template = "listadorfcsanomalias";
+        }
+        else {
+            throw new ApplicationException("La página solicitada no existe");
+        }
+
+
+        return template;
     }
 }

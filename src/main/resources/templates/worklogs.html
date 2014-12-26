@@ -5,19 +5,22 @@
 
 <body>
 
+<div th:replace="layout :: menu ('worklogs')"></div>
+
 <div id="main-content" class="container main-content">
 
     <div class="row">
         <div class="col-md-12">
-            <h2 class="text-info ">Worklog</h2>
-            <select id="users" class="select form-control" style="width: 50%;">
-                <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.displayName}"></option>
-            </select>
+            <form class="form-inline">
+                <label><span>Recurso </span></label>
+                <select id="users" class="select form-control" style="width: 50%;">
+                    <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.displayName}"></option>
+                </select>
+            </form>
         </div>
-
     </div>
 
-    <div class="row">
+    <div id="content" class="row">
 
         <div class="col-md-12">
 
@@ -25,65 +28,13 @@
 
         </div>
 
-
-
     </div>
 
 
 </div>
 
-<script src="/resources/moment/moment-with-locales.min.js"></script>
-<script src="/resources/fullcalendar/fullcalendar.min.js"></script>
-
 <script>
-    $(document).ready(function() {
-
-        moment.locale('es');
-
-        function change(start,end,userid,callback) {
-
-            $.ajax({
-                url:'/worklogs/worklog-events',
-                dataType:'json',
-                data:{
-                    start:start.format('YYYY-MM-DD'),
-                    end:end.format('YYYY-MM-DD'),
-                    userid:userid
-                }
-            }).success(function(result){
-               callback(result);
-            }).error(function(error){
-                alert("Se ha producido un error en el servidor");
-            });
-        }
-
-        $("#users").change(function(){
-            $('#calendar').fullCalendar( 'refetchEvents' );
-        });
-
-        $('#calendar').fullCalendar({
-            firstDay: 1,
-            weekends:false,
-            monthNames:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
-            dayNamesShort: ["D","L", "M", "X", "J", "V", "S"],
-
-            events: function(start, end, timezone, callback) {
-                change(start,end, $("#users").val(),callback);
-            },
-
-            eventRender:function( event, element, view ) {
-                element.attr('title',event.title);
-                element.attr('data-toggle','tooltip');
-                element.attr('data-placement','top');
-                if(event.data != null) {
-                    element.attr('href', '/rfcs/' + event.data.issuekey);
-                }
-                element.attr('target','_blank');
-                element.tooltip();
-            }
-        });
-
-    });
+    config_calendar('/worklogs/worklog-events',"#users");
 </script>
 
 </body>

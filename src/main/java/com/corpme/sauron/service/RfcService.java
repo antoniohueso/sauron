@@ -5,6 +5,7 @@ import com.corpme.sauron.domain.IssueRepository;
 import com.corpme.sauron.domain.Rfc;
 import com.corpme.sauron.domain.RfcRepository;
 import com.corpme.sauron.domain.StatusKey;
+import com.corpme.sauron.service.bean.AnomaliaRfc;
 import com.corpme.sauron.service.bean.CalendarEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,22 +30,16 @@ public class RfcService {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    public Map<String,Collection> resumenRfcs(Date fdesde,Date fhasta) {
+    public Map<String,Collection> resumenRfcs() {
         final DateFormat df = new SimpleDateFormat("EEEE dd/MM/yyyy");
 
-        final Calendar hasta = getComparableDate(fhasta);
-        final Calendar desde = getComparableDate(fdesde);
         final Calendar hoy = getComparableDate(new Date());
 
-        if (desde.after(hasta)) {
-            throw new ApplicationException("La fecha desde no puede ser mayor que la fecha hasta. F.Desde="
-                    + df.format(desde.getTime()) + ", F.Hasta=" + df.format(hasta.getTime()));
-        }
         Iterable<Rfc> rfcs = rfcRepository.findRfcsEnCurso();
 
         Collection<Rfc> pendientes = new ArrayList();
         Collection<Rfc> paradas = new ArrayList();
-        Collection<Rfc> anomalias = new ArrayList();
+        Collection<AnomaliaRfc> anomalias = new ArrayList();
         Collection<Rfc> vencidas = new ArrayList();
         Collection<Rfc> encurso = new ArrayList();
 
@@ -63,41 +58,67 @@ public class RfcService {
             final Calendar fFinCalidad = getComparableDate(rfc.getfFinCalidad());
             final Calendar fPasoProd = getComparableDate(rfc.getfPasoProd());
 
-            if(rfc.getStatus().getId().equals(StatusKey.OPEN)){
+            if(rfc.getStatus().getId() == StatusKey.OPEN.getValue()){
                 pendientes.add(rfc);
             }
-            else if(rfc.getStatus().getId().equals(StatusKey.DETENIDA)){
+            else if(rfc.getStatus().getId() == StatusKey.DETENIDA.getValue()){
                 paradas.add(rfc);
             }
-            else if(rfc.getStatus().getId().equals(StatusKey.DESARROLLANDO)
-                    || rfc.getStatus().getId().equals(StatusKey.RESOLVED)){
+            else if(rfc.getStatus().getId() == StatusKey.DESARROLLANDO.getValue()
+                    || rfc.getStatus().getId() == StatusKey.RESOLVED.getValue()){
                 if(fInicioDesarrollo == null || fFinDesarrollo == null) {
-                    anomalias.add(rfc);
+                    anomalias.add(new AnomaliaRfc(rfc,"El desarrollo está en curso y no tiene fechas de inicio " +
+                            "y/o fin de planificación desarrollo"));
                 }
                 else if(fInicioDesarrollo.after(fFinDesarrollo)) {
-                    anomalias.add(rfc);
+                    anomalias.add(new AnomaliaRfc(rfc,"La fecha de fin de desarrollo es mayor que la fecha de inicio"));
                 }
                 else {
                     if(hoy.after(fFinDesarrollo)) vencidas.add(rfc);
                     else encurso.add(rfc);
                 }
             }
-            else if(rfc.getStatus().getId().equals(StatusKey.DISPONIBLE_PARA_PRUEBAS)
-                    || rfc.getStatus().getId().equals(StatusKey.PROBANDO)){
-                if(fInicioCalidad == null || fFinCalidad == null) {
-                    anomalias.add(rfc);
+            else if(rfc.getStatus().getId() == StatusKey.DISPONIBLE_PARA_PRUEBAS.getValue()
+                    || rfc.getStatus().getId() == StatusKey.PROBANDO.getValue()
+                    || rfc.getStatus().getId() == StatusKey.DETECTADO_ERROR_PRUEBAS.getValue()){
+
+                if(fInicioDesarrollo == null || fFinDesarrollo == null) {
+                    anomalias.add(new AnomaliaRfc(rfc,"Las pruebas están en curso  y no tiene fechas de inicio " +
+                            "y/o fin de planificación desarrollo"));
+                }
+                else if(fInicioDesarrollo.after(fFinDesarrollo)) {
+                    anomalias.add(new AnomaliaRfc(rfc,"La fecha de fin de desarrollo es mayor que la fecha de inicio"));
+                }
+                else if(fInicioCalidad == null || fFinCalidad == null) {
+                    anomalias.add(new AnomaliaRfc(rfc,"Las pruebas están en curso y no tiene fechas de inicio y/o " +
+                            "fin de planificación de pruebas"));
                 }
                 else if(fInicioCalidad.after(fFinCalidad)) {
-                    anomalias.add(rfc);
+                    anomalias.add(new AnomaliaRfc(rfc,"La fechas de fin de pruebas es mayor que la fecha de inicio"));
                 }
                 else {
-                    if(hoy.after(fFinCalidad)) vencidas.add(rfc);
+                    if(fInicioDesarrollo == null || fFinDesarrollo == null) {
+                        anomalias.add(new AnomaliaRfc(rfc,"El desarrollo está finalizado y no tiene fechas de inicio " +
+                                "y/o fin de planificación desarrollo"));
+                    }
+                    else if(fInicioDesarrollo.after(fFinDesarrollo)) {
+                        anomalias.add(new AnomaliaRfc(rfc,"La fecha de fin de desarrollo es mayor que la fecha de inicio"));
+                    }
+                    else if(fInicioCalidad == null || fFinCalidad == null) {
+                        anomalias.add(new AnomaliaRfc(rfc,"El desarrollo está finalizado y y no tiene fechas de inicio y/o " +
+                                "fin de planificación de pruebas"));
+                    }
+                    else if(fInicioCalidad.after(fFinCalidad)) {
+                        anomalias.add(new AnomaliaRfc(rfc,"La fechas de fin de pruebas es mayor que la fecha de inicio"));
+                    }
+                    else if(hoy.after(fFinCalidad)) vencidas.add(rfc);
                     else encurso.add(rfc);
                 }
             }
-            else if(rfc.getStatus().getId().equals(StatusKey.FINALIZADA)){
+            else if(rfc.getStatus().getId() == StatusKey.FINALIZADA.getValue()){
                 if(fPasoProd == null) {
-                    anomalias.add(rfc);
+                    anomalias.add(new AnomaliaRfc(rfc," El desarrollo está finalizado " +
+                            "y no tiene fecha de paso a producción"));
                 }else {
                     if(hoy.after(fPasoProd)) vencidas.add(rfc);
                     else encurso.add(rfc);

@@ -1,6 +1,14 @@
-<div data-ng-show="visible">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head">
+</head>
 
-    <!-- Listado -->
+<body>
+
+<div th:replace="layout :: menu ('rfcs')"></div>
+
+<div id="main-content" class="container main-content">
+
     <div class="row">
 
         <div class="col-md-12">
@@ -14,7 +22,7 @@
                                 <span>Issue</span>
                             </th>
                             <th>
-                                <span class="text-info">{{issue.issuekey}} - {{issue.summary}}</span>
+                                <span class="text-info" th:text="${issue.issuekey +' - '+ issue.summary}"></span>
                             </th>
                         </tr>
                         <tr>
@@ -22,7 +30,7 @@
                                 <span>Proyecto</span>
                             </th>
                             <td>
-                                <span>{{issue.project.name}}</span>
+                                <span th:text="${issue.project.name}"></span>
                             </td>
                         </tr>
                         <tr>
@@ -92,6 +100,7 @@
         </div>
     </div>
 </div>
-
+</body>
+</html>
 
 

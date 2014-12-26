@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head">
+</head>
+
+<body>
+
+<div th:replace="layout :: menu ('rfcs')"></div>
+
+<div id="main-content" class="container main-content">
+
+    <div class="row">
+        <h2 class="text-info col-md-12" th:text="${title}"></h2>
+    </div>
+
+    <div class="row" id="content" >
+
+        <div class="col-md-12">
+
+            <table class="table">
+                <tr class="text-info">
+                    <th>Rfc</th>
+                    <th>Equipo</th>
+                    <th>Estado</th>
+                </tr>
+
+                <tr th:each="o : ${rfcs}">
+                    <td style="width: 40%;">
+                        <a th:href="${'/rfcs/'+o.rfc.issuekey}" target="_blank">
+                            <div th:text="${o.rfc.issuekey+ ' - ' + o.rfc.summary}"></div>
+                            <div class="label label-danger" th:text="${o.anomalia}"></div>
+                        </a>
+                    </td>
+                    <td>
+                        <span class="label label-primary"
+                              th:each="e : ${o.rfc.equipodesarrollo}" th:text="${e.user.name}"></span>
+                        <span class="label label-warning"
+                              th:each="e : ${o.rfc.equipocalidad}" th:text="${e.user.name}"></span>
+                    </td>
+                    <td class="col-md-2"><span class="label label-success" th:text="${o.rfc.status.name}"></span></td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+</body>
+</html>

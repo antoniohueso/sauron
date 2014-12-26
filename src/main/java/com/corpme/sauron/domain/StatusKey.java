@@ -23,7 +23,7 @@ public enum StatusKey {
         this.id = id;
     }
 
-    public Long getValue() {
+    public long getValue() {
         return id;
     }
 

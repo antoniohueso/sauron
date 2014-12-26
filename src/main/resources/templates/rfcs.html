@@ -5,13 +5,37 @@
 
 <body>
 
+<div th:replace="layout :: menu ('rfcs')"></div>
+
+
 <div id="main-content" class="container main-content">
 
     <div class="row">
-        <h2 class="text-info col-md-12">Rfcs</h2>
+        <div class="btn-group btn-group-justified col-md-12" role="group" aria-label="Justified button group">
+            <a href="/rfcs/listado/pendientes" target="_blank" class="btn btn-info" role="button">
+                <span th:text="${pendientes.size() + ' pendientes '}"></span>
+                <span class="glyphicon glyphicon-list-alt"></span>
+            </a>
+            <a href="/rfcs/listado/encurso" target="_blank" class="btn btn-info" role="button">
+                <span th:text="${encurso.size() + ' en curso '}"></span>
+                <span class="glyphicon glyphicon-time"></span>
+            </a>
+            <a href="/rfcs/listado/vencidas" target="_blank" class="btn btn-info" role="button">
+                <span th:text="${vencidas.size() + ' vencidas '}"></span>
+                <span class="glyphicon glyphicon-fire"></span>
+            </a>
+            <a href="/rfcs/listado/anomalias" target="_blank" class="btn btn-info" role="button">
+                <span th:text="${anomalias.size() + ' anomalías '}"></span>
+                <span class="glyphicon glyphicon-warning-sign"></span>
+            </a>
+            <a href="/rfcs/listado/paradas" target="_blank" class="btn btn-info" role="button">
+                <span th:text="${paradas.size() + ' paradas '}"></span>
+                <span class="glyphicon glyphicon-ban-circle"></span>
+            </a>
+        </div>
     </div>
 
-    <div class="row">
+    <div class="row" id="content" >
 
         <div class="col-md-12">
 
@@ -26,42 +50,10 @@
 
 </div>
 
-<script src="/resources/moment/moment-with-locales.min.js"></script>
-<script src="/resources/fullcalendar/fullcalendar.min.js"></script>
-
 <script>
-    $(document).ready(function() {
 
-        moment.locale('es');
+    config_calendar('/rfcs/rfcs-events');
 
-        $('#calendar').fullCalendar({
-            firstDay: 1,
-            weekends:false,
-            monthNames:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
-            dayNamesShort: ["D","L", "M", "X", "J", "V", "S"],
-            eventSources: [
-                '/rfcs/rfcs-events'
-            ],/*
-            eventClick: function(calEvent, jsEvent, view) {
-
-                console.log(this);
-
-                console.log('Event: ' + calEvent.title, ' ' ,calEvent.imputado);
-                console.log('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-                console.log('View: ' + view.name);
-
-            },*/
-            eventRender:function( event, element, view ) {
-                element.attr('title',event.title);
-                element.attr('data-toggle','tooltip');
-                element.attr('data-placement','top');
-                element.attr('href','/rfcs/'+event.data.issuekey);
-                element.attr('target','_blank');
-                element.tooltip();
-            }
-        });
-
-    });
 </script>
 
 </body>

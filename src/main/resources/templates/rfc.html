@@ -5,7 +5,11 @@
 
 <body>
 
-<div id="main-content" class="container main-content">
+<div th:if="${param.app}">
+    <div th:replace="layout :: menu ('rfcs')"></div>
+</div>
+
+<div id="main-content" class="container main-content" th:style="${param.app == null?'margin-top:1em;':''}">
 
     <div class="row">
 
@@ -30,7 +34,7 @@
                         <span>Estado</span>
                     </th>
                     <td>
-                        <span class="label label-success" th:text="${rfc.status.name}"></span>
+                        <span th:class="${'label '+templateUtil.statusClass(rfc.status)}" th:text="${rfc.status.name}"></span>
                     </td>
                 </tr>
                 <tr>
@@ -74,23 +78,23 @@
                 <tr>
                     <th class="text-info">Desarrollo</th>
                     <td>
-                        <span th:text="${#dates.format(rfc.fInicioDesarrollo,'EEEE, dd MMM yyyy')}"></span>
+                        <span th:if="${rfc.fInicioDesarrollo!=null}" th:text="${#dates.format(rfc.fInicioDesarrollo,'EEEE, dd MMM yyyy')}"></span>
                         <span> a </span>
-                        <span th:text="${#dates.format(rfc.fFinDesarrollo,'EEEE, dd MMM yyyy')}"></span>
+                        <span th:if="${rfc.fFinDesarrollo!=null}" th:text="${#dates.format(rfc.fFinDesarrollo,'EEEE, dd MMM yyyy')}"></span>
                     </td>
                 </tr>
                 <tr>
                     <th class="text-info">Calidad</th>
                     <td>
-                        <span th:text="${#dates.format(rfc.fInicioCalidad,'EEEE, dd MMM yyyy')}"></span>
+                        <span th:if="${rfc.fInicioCalidad!=null}" th:text="${#dates.format(rfc.fInicioCalidad,'EEEE, dd MMM yyyy')}"></span>
                         <span> a </span>
-                        <span th:text="${#dates.format(rfc.fFinCalidad,'EEEE, dd MMM yyyy')}"></span>
+                        <span th:if="${rfc.fFinCalidad!=null}" th:text="${#dates.format(rfc.fFinCalidad,'EEEE, dd MMM yyyy')}"></span>
                     </td>
                 </tr>
                 <tr>
                     <th class="text-info">Implantación</th>
                     <td colspan="2">
-                        <span th:text="${#dates.format(rfc.fPasoProd,'EEEE, dd MMM yyyy')}"></span>
+                        <span th:if="${rfc.fPasoProd!=null}" th:text="${#dates.format(rfc.fPasoProd,'EEEE, dd MMM yyyy')}"></span>
                     </td>
                 </tr>
             </table>
@@ -125,12 +129,14 @@
                 <tr th:each="o : ${rfc.issuelinks}">
                     <td><span th:text="${o.issue.project.name}"></span></td>
                     <td><div th:each="c : ${o.issue.components}" class="label label-default" th:text="${c.component.name}"></div></td>
-                    <td style="width: 40%;"><a th:href="${'/#/issues/'+o.issue.issuekey}" target="_blank"
+                    <td style="width: 40%;"><a th:href="${'/issues/'+o.issue.issuekey}" target="_blank"
                                                th:text="${o.issue.issuekey+ ' - ' + o.issue.summary}"></a></td>
                     <td>
                         <div th:each="v : ${o.issue.versions}" class="label label-warning" th:text="${v.version.name}"></div>
                     </td>
-                    <td class="col-md-2"><span class="label label-success" th:text="${o.issue.status.name}"></span></td>
+                    <td class="col-md-2">
+                        <span th:class="${'label '+templateUtil.statusClass(o.issue.status)}" th:text="${o.issue.status.name}"></span>
+                    </td>
                 </tr>
             </table>
 
