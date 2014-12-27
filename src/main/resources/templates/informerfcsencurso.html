@@ -18,7 +18,11 @@
 
         <div class="col-md-12">
 
-            <table class="table">
+            <div th:if="${h.value.size() == 0}" class="alert alert-info">
+                <h4>No hay rfcs para este estado.</h4>
+            </div>
+
+            <table th:if="${h.value.size() > 0}" class="table">
                 <tr class="text-info">
                     <th>Rfc</th>
                     <th>Equipo</th>
@@ -30,7 +34,7 @@
                     <td style="width: 40%;">
                         <a th:href="${'/rfcs/'+rfc.issuekey + '?app'}" target="_blank"
                            th:text="${rfc.issuekey+ ' - ' + rfc.summary}"></a></td>
-                    <td>
+                    <td style="width: 40%;">
                         <span class="label label-primary"
                               th:each="e : ${rfc.equipodesarrollo}" th:text="${e.user.name}"></span>
                         <span class="label label-warning"
@@ -52,8 +56,8 @@
                             <span th:if="${rfc.fPasoProd!=null}" th:text="${#dates.format(rfc.fPasoProd,'EEEE, dd MMM yyyy')}"></span>
                         </div>
                     </td>
-                    <td><span class="label label-success" th:text="${rfc.status.name}"></span></td>
-                    <td><span class="badge" th:text="${rfc.porcentajeCompletado + '%'}"></span></td>
+                    <td style="width: 20%;"><span class="label label-success" th:text="${rfc.status.name}"></span></td>
+                    <td style="width: 10%;"><span class="badge" th:text="${rfc.porcentajeCompletado + '%'}"></span></td>
 
                 </tr>
             </table>
