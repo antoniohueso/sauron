@@ -24,14 +24,14 @@
 
             <table th:if="${h.value.size() > 0}" class="table">
                 <tr class="text-info">
-                    <th>Rfc</th>
-                    <th>Equipo</th>
-                    <th>Estado</th>
-                    <th>%</th>
+                    <th style="width: 40%;">Rfc</th>
+                    <th style="width: 40%;">Equipo</th>
+                    <th style="width: 10%;">Estado</th>
+                    <th style="width: 10%;">%</th>
                 </tr>
 
                 <tr th:each="rfc : ${h.value}">
-                    <td style="width: 40%;">
+                    <td>
                         <a th:href="${'/rfcs/'+rfc.issuekey + '?app'}" target="_blank"
                            th:text="${rfc.issuekey+ ' - ' + rfc.summary}"></a></td>
                     <td style="width: 40%;">
@@ -56,9 +56,39 @@
                             <span th:if="${rfc.fPasoProd!=null}" th:text="${#dates.format(rfc.fPasoProd,'EEEE, dd MMM yyyy')}"></span>
                         </div>
                     </td>
-                    <td style="width: 20%;"><span class="label label-success" th:text="${rfc.status.name}"></span></td>
-                    <td style="width: 10%;"><span class="badge" th:text="${rfc.porcentajeCompletado + '%'}"></span></td>
-
+                    <td>
+                        <span  th:class="${'label '+templateUtil.statusClass(rfc.status)}" th:text="${rfc.status.name}"></span>
+                    </td>
+                    <td>
+                        <div th:if="${rfc.porcentajeCompletado lt 25}" class="progress">
+                            <div class="progress-bar progress-bar-danger" role="progressbar"
+                                 th:attr="aria-valuenow=${rfc.porcentajeCompletado}" aria-valuemin="0"
+                                 aria-valuemax="100" th:style="'width: '+${rfc.porcentajeCompletado}+'%'">
+                                <span th:text="${rfc.porcentajeCompletado}+'%'"></span>
+                            </div>
+                        </div>
+                        <div th:if="${rfc.porcentajeCompletado ge 25 and rfc.porcentajeCompletado lt 50}" class="progress">
+                            <div class="progress-bar progress-bar-warning" role="progressbar"
+                                 th:attr="aria-valuenow=${rfc.porcentajeCompletado}" aria-valuemin="0"
+                                 aria-valuemax="100" th:style="'width: '+${rfc.porcentajeCompletado}+'%'">
+                                <span th:text="${rfc.porcentajeCompletado}+'%'"></span>
+                            </div>
+                        </div>
+                        <div th:if="${rfc.porcentajeCompletado ge 50 and rfc.porcentajeCompletado lt 100}" class="progress">
+                            <div class="progress-bar progress-bar-info" role="progressbar"
+                                 th:attr="aria-valuenow=${rfc.porcentajeCompletado}" aria-valuemin="0"
+                                 aria-valuemax="100" th:style="'width: '+${rfc.porcentajeCompletado}+'%'">
+                                <span th:text="${rfc.porcentajeCompletado}+'%'"></span>
+                            </div>
+                        </div>
+                        <div th:if="${rfc.porcentajeCompletado eq 100}" class="progress">
+                            <div class="progress-bar progress-bar-success" role="progressbar"
+                                 th:attr="aria-valuenow=${rfc.porcentajeCompletado}" aria-valuemin="0"
+                                 aria-valuemax="100" th:style="'width: '+${rfc.porcentajeCompletado}+'%'">
+                                <span th:text="${rfc.porcentajeCompletado}+'%'"></span>
+                            </div>
+                        </div>
+                    </td>
                 </tr>
             </table>
 

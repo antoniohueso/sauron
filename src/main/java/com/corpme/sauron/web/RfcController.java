@@ -65,9 +65,6 @@ public class RfcController {
         model.addAttribute("templateUtil", templateUtil);
 
         Rfc rfc = rfcService.rfc(key);
-        if (rfc == null) {
-            throw new ApplicationException("La RFC " + key + " no existe");
-        }
 
         rfc.setDescription(rfc.getDescription().replaceAll("(\r\n|\n)", "<br/>"));
         rfc.setPlanpasoprod(rfc.getPlanpasoprod().replaceAll("(\r\n|\n)", "<br/>"));
@@ -114,8 +111,10 @@ public class RfcController {
     @RequestMapping(method = RequestMethod.GET, value = "/informe/rfcsencurso")
     public String informeRfcEnCurso(Model model) {
 
+
         Map<String, Collection<Rfc>> informe = rfcService.informeRfcsEnCurso();
 
+        model.addAttribute("templateUtil", templateUtil);
         model.addAttribute("informe",informe);
 
         return "informerfcsencurso";

@@ -50,6 +50,8 @@ public class RfcService {
 
         for(Rfc rfc : rfcs) {
 
+            calculaPorcentajeCompletado(rfc);
+
             final Calendar fInicioDesarrollo = getComparableDate(rfc.getfInicioDesarrollo());
             final Calendar fFinDesarrollo = getComparableDate(rfc.getfFinDesarrollo());
             final Calendar fInicioCalidad = getComparableDate(rfc.getfInicioCalidad());
@@ -170,7 +172,14 @@ public class RfcService {
     }
 
     public Rfc rfc(String key) {
-        return rfcRepository.findByIssuekey(key);
+        Rfc rfc = rfcRepository.findByIssuekey(key);
+        if (rfc == null) {
+            throw new ApplicationException("La RFC " + key + " no existe");
+        }
+
+        calculaPorcentajeCompletado(rfc);
+
+        return rfc;
     }
 
     void generaEventos(Rfc rfc,String className,Calendar desde,Calendar hasta
