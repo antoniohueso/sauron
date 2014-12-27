@@ -2,9 +2,14 @@ function config_calendar(urlEvents,usersTagId) {
 
     $(document).ready(function() {
 
+        var waitmodal = $("#waitmodal").modal({ backdrop: false, show:false });
+        var errormodal = $("#error-modal").modal({ backdrop: false, show:false });
+
         moment.locale('es');
 
         function change(start,end,userid,callback) {
+
+            waitmodal.modal('show');
 
             $.ajax({
                 url:urlEvents,
@@ -16,8 +21,10 @@ function config_calendar(urlEvents,usersTagId) {
                 }
             }).success(function(result){
                 callback(result);
+                waitmodal.modal('hide');
             }).error(function(error){
-                alert("Se ha producido un error en el servidor");
+                waitmodal.modal('hide');
+                errormodal.modal('show');
             });
         }
 

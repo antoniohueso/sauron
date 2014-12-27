@@ -101,5 +101,36 @@
 </div>
 
 
+<div th:fragment="modals">
+    <div  id="waitmodal" class="modal" style="margin-top: 200px;">
+        <div class="modal-dialog" style="width: 300px;">
+            <div class="modal-content">
+                <div class="modal-body" style="text-align: center;">
+                <span style="font-size: large;">
+                    <img src="/resources/ajax-loader.gif"/>
+                    Cargando...
+                </span>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div id="error-modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header alert-danger">
+                    <h3 class="modal-title">(500) Internal server error</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Se ha producido un error al descargarse los eventos del calendario</h4>
+                    <p style="margin-top: 1.5em;"><a class="btn btn-primary btn-lg" href="/" role="button">Home</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
