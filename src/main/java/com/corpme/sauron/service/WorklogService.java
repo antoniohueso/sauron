@@ -63,7 +63,8 @@ public class WorklogService {
                     +df.format(desde.getTime()) + ", F.Hasta="+df.format(hasta.getTime()));
         }
 
-        final Iterable<User> usersServiciosCentrales = userRepository.findAllFromServiciosCentrales();
+        final Collection<User> usersServiciosCentrales =
+                Lists.newArrayList(userRepository.findAllFromServiciosCentrales());
 
         Collection<User> users = null;
         if(user != null) {
@@ -135,37 +136,38 @@ public class WorklogService {
 
             for (UserEvents ue : userevents.values()) {
 
-                if(!presuntoDiaDeFiesta) {
-                    //--- Si hay anomalías
-                    if (ue.getTotal() / (60 * 60) < alarmaMin
-                            && (hoy.getTime().after(ue.getFecha()) || hoy.getTime().equals(ue.getFecha()))) {
+                //--- Si hay anomalías
+                if (ue.getTotal() / (60 * 60) < alarmaMin
+                        && (hoy.getTime().after(ue.getFecha()) || hoy.getTime().equals(ue.getFecha()))) {
 
-                        //--- Si no tiene eventos ese día
-                        if (ue.getEvents().size() == 0) {
+                    //--- Si no tiene eventos ese día
+                    if (ue.getEvents().size() == 0) {
 
-                            //--- Comprueba que exista alguna imputación ese día de alguien del grupo
-                            Iterable<Worklog> wlogs = worklogsRepository
-                                    .findWorklogsInDay(ue.getFecha(), usersServiciosCentrales);
-                            //--- Si no existe se presupone que es un día de fiesta
-                            if (Lists.newArrayList(wlogs).size() == 0) {
-                                presuntoDiaDeFiesta = true;
-                                ue.getEvents().add(new CalendarEvent("Día de fiesta", ue.getFecha()
+                        //--- Si está filtrando por usuario averigua si es un posible día de fiesta, para ello
+                        //    si ese día tienes menos imputacioes que el total usuarios dividido por dos
+                        //    entonces avisa de que podría tratarse de un día de fiesta
+                        if(user != null) {
+                            Iterable<Worklog> wlogs = worklogsRepository.findWorklogsInDay(ue.getFecha(), users);
+                            Collection<Worklog> list = Lists.newArrayList(wlogs);
+                            if(list.size() < (usersServiciosCentrales.size() / 2)) {
+                                ue.getEvents().add(new CalendarEvent("(00:00) "+ list.size()+" imputaciones" , ue.getFecha()
                                         , new String[]{"calendar-produccion"}, null));
                             }
-                            else {
-                                ue.getEvents().add(new CalendarEvent("(00:00) " + ue.getUser().getName(), ue.getFecha()
-                                        , new String[]{"calendar-danger"}, null));
-                            }
-                        } else {
-                            //--- Pone en rojo las anomalías
-                            for (CalendarEvent e : ue.getEvents()) {
-                                e.setClassName(new String[]{"calendar-danger"});
-                            }
+                        }
+
+                        ue.getEvents().add(new CalendarEvent("(00:00) " + ue.getUser().getName(), ue.getFecha()
+                                    , new String[]{"calendar-danger"}, null));
+
+                    } else {
+                        //--- Pone en rojo las anomalías
+                        for (CalendarEvent e : ue.getEvents()) {
+                            e.setClassName(new String[]{"calendar-danger"});
                         }
                     }
-
-                    Collections.addAll(result, ue.getEvents().toArray(new CalendarEvent[ue.getEvents().size()]));
                 }
+
+                Collections.addAll(result, ue.getEvents().toArray(new CalendarEvent[ue.getEvents().size()]));
+
 
             }
         }
