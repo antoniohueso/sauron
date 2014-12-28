@@ -9,10 +9,12 @@
 
 <div id="main-content" class="container main-content">
 
+    <div th:replace="layout :: pagetitle ('Vista mensual de anomalías en el registro de trabajo del grupo')"></div>
+
     <div class="row">
         <div class="col-md-12">
             <form class="form-inline">
-                <label><span>Recurso </span></label>
+                <label class="text-primary"><span>Recurso </span></label>
                 <select id="users" class="select form-control" style="width: 50%;">
                     <option selected="selected" value="all">Todos</option>
                     <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.displayName}"></option>

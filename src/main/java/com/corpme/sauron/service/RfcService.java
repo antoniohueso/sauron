@@ -223,14 +223,22 @@ public class RfcService {
 
         if(desde == null || hasta == null) return;
 
+        boolean vencida = false;
+
         final Calendar hoy = getComparableDate(new Date());
 
-        Calendar fecha = new GregorianCalendar();
+        final Calendar fecha = new GregorianCalendar();
         fecha.setTime(desde.getTime());
+
+        String comment = null;
 
         String title = rfc.getIssuekey() + " - "+rfc.getSummary();
 
-        if(hoy.after(fechaMax)) title = "(V)"+title;
+        if(hoy.after(fechaMax)) {
+            comment = "Rfc vencida";
+            title = "(V)"+title;
+            vencida = true;
+        }
 
         if(rfc.getStatus().getId() == StatusKey.EN_PRODUCCION.getValue()
                 || rfc.getStatus().getId() == StatusKey.CERRADA.getValue()) {
@@ -238,8 +246,13 @@ public class RfcService {
         }
 
         while(!fecha.after(hasta)) {
-            events.add(new CalendarEvent(title
-                    ,fecha.getTime(),new String[]{className},rfc));
+            CalendarEvent calendarEvent = new CalendarEvent(title
+                    ,fecha.getTime(),className,rfc);
+            if(vencida) {
+                calendarEvent.setAlerta("Vencida");
+            }
+            events.add(calendarEvent);
+
             fecha.add(Calendar.DAY_OF_MONTH,1);
         }
 

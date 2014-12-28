@@ -11,12 +11,13 @@ public class CalendarEvent {
 
     String title;
     String start;
-    String [] className;
+    String className;
+    String alerta;
     Object data;
 
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-    public CalendarEvent(String title, Date fecha, String [] className,Object data) {
+    public CalendarEvent(String title, Date fecha, String className,Object data) {
         this.title = title;
         this.start = df.format(fecha);
         this.className = className;
@@ -31,10 +32,6 @@ public class CalendarEvent {
         return start;
     }
 
-    public String[] getClassName() {
-        return className;
-    }
-
     public Object getData() {
         return data;
     }
@@ -47,13 +44,23 @@ public class CalendarEvent {
         this.start = start;
     }
 
-    public void setClassName(String[] className) {
-        this.className = className;
-    }
-
     public void setData(Object data) {
         this.data = data;
     }
 
+    public String getClassName() {
+        return className;
+    }
 
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getAlerta() {
+        return alerta;
+    }
+
+    public void setAlerta(String alerta) {
+        this.alerta = alerta;
+    }
 }

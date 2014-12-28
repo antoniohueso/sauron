@@ -9,9 +9,7 @@
 
 <div id="main-content" class="container main-content">
 
-    <div class="row">
-        <h2 class="text-info col-md-12" th:text="${title}"></h2>
-    </div>
+    <div th:replace="layout :: pagetitle (${title})"></div>
 
     <div class="row" id="content" >
 

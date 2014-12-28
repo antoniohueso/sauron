@@ -60,8 +60,7 @@ function config_calendar(urlEvents,usersTagId,type) {
         $('#calendar').fullCalendar({
             firstDay: 1,
             weekends:false,
-            lang:"es",
-
+            lang:'es',
             defaultView:type==null?'month':type,
 
             events: function(start, end, timezone, callback) {
@@ -82,7 +81,8 @@ function config_calendar(urlEvents,usersTagId,type) {
 
                     var o = {
                         r:data,
-                        statusKey:statusKey
+                        statusKey:statusKey,
+                        alerta:event.alerta
                     };
 
                     title = data.issuekey + ' - ' + data.summary;
@@ -131,13 +131,14 @@ function config_calendar(urlEvents,usersTagId,type) {
                 }
                 else {
                     title = event.title;
-                    if(event.className[0] != "calendar-danger") content = 'Vacaciones';
+                    if(event.className != "calendar-danger") content = 'Vacaciones';
                 }
 
                 element.attr('title',title);
                 element.attr('data-toggle','popover');
                 element.attr('data-content',content);
                 element.attr('data-placement','auto');
+                element.attr('data-container','body');
                 element.attr('target','_blank');
                 element.popover({ html:true, trigger:'hover' });
             }

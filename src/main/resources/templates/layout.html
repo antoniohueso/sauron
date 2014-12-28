@@ -49,6 +49,15 @@
 
 <body>
 
+<div th:fragment="pagetitle (title)" class="row">
+        <span class="col-md-12">
+            <div class="page-titulo">
+                <span class="glyphicon glyphicon-leaf"></span>
+                <span th:text="${title}"></span>
+            </div>
+        </span>
+</div>
+
 <div th:fragment="menu (selected)" id="menu-principal" class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -156,6 +165,10 @@
                     <span class="label label-info">{{r.assignee.name}}</span>
                 {[ } ]}
             {[ } ]}
+            {[ if(alerta != null) { ]}
+                <span class="label label-danger"><span class="glyphicon glyphicon-warning-sign"></span><span>{{alerta}}</span></span>
+            {[ } ]}
+
 
         </div>
 

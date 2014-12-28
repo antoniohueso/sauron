@@ -42,7 +42,7 @@ public class WorklogService {
         Iterator it = result.iterator();
         while (it.hasNext()) {
             CalendarEvent event = (CalendarEvent)it.next();
-            if(!event.getClassName()[0].equalsIgnoreCase("calendar-danger") && !event.getClassName()[0].equals("calendar-produccion")) {
+            if(!event.getClassName().equalsIgnoreCase("calendar-danger") && !event.getClassName().equals("calendar-produccion")) {
                 it.remove();
             }
         }
@@ -121,7 +121,7 @@ public class WorklogService {
             ue.getEvents().add(new CalendarEvent(
                     title,
                     w.getStarted(),
-                    new String[] {className},
+                    className,
                     w.getIssue()
             ));
         }
@@ -151,17 +151,17 @@ public class WorklogService {
                             Collection<Worklog> list = Lists.newArrayList(wlogs);
                             if(list.size() < (usersServiciosCentrales.size() / 2)) {
                                 ue.getEvents().add(new CalendarEvent("(00:00) "+ list.size()+" imputaciones" , ue.getFecha()
-                                        , new String[]{"calendar-produccion"}, null));
+                                        , "calendar-produccion", null));
                             }
                         }
 
                         ue.getEvents().add(new CalendarEvent("(00:00) " + ue.getUser().getName(), ue.getFecha()
-                                    , new String[]{"calendar-danger"}, null));
+                                    , "calendar-danger", null));
 
                     } else {
                         //--- Pone en rojo las anomalías
                         for (CalendarEvent e : ue.getEvents()) {
-                            e.setClassName(new String[]{"calendar-danger"});
+                            e.setClassName("calendar-danger");
                         }
                     }
                 }
@@ -213,7 +213,7 @@ public class WorklogService {
                 title += " Ausencia("+imputado+")";
             }
 
-            vacaciones.add(new CalendarEvent(title, w.getStarted(), new String []{"calendar-vacaciones"},imputado));
+            vacaciones.add(new CalendarEvent(title, w.getStarted(), "calendar-vacaciones",imputado));
         }
 
         return vacaciones;

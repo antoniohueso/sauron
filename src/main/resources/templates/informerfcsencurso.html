@@ -9,9 +9,7 @@
 
 <div id="main-content" class="container main-content">
 
-    <div class="row">
-        <h2 class="text-info col-md-12">Informe de rfcs en curso</h2>
-    </div>
+    <div th:replace="layout :: pagetitle ('Informe de rfcs en curso')"></div>
 
     <div class="row" th:each="h : ${informe}">
         <h4 class="text-info col-md-12" th:text="${h.key + ' ('+h.value.size()+')'} "></h4>
