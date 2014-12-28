@@ -154,6 +154,8 @@ public class RfcService {
 
         for(Rfc rfc : rfcs) {
 
+            calculaPorcentajeCompletado(rfc);
+
             final Calendar fInicioDesarrollo = getComparableDate(rfc.getfInicioDesarrollo());
             final Calendar fFinDesarrollo = getComparableDate(rfc.getfFinDesarrollo());
             final Calendar fInicioCalidad = getComparableDate(rfc.getfInicioCalidad());

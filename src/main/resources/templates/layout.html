@@ -134,10 +134,30 @@
 
     <script type="text/html" id="cal-tooltip">
 
-    <div>
-        <h6>{{ r.issuekey + ' - ' + r.summary }}</h6>
-        <div class="label {{statusKey[r.status.id]}}">{{ r.status.name }}</div>
-    </div>
+        <div>
+            <span class="label {{statusKey[r.status.id]}}">{{ r.status.name }}</span>
+
+            {[ if(r.porcentajeCompletado) { ]}
+            <span class="badge">Progreso: {{r.porcentajeCompletado}}%</span>
+            {[ } ]}
+
+            {[ if(r.equipodesarrollo) { ]}
+                {[ for(i in r.equipodesarrollo) { ]}
+                <span class="label label-info">{{r.equipodesarrollo[i].user.name}}</span>
+                {[ } ]}
+            {[ } ]}
+            {[ if(r.equipocalidad) { ]}
+                {[ for(i in r.equipocalidad) { ]}
+                <span class="label label-warning">{{r.equipocalidad[i].user.name}}</span>
+                {[ } ]}
+            {[ } ]}
+            {[ if(!r.isRfc) { ]}
+                {[ if(r.assignee) { ]}
+                    <span class="label label-info">{{r.assignee.name}}</span>
+                {[ } ]}
+            {[ } ]}
+
+        </div>
 
     </script>
 

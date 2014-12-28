@@ -35,8 +35,10 @@ function config_calendar(urlEvents,usersTagId,type) {
             });
         }
 
+
         _.templateSettings = {
-            interpolate: /\{\{(.+?)\}\}/g
+            evaluate : /\{\[([\s\S]+?)\]\}/g,
+            interpolate : /\{\{([\s\S]+?)\}\}/g
         };
 
 
@@ -72,55 +74,72 @@ function config_calendar(urlEvents,usersTagId,type) {
 
             eventRender:function( event, element, view ) {
 
-                if(event.data != null) {
+                var data = event.data;
+                var title = null;
+                var content = null;
 
-                    console.log(event.data);
+                if(data && data.issuekey) {
 
-                    if(event.data && event.data.issuekey) {
+                    var o = {
+                        r:data,
+                        statusKey:statusKey
+                    };
 
-                        event.title = tpl({
-                            r:event.data,
-                            statusKey:statusKey
-                        });
+                    title = data.issuekey + ' - ' + data.summary;
 
-                        if(event.data.issuekey.indexOf("RFC-") == 0) {
+                    if(data.issuekey.indexOf("RFC-") == 0) {
 
-                            /*
-                            event.title += "<p class=\"label label-success\">Estado: "+event.data.status.name+"</p>";
-                            var arr = [];
-                            if(event.data.equipodesarrollo) {
-                                for(var i in event.data.equipodesarrollo) {
-                                    arr.push(event.data.equipodesarrollo[i].user.name);
+                        data.isRfc = true;
+
+                        var arr = [];
+
+                        if( data.equipodesarrollo || data.equipocalidad) {
+                            if (data.equipodesarrollo) {
+                                for (var i in data.equipodesarrollo) {
+                                    arr.push(data.equipodesarrollo[i].user.name);
                                 }
                             }
-                            if(event.data.equipocalidad) {
-                                for(var i in event.data.equipocalidad) {
-                                    arr.push(event.data.equipocalidad[i].user.name);
+                            if (data.equipocalidad) {
+                                for (var i in data.equipocalidad) {
+                                    arr.push(data.equipocalidad[i].user.name);
                                 }
                             }
 
-                            event.title += "<p><span style=\"font-weight: 600;\">Equipo: </span> "+arr.join(', ')+"</p>";
-
-                            */
-
-
-                            element.attr('href', '/rfcs/' + event.data.issuekey + "?app");
+                            data.equipoStr = arr.join(', ');
                         }
-                        else {
-                            element.attr('href', '/issues/' + event.data.issuekey);
+                        if(data.porcentajeCompletado < 25) {
+                            data.porcentajeLabel = 'text-danger';
                         }
+                        else if(data.porcentajeCompletado >= 25 && data.porcentajeCompletado < 50) {
+                            data.porcentajeLabel = 'text-warning';
+                        }
+                        else if(data.porcentajeCompletado >= 50 && data.porcentajeCompletado < 100) {
+                            data.porcentajeLabel = 'text-info';
+                        }
+                        else if(data.porcentajeCompletado == 100) {
+                            data.porcentajeLabel = 'text-success';
+                        }
+
+
+                        element.attr('href', '/rfcs/' + data.issuekey + "?app");
+                    }
+                    else {
+                        element.attr('href', '/issues/' + data.issuekey);
                     }
 
-
+                    content = tpl(o);
                 }
                 else {
-                    event.title = event.title;
+                    title = event.title;
+                    content = 'Vacaciones';
                 }
-                element.attr('title',event.title);
-                element.attr('data-toggle','tooltip');
-                element.attr('data-placement','bottom');
+
+                element.attr('title',title);
+                element.attr('data-toggle','popover');
+                element.attr('data-content',content);
+                element.attr('data-placement','auto');
                 element.attr('target','_blank');
-                element.tooltip({ html:true});
+                element.popover({ html:true, trigger:'hover' });
             }
         });
 
