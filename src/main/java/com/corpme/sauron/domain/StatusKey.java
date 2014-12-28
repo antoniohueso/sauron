@@ -5,7 +5,7 @@ package com.corpme.sauron.domain;
  */
 public enum StatusKey {
 
-    DETENIDA(-20L),
+    DETENIDA(10200L),
     OPEN(1L),
     DESARROLLANDO(10004L),
     RESOLVED(5L)

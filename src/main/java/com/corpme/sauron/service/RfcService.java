@@ -165,7 +165,7 @@ public class RfcService {
             if(fFinCalidad != null) fMax = getComparableDate(fFinCalidad.getTime());
             if(fPasoProd != null) fMax = getComparableDate(fPasoProd.getTime());
 
-            generaEventos(rfc,null,fInicioDesarrollo,fFinDesarrollo,rfcEv,fMax);
+            generaEventos(rfc,"calendar-normal",fInicioDesarrollo,fFinDesarrollo,rfcEv,fMax);
             generaEventos(rfc,"calendar-calidad",fInicioCalidad,fFinCalidad,rfcEv,fMax);
             generaEventos(rfc,"calendar-produccion",fPasoProd,fPasoProd,rfcEv,fMax);
         }

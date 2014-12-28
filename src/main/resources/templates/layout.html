@@ -32,6 +32,7 @@
     <![endif]-->
 
     <script src="/resources/jquery/jquery-2.1.1.js"></script>
+    <script src="/resources/underscore/underscore.js"></script>
     <script src="/resources/bootstrap/js/bootstrap.min.js"></script>
     <script src="/resources/datepicker/js/bootstrap-datepicker.js"></script>
     <script src="/resources/moment/moment-with-locales.min.js"></script>
@@ -57,7 +58,7 @@
                     class="icon-bar"></span> <span class="icon-bar"></span> <span
                     class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/rfcs"><span>Sauron</span></a>
+            <a class="navbar-brand" href="/"><span>Sauron</span></a>
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
@@ -130,6 +131,16 @@
             </div>
         </div>
     </div>
+
+    <script type="text/html" id="cal-tooltip">
+
+    <div>
+        <h6>{{ r.issuekey + ' - ' + r.summary }}</h6>
+        <div class="label {{statusKey[r.status.id]}}">{{ r.status.name }}</div>
+    </div>
+
+    </script>
+
 </div>
 
 </body>

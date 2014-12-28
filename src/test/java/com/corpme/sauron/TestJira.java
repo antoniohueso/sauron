@@ -50,7 +50,7 @@ public class TestJira {
         for(HashMap issue : issues) {
             HashMap h1 =(HashMap)issue.get("fields");
 
-            logger.info(h1.get("customfield_10328").toString());
+            logger.info(h1.get("status").toString());
         }
 
 

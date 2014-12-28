@@ -1,4 +1,4 @@
-function config_calendar(urlEvents,usersTagId) {
+function config_calendar(urlEvents,usersTagId,type) {
 
     $(document).ready(function() {
 
@@ -6,6 +6,7 @@ function config_calendar(urlEvents,usersTagId) {
         var errormodal = $("#error-modal").modal({ backdrop: false, show:false });
 
         moment.locale('es');
+
 
         function change(start,end,userid,callback) {
 
@@ -34,11 +35,32 @@ function config_calendar(urlEvents,usersTagId) {
             });
         }
 
+        _.templateSettings = {
+            interpolate: /\{\{(.+?)\}\}/g
+        };
+
+
+        var html = $("#cal-tooltip").html();
+        var tpl = _.template(html);
+        var statusKey = {
+            10200:"label-default glyphicon glyphicon-ban-circle",
+            1:"label-default",
+            10004:"label-primary",
+            5:"label-primary",
+            10005:"label-warning",
+            10000:"label-warning",
+            10001:"label-warning",
+            10002:"label-success",
+            6:"glyphicon glyphicon-ok label-success",
+            10003:"glyphicon glyphicon-ok label-success"
+        };
+
         $('#calendar').fullCalendar({
             firstDay: 1,
             weekends:false,
-            monthNames:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
-            dayNamesShort: ["D","L", "M", "X", "J", "V", "S"],
+            lang:"es",
+
+            defaultView:type==null?'month':type,
 
             events: function(start, end, timezone, callback) {
                 var userid = null;
@@ -49,12 +71,39 @@ function config_calendar(urlEvents,usersTagId) {
             },
 
             eventRender:function( event, element, view ) {
-                element.attr('title',event.title);
-                element.attr('data-toggle','tooltip');
-                element.attr('data-placement','top');
+
                 if(event.data != null) {
+
+                    console.log(event.data);
+
                     if(event.data && event.data.issuekey) {
+
+                        event.title = tpl({
+                            r:event.data,
+                            statusKey:statusKey
+                        });
+
                         if(event.data.issuekey.indexOf("RFC-") == 0) {
+
+                            /*
+                            event.title += "<p class=\"label label-success\">Estado: "+event.data.status.name+"</p>";
+                            var arr = [];
+                            if(event.data.equipodesarrollo) {
+                                for(var i in event.data.equipodesarrollo) {
+                                    arr.push(event.data.equipodesarrollo[i].user.name);
+                                }
+                            }
+                            if(event.data.equipocalidad) {
+                                for(var i in event.data.equipocalidad) {
+                                    arr.push(event.data.equipocalidad[i].user.name);
+                                }
+                            }
+
+                            event.title += "<p><span style=\"font-weight: 600;\">Equipo: </span> "+arr.join(', ')+"</p>";
+
+                            */
+
+
                             element.attr('href', '/rfcs/' + event.data.issuekey + "?app");
                         }
                         else {
@@ -62,9 +111,16 @@ function config_calendar(urlEvents,usersTagId) {
                         }
                     }
 
+
                 }
+                else {
+                    event.title = event.title;
+                }
+                element.attr('title',event.title);
+                element.attr('data-toggle','tooltip');
+                element.attr('data-placement','bottom');
                 element.attr('target','_blank');
-                element.tooltip();
+                element.tooltip({ html:true});
             }
         });
 

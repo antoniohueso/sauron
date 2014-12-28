@@ -113,9 +113,9 @@ public class WorklogService {
             }
 
 
-            String className = null;
+            String className = "calendar-normal";
             if(w.getIssue().getProject().getProjectkey().equals("GI")) {
-                className = "calendar-warning";
+                className = "calendar-vacaciones";
             }
 
             ue.getEvents().add(new CalendarEvent(
@@ -202,7 +202,6 @@ public class WorklogService {
         Collection<CalendarEvent> vacaciones = new ArrayList();
 
         for (Worklog w : worklogs) {
-            String color = null;
             String title = w.getAuthor().getName();
             final long time = w.getTimeSpentSeconds();
             final String imputado = String.format("%02d:%02d",
@@ -211,11 +210,10 @@ public class WorklogService {
                             TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(time)));
 
             if(w.getIssue().getIssuekey().equals("GI-9")) {
-                color = "calendar-warning";
-                title += "("+imputado+")";
+                title += " Ausencia("+imputado+")";
             }
 
-            vacaciones.add(new CalendarEvent(title, w.getStarted(), new String []{color},imputado));
+            vacaciones.add(new CalendarEvent(title, w.getStarted(), new String []{"calendar-vacaciones"},imputado));
         }
 
         return vacaciones;

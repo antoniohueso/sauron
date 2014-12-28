@@ -43,9 +43,7 @@ public class RfcController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/rfcs-events")
-    public
-    @ResponseBody
-    Iterable<CalendarEvent> rfcsEvents(
+    public @ResponseBody Iterable<CalendarEvent> rfcsEvents(
             @RequestParam String start, @RequestParam String end) {
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
