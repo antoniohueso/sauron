@@ -66,10 +66,6 @@ public class RfcController {
 
         Rfc rfc = rfcService.rfc(key);
 
-        rfc.setDescription(rfc.getDescription().replaceAll("(\r\n|\n)", "<br/>"));
-        rfc.setPlanpasoprod(rfc.getPlanpasoprod().replaceAll("(\r\n|\n)", "<br/>"));
-        rfc.setPlanmarchaatras(rfc.getPlanmarchaatras().replaceAll("(\r\n|\n)", "<br/>"));
-
         model.addAttribute("rfc", rfc);
 
         return "rfc";

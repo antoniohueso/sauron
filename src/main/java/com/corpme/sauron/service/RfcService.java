@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by ahg on 22/12/14.
@@ -179,8 +181,40 @@ public class RfcService {
 
         calculaPorcentajeCompletado(rfc);
 
+        rfc.setDescription(stringToHtml(rfc.getDescription()));
+        rfc.setPlanpasoprod(stringToHtml(rfc.getPlanpasoprod()));
+        rfc.setPlanmarchaatras(stringToHtml(rfc.getPlanmarchaatras()));
+        rfc.setSolucion(stringToHtml(rfc.getSolucion()));
+        rfc.setTablasAfectadas(stringToHtml(rfc.getTablasAfectadas()));
+        rfc.setAcuerdoFuncional(stringToHtml(rfc.getAcuerdoFuncional()));
+        rfc.setCausaDetencion(stringToHtml(rfc.getCausaDetencion()));
+        rfc.setObservaciones(stringToHtml(rfc.getObservaciones()));
+        rfc.setPlanpruebas(stringToHtml(rfc.getPlanpruebas()));
+        rfc.setPlanPruebasValidacion(stringToHtml(rfc.getPlanPruebasValidacion()));
+
+
+
         return rfc;
     }
+
+    String stringToHtml(String cad) {
+        if(cad == null) return null;
+
+        Pattern pattern = Pattern.compile("\\(?\\b(http://|www[.])[-A-Za-z0-9+&amp;@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&amp;@#/%=~_()|]");
+        Matcher m = pattern.matcher(cad);
+        StringBuffer sb = new StringBuffer();
+        while(m.find()){
+            String found = m.group(0);
+            m.appendReplacement(sb,"<a target=\"_blank\" href=\"" + found + "\">" + found + "</a>");
+        }
+
+        m.appendTail(sb);
+
+        return sb.toString().replaceAll("(\r\n|\n)", "<br/>");
+
+    }
+
+
 
     void generaEventos(Rfc rfc,String className,Calendar desde,Calendar hasta
             ,Collection<CalendarEvent> events,Calendar fechaMax) {

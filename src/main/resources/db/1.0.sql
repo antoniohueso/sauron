@@ -56,9 +56,14 @@ CREATE OR REPLACE VIEW rfc AS
 				 cf_fit.datevalue f_inicio_test,
 				 cf_fft.datevalue f_fin_test,
 				 cf_fpp.datevalue f_paso_prod,
-				 cf_planpru.stringvalue plan_pruebas,
+				 cf_planpru.textvalue plan_pruebas,
+		     cf_planpruvalidacion.textvalue plan_pruebas_validacion,
 				 cf_obser.textvalue observaciones,
+		     cf_tablasafectadas.textvalue tablas_afectadas,
+		     cf_solucion.textvalue solucion,
+		     cf_acuerdofun.textvalue acuerdo_funcional,
 				 cf_planprod.textvalue plan_paso_prod,
+		     cf_causadetencion.textvalue causa_detencion,
 				 cf_planatras.textvalue plan_marcha_atras,
 				 cf_cencos.stringvalue as centro_de_coste
 	from jiradb.jiraissue i
@@ -72,7 +77,12 @@ CREATE OR REPLACE VIEW rfc AS
 		left join jiradb.customfieldvalue cf_fit ON cf_fit.issue = i.id and cf_fit.customfield = 10314
 		left join jiradb.customfieldvalue cf_fft ON cf_fft.issue = i.id and cf_fft.customfield = 10315
 		left join jiradb.customfieldvalue cf_fpp ON cf_fpp.issue = i.id and cf_fpp.customfield = 10309
-		left join jiradb.customfieldvalue cf_planpru ON cf_planpru.issue = i.id and cf_planpru.customfield = 10325
+		left join jiradb.customfieldvalue cf_solucion ON cf_solucion.issue = i.id and cf_solucion.customfield = 10316
+		left join jiradb.customfieldvalue cf_tablasafectadas ON cf_tablasafectadas.issue = i.id and cf_tablasafectadas.customfield = 10327
+		left join jiradb.customfieldvalue cf_acuerdofun ON cf_acuerdofun.issue = i.id and cf_acuerdofun.customfield = 10328
+		left join jiradb.customfieldvalue cf_planpru ON cf_planpru.issue = i.id and cf_planpru.customfield = 10329
+		left join jiradb.customfieldvalue cf_planpruvalidacion ON cf_planpruvalidacion.issue = i.id and cf_planpruvalidacion.customfield = 10330
+		left join jiradb.customfieldvalue cf_causadetencion ON cf_causadetencion.issue = i.id and cf_causadetencion.customfield = 10331
 		left join jiradb.customfieldvalue cf_obser ON cf_obser.issue = i.id and cf_obser.customfield = 10320
 		left join jiradb.customfieldvalue cf_planprod ON cf_planprod.issue = i.id and cf_planprod.customfield = 10322
 		left join jiradb.customfieldvalue cf_planatras ON cf_planatras.issue = i.id and cf_planatras.customfield = 10323

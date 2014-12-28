@@ -34,6 +34,10 @@
                     </th>
                     <td>
                         <span th:class="${'label '+templateUtil.statusClass(rfc.status)}" th:text="${rfc.status.name}"></span>
+                        <div th:if="${rfc.causaDetencion}" class="alert alert-info">
+                            <span class="glyphicon glyphicon-info-sign"></span>
+                            <span th:text="${rfc.causaDetencion}"></span>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -186,15 +190,22 @@
         <div class="col-md-12">
             <table th:if="${true}"
                    class="table table-bordered">
-                <tr th:if="${true}">
-                    <th width="30%">Descripción</th>
-                    <td  th:utext="${'FALTA LA SOLUCION'}" class="col-md-12">
+                <tr th:if="${rfc.solucion}">
+                    <th width="20%">Descripción</th>
+                    <td class="col-md-12">
+                        <div class="alert alert-info" th:utext="${rfc.solucion}"></div>
                     </td>
                 </tr>
-                <tr th:if="${true}">
-                    <th>Documentación funcional y técnica</th>
-                    <td  class="col-md-12">
-                        <a th:href="${'FALTA LA DOC'}" target="_blank">(FALTA) Acuerdo funcional y técnico</a>
+                <tr th:if="${rfc.acuerdoFuncional}">
+                    <th>Acuerdo funcional</th>
+                    <td class="col-md-12">
+                        <div class="alert alert-info" th:utext="${rfc.acuerdoFuncional}"></div>
+                    </td>
+                </tr>
+                <tr th:if="${rfc.tablasAfectadas}">
+                    <th width="20%">Tablas afectadas</th>
+                    <td class="col-md-12">
+                        <div class="alert alert-info" th:utext="${rfc.tablasAfectadas}"></div>
                     </td>
                 </tr>
             </table>
@@ -211,9 +222,18 @@
             <table class="table table-bordered">
 
                 <tr>
-                    <th>Planes de pruebas</th>
-                    <td  class="col-md-12">
-                        <a th:href="${rfc.planpruebas}" target="_blank" th:text="${rfc.planpruebas}"></a>
+                    <th width="20%">Plan de pruebas de integración</th>
+                    <td class="col-md-12">
+                        <div class="alert alert-warning" th:utext="${rfc.planpruebas}"></div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th width="20%">Plan de pruebas de validación</th>
+                    <td class="col-md-12">
+                        <div th:if="${rfc.planPruebasValidacion == null}"
+                             class="alert alert-warning">No se han realizado pruebas de validación por carecer de dicho entorno.</div>
+                        <div th:if="${rfc.planPruebasValidacion != null}" class="alert alert-warning" th:utext="${rfc.planPruebasValidacion}"></div>
                     </td>
                 </tr>
 
@@ -230,7 +250,7 @@
                 </tr>
 
                 <tr th:if="${rfc.observaciones != null}">
-                    <th width="20%">Observaciones</th>
+                    <th width="20%">Observaciones a los riesgos</th>
                     <td  class="col-md-12">
                         <div class="alert alert-warning">
                             <span th:utext="${rfc.observaciones}"></span>
@@ -253,7 +273,7 @@
             <table class="table table-bordered">
 
                 <tr>
-                    <th>Plan de paso a producción</th>
+                    <th width="20%">Plan de paso a producción</th>
                     <td  class="col-md-12">
                         <div th:utext="${rfc.planpasoprod}" class="alert alert-success"></div>
                     </td>

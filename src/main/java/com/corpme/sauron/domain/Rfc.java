@@ -101,6 +101,9 @@ public class Rfc {
     @Column(name = "plan_pruebas")
     String planpruebas;
 
+    @Column(name = "plan_pruebas_validacion")
+    String planPruebasValidacion;
+
     @Column(name = "observaciones")
     String observaciones;
 
@@ -109,6 +112,18 @@ public class Rfc {
 
     @Column(name = "plan_marcha_atras")
     String planmarchaatras;
+
+    @Column(name = "solucion")
+    String solucion;
+
+    @Column(name = "tablas_afectadas")
+    String tablasAfectadas;
+
+    @Column(name = "acuerdo_funcional")
+    String acuerdoFuncional;
+
+    @Column(name = "causaDetencion")
+    String causaDetencion;
 
     @Transient
     int porcentajeCompletado = 0;
@@ -376,5 +391,45 @@ public class Rfc {
 
     public void setPorcentajeCompletado(int porcentajeCompletado) {
         this.porcentajeCompletado = porcentajeCompletado;
+    }
+
+    public String getPlanPruebasValidacion() {
+        return planPruebasValidacion;
+    }
+
+    public void setPlanPruebasValidacion(String planPruebasValidacion) {
+        this.planPruebasValidacion = planPruebasValidacion;
+    }
+
+    public String getSolucion() {
+        return solucion;
+    }
+
+    public void setSolucion(String solucion) {
+        this.solucion = solucion;
+    }
+
+    public String getTablasAfectadas() {
+        return tablasAfectadas;
+    }
+
+    public void setTablasAfectadas(String tablasAfectadas) {
+        this.tablasAfectadas = tablasAfectadas;
+    }
+
+    public String getAcuerdoFuncional() {
+        return acuerdoFuncional;
+    }
+
+    public void setAcuerdoFuncional(String acuerdoFuncional) {
+        this.acuerdoFuncional = acuerdoFuncional;
+    }
+
+    public String getCausaDetencion() {
+        return causaDetencion;
+    }
+
+    public void setCausaDetencion(String causaDetencion) {
+        this.causaDetencion = causaDetencion;
     }
 }
