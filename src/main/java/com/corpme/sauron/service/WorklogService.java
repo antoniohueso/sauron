@@ -42,7 +42,7 @@ public class WorklogService {
         Iterator it = result.iterator();
         while (it.hasNext()) {
             CalendarEvent event = (CalendarEvent)it.next();
-            if(event.getClassName()[0] == null || event.getClassName()[0].equals("calendar-warning")) {
+            if(!event.getClassName()[0].equalsIgnoreCase("calendar-danger") && !event.getClassName()[0].equals("calendar-produccion")) {
                 it.remove();
             }
         }

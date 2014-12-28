@@ -131,7 +131,7 @@ function config_calendar(urlEvents,usersTagId,type) {
                 }
                 else {
                     title = event.title;
-                    content = 'Vacaciones';
+                    if(event.className[0] != "calendar-danger") content = 'Vacaciones';
                 }
 
                 element.attr('title',title);
