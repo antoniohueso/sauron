@@ -13,6 +13,7 @@ public class CalendarEvent {
     String start;
     String className;
     String alerta;
+    String comentario;
     Object data;
 
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -62,5 +63,13 @@ public class CalendarEvent {
 
     public void setAlerta(String alerta) {
         this.alerta = alerta;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
+
+    public String getComentario() {
+        return comentario;
     }
 }

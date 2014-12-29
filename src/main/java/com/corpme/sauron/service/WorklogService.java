@@ -118,12 +118,15 @@ public class WorklogService {
                 className = "calendar-vacaciones";
             }
 
-            ue.getEvents().add(new CalendarEvent(
+            CalendarEvent calendarEvent = new CalendarEvent(
                     title,
                     w.getStarted(),
                     className,
                     w.getIssue()
-            ));
+            );
+
+            calendarEvent.setComentario(w.getComment() == null || w.getComment().trim().length() == 0?null:w.getComment());
+            ue.getEvents().add(calendarEvent);
         }
 
         Collection<CalendarEvent> result = new ArrayList();

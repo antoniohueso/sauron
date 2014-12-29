@@ -144,8 +144,9 @@
     <script type="text/html" id="cal-tooltip">
 
         <div>
-            <span class="label {{statusKey[r.status.id]}}">{{ r.status.name }}</span>
-
+            {[ if(r.status.id != null) { ]}
+            <span class="label {{statusLabel}}">{{ r.status.name }}</span>
+            {[ } ]}
             {[ if(r.porcentajeCompletado) { ]}
             <span class="badge">Progreso: {{r.porcentajeCompletado}}%</span>
             {[ } ]}
@@ -165,8 +166,11 @@
                     <span class="label label-info">{{r.assignee.name}}</span>
                 {[ } ]}
             {[ } ]}
-            {[ if(alerta != null) { ]}
-                <span class="label label-danger"><span class="glyphicon glyphicon-warning-sign"></span><span>{{alerta}}</span></span>
+            {[ if(event.alerta != null) { ]}
+                <span class="label label-danger"><span class="glyphicon glyphicon-warning-sign"></span><span>{{event.alerta}}</span></span>
+            {[ } ]}
+            {[ if(event.comentario != null) { ]}
+            <div class="alert alert-info" style="font-size: x-small;margin-top: 0.8em; padding: 0.3em;">{{event.comentario}}</div>
             {[ } ]}
 
 

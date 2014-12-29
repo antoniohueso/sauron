@@ -79,10 +79,13 @@ function config_calendar(urlEvents,usersTagId,type) {
 
                 if(data && data.issuekey) {
 
+                    var statusLabel = statusKey[data.status.id];
+                    if(!statusLabel) statusLabel = "label-default";
+
                     var o = {
                         r:data,
-                        statusKey:statusKey,
-                        alerta:event.alerta
+                        statusLabel:statusLabel,
+                        event:event
                     };
 
                     title = data.issuekey + ' - ' + data.summary;
