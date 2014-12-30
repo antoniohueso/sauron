@@ -1,32 +1,38 @@
 package com.corpme.sauron;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.corpme.sauron.service.FiestasService;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-/**
- * Created by ahg on 28/12/14.
- */
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = Application.class)
 public class Test2 {
 
-    public static void main(String args[]) {
+    @Autowired
+    FiestasService service;
 
-        String cad = " Hola capullo http://www.google.es \n" +
-                "www.caca.com";
+    @Test
+    public void test(){
 
-        Pattern pattern = Pattern.compile("\\(?\\b(http://|www[.])[-A-Za-z0-9+&amp;@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&amp;@#/%=~_()|]");
-        Matcher m = pattern.matcher(cad); // put here the line you want to check
-        StringBuffer sb = new StringBuffer();
-        while(m.find()){
-            String found = m.group(0);
+        try {
+            service.print();
 
-            m.appendReplacement(sb, "<a href=\"" + found + "\">" + found + "</a>");
+            synchronized (service.getThread()) {
+                service.getThread().wait(15000);
+            }
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        m.appendTail(sb);
-
-        System.out.println(sb.toString());
 
 
     }
 
 }
+
+
