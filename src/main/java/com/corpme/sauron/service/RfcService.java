@@ -62,7 +62,7 @@ public class RfcService {
 
             if(rfc.getStatus().getId() != StatusKey.OPEN.getValue() && rfc.getStatus().getId() != StatusKey.DETENIDA.getValue()
                     && rfc.getIssuelinks().size() == 0) {
-                anomalias.add(new AnomaliaRfc(rfc,"La fecha de fin de desarrollo es mayor que la fecha de inicio"));
+                anomalias.add(new AnomaliaRfc(rfc,"La rfc no tiene issues asociadas"));
             }
             else if(rfc.getStatus().getId() == StatusKey.OPEN.getValue()){
                 pendientes.add(rfc);
@@ -72,62 +72,100 @@ public class RfcService {
             }
             else if(rfc.getStatus().getId() == StatusKey.DESARROLLANDO.getValue()
                     || rfc.getStatus().getId() == StatusKey.RESOLVED.getValue()){
+
+                String anomalia = null;
+
                 if(fInicioDesarrollo == null || fFinDesarrollo == null) {
-                    anomalias.add(new AnomaliaRfc(rfc,"El desarrollo está en curso y no tiene fechas de inicio " +
-                            "y/o fin de planificación desarrollo"));
+                    anomalia = "El desarrollo está en curso y no tiene fechas de inicio " +
+                            "y/o fin de planificación desarrollo";
                 }
                 else if(fInicioDesarrollo.after(fFinDesarrollo)) {
-                    anomalias.add(new AnomaliaRfc(rfc,"La fecha de fin de desarrollo es mayor que la fecha de inicio"));
+                    anomalia = "La fecha de fin de desarrollo es mayor que la fecha de inicio";
+                }
+
+                if(anomalia != null) {
+                    anomalias.add(new AnomaliaRfc(rfc,anomalia));
                 }
                 else {
-                    if(hoy.after(fFinDesarrollo)) vencidas.add(rfc);
-                    else encurso.add(rfc);
+                    if(hoy.after(fFinDesarrollo)) {
+                        vencidas.add(rfc);
+                    }
+                    else {
+                        encurso.add(rfc);
+                    }
                 }
             }
             else if(rfc.getStatus().getId() == StatusKey.DISPONIBLE_PARA_PRUEBAS.getValue()
                     || rfc.getStatus().getId() == StatusKey.PROBANDO.getValue()
                     || rfc.getStatus().getId() == StatusKey.DETECTADO_ERROR_PRUEBAS.getValue()){
 
+
+                String anomalia = null;
+
                 if(fInicioDesarrollo == null || fFinDesarrollo == null) {
-                    anomalias.add(new AnomaliaRfc(rfc,"Las pruebas están en curso  y no tiene fechas de inicio " +
-                            "y/o fin de planificación desarrollo"));
+                    anomalia = anomalia!=null?", ":"" + "Las pruebas están en curso  y no tiene fechas de inicio " +
+                            "y/o fin de planificación desarrollo";
                 }
                 else if(fInicioDesarrollo.after(fFinDesarrollo)) {
-                    anomalias.add(new AnomaliaRfc(rfc,"La fecha de fin de desarrollo es mayor que la fecha de inicio"));
+                    anomalia = anomalia!=null?", ":"" + "La fecha de fin de desarrollo es mayor que la fecha de inicio";
                 }
-                else if(fInicioCalidad == null || fFinCalidad == null) {
-                    anomalias.add(new AnomaliaRfc(rfc,"Las pruebas están en curso y no tiene fechas de inicio y/o " +
-                            "fin de planificación de pruebas"));
+
+                if(fInicioCalidad == null || fFinCalidad == null) {
+                    anomalia = anomalia!=null?", ":"" + "Las pruebas están en curso y no tiene fechas de inicio y/o " +
+                            "fin de planificación de pruebas";
                 }
                 else if(fInicioCalidad.after(fFinCalidad)) {
-                    anomalias.add(new AnomaliaRfc(rfc,"La fechas de fin de pruebas es mayor que la fecha de inicio"));
+                    anomalia = anomalia!=null?", ":"" + "La fechas de fin de pruebas es mayor que la fecha de inicio";
+                }
+
+                if(anomalia != null) {
+                    anomalias.add(new AnomaliaRfc(rfc,anomalia));
                 }
                 else {
-                    if(fInicioDesarrollo == null || fFinDesarrollo == null) {
-                        anomalias.add(new AnomaliaRfc(rfc,"El desarrollo está finalizado y no tiene fechas de inicio " +
-                                "y/o fin de planificación desarrollo"));
+                    if(hoy.after(fFinCalidad)) {
+                        vencidas.add(rfc);
                     }
-                    else if(fInicioDesarrollo.after(fFinDesarrollo)) {
-                        anomalias.add(new AnomaliaRfc(rfc,"La fecha de fin de desarrollo es mayor que la fecha de inicio"));
+                    else {
+                        encurso.add(rfc);
                     }
-                    else if(fInicioCalidad == null || fFinCalidad == null) {
-                        anomalias.add(new AnomaliaRfc(rfc,"El desarrollo está finalizado y y no tiene fechas de inicio y/o " +
-                                "fin de planificación de pruebas"));
-                    }
-                    else if(fInicioCalidad.after(fFinCalidad)) {
-                        anomalias.add(new AnomaliaRfc(rfc,"La fechas de fin de pruebas es mayor que la fecha de inicio"));
-                    }
-                    else if(hoy.after(fFinCalidad)) vencidas.add(rfc);
-                    else encurso.add(rfc);
                 }
+
             }
             else if(rfc.getStatus().getId() == StatusKey.FINALIZADA.getValue()){
+
+                String anomalia = null;
+
+                if(fInicioDesarrollo == null || fFinDesarrollo == null) {
+                    anomalia = "El desarrollo está finalizado y no tiene fechas de inicio " +
+                            "y/o fin de planificación desarrollo";
+                }
+                else if(fInicioDesarrollo.after(fFinDesarrollo)) {
+                    anomalia = "La fecha de fin de desarrollo es mayor que la fecha de inicio";
+                }
+
+                if(fInicioCalidad == null || fFinCalidad == null) {
+                    anomalia = anomalia!=null?", ":"" + "El desarrollo está finalizado y y no tiene fechas de inicio y/o " +
+                            "fin de planificación de pruebas";
+                }
+                else if(fInicioCalidad.after(fFinCalidad)) {
+                    anomalia = anomalia!=null?", ":"" + "La fechas de fin de pruebas es mayor que la fecha de inicio";
+                }
+
                 if(fPasoProd == null) {
-                    anomalias.add(new AnomaliaRfc(rfc," El desarrollo está finalizado " +
-                            "y no tiene fecha de paso a producción"));
-                }else {
-                    if(hoy.after(fPasoProd)) vencidas.add(rfc);
-                    else encurso.add(rfc);
+                    anomalia = anomalia!=null?", ":"" + "El desarrollo está finalizado " +
+                            "y no tiene fecha de paso a producción";
+                }
+
+                if(anomalia != null) {
+                    anomalias.add(new AnomaliaRfc(rfc,anomalia));
+                }
+                else {
+                    if(hoy.after(fPasoProd)) {
+                        vencidas.add(rfc);
+                    }
+                    else {
+                        encurso.add(rfc);
+                    }
                 }
             }
         }
@@ -352,6 +390,8 @@ public class RfcService {
      * @param rfc
      */
     void calculaPorcentajeCompletado(Rfc rfc) {
+
+        if(rfc.getIssuelinks() == null) return;
 
         int total = rfc.getIssuelinks().size();
         Double tareas = 0.0;

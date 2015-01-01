@@ -1,6 +1,7 @@
 package com.corpme.sauron.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -71,16 +72,16 @@ public class Rfc {
     String centroDeCoste;
 
     @OneToMany(mappedBy = "rfc")
-    Collection<RfcEquipoDesarrollo> equipodesarrollo;
+    Collection<RfcEquipoDesarrollo> equipodesarrollo = new ArrayList();
 
     @OneToMany(mappedBy = "rfc")
-    Collection<RfcEquipoCalidad> equipocalidad;
+    Collection<RfcEquipoCalidad> equipocalidad = new ArrayList();
 
     @OneToMany(mappedBy = "rfc")
-    Collection<RfcRiesgos> riesgos;
+    Collection<RfcRiesgos> riesgos = new ArrayList();
 
     @OneToMany(mappedBy = "rfc")
-    Collection<RfcIssueLink> issuelinks;
+    Collection<RfcIssueLink> issuelinks = new ArrayList();
 
 
     @Column(name = "f_inicio_desa")
