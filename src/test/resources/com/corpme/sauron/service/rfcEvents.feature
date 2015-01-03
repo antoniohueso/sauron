@@ -13,9 +13,9 @@ Feature: RfcService.rfcsEvents
   Scenario: Consulta de rfcs Ok
     Given no hay rfcs creadas
     Given Creo rfcs con el siguiente juego de datos:
-    |1000|15/07/2014|13/08/2014|17/08/2014|20/08/2014|21/08/2014|
-    |1001|01/07/2014|15/07/2014|16/07/2014|17/07/2014|19/07/2014|
-    |1002|02/07/2014|05/07/2014||||
-    |1003|07/07/2014|08/07/2014|09/07/2014|10/07/2014||
+    |5000|15/07/2014|13/08/2014|17/08/2014|20/08/2014|21/08/2014|FINALIZADA|
+    |5001|01/07/2014|15/07/2014|16/07/2014|17/07/2014|19/07/2014|FINALIZADA|
+    |5002|02/07/2014|05/07/2014||||DESARROLLANDO|
+    |5003|07/07/2014|08/07/2014|09/07/2014|10/07/2014||PROBANDO|
     When realizo la consulta de los eventos rfcs
 

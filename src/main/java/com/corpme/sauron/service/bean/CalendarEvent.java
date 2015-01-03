@@ -4,24 +4,21 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by ahg on 24/12/14.
- */
 public class CalendarEvent {
 
     String title;
     String start;
-    String className;
+    CalendarEventType type;
     String alerta;
     String comentario;
     Object data;
 
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-    public CalendarEvent(String title, Date fecha, String className,Object data) {
+    public CalendarEvent(final Date fecha, final String title, final CalendarEventType type,final Object data) {
         this.title = title;
         this.start = df.format(fecha);
-        this.className = className;
+        this.type = type;
         this.data = data;
     }
 
@@ -50,11 +47,15 @@ public class CalendarEvent {
     }
 
     public String getClassName() {
-        return className;
+        return type.getValue();
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public CalendarEventType getType() {
+        return type;
+    }
+
+    public void setType(CalendarEventType type) {
+        this.type = type;
     }
 
     public String getAlerta() {

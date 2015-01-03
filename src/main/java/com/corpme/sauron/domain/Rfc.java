@@ -126,10 +126,6 @@ public class Rfc {
     @Column(name = "causaDetencion")
     String causaDetencion;
 
-    @Transient
-    int porcentajeCompletado = 0;
-
-
     public long getId() {
         return id;
     }
@@ -386,12 +382,51 @@ public class Rfc {
         this.planmarchaatras = planmarchaatras;
     }
 
+    /**
+     * Calcula el % completado de la Rfc en función del estado de las tareas asociadas
+     * @return % completado
+     */
     public int getPorcentajeCompletado() {
-        return porcentajeCompletado;
-    }
 
-    public void setPorcentajeCompletado(int porcentajeCompletado) {
-        this.porcentajeCompletado = porcentajeCompletado;
+        if(getIssuelinks() == null) return 0;
+
+        int total = getIssuelinks().size();
+        Double tareas = 0.0;
+
+        if(total == 0) return 0;
+
+        for (RfcIssueLink rfcIssueLink : getIssuelinks()) {
+            Issue issue = rfcIssueLink.getIssue();
+            if(issue.getStatus().getId() == StatusKey.DESARROLLANDO.getValue()) {
+                tareas += 0.2;
+            }
+            else if(issue.getStatus().getId() == StatusKey.RESOLVED.getValue()){
+                tareas += 0.35;
+            }
+            else if(issue.getStatus().getId() == StatusKey.DISPONIBLE_PARA_PRUEBAS.getValue()) {
+                tareas += 0.5;
+            }
+            else if(issue.getStatus().getId() == StatusKey.PROBANDO.getValue()) {
+                tareas += 0.7;
+            }
+            else if(issue.getStatus().getId() == StatusKey.DETECTADO_ERROR_PRUEBAS.getValue()){
+                tareas += 0.5;
+            }
+            else if(issue.getStatus().getId() == StatusKey.FINALIZADA.getValue()
+                    || issue.getStatus().getId() == StatusKey.CERRADA.getValue()
+                    || issue.getStatus().getId() == StatusKey.EN_PRODUCCION.getValue()){
+                tareas += 1.0;
+            }
+            // El resto las considero pendientes (Abierta, Detenida...)
+            else {
+                tareas += 0.0;
+            }
+        }
+
+        Double perc = Math.floor((tareas * 100) / total);
+
+        return perc.intValue();
+
     }
 
     public String getPlanPruebasValidacion() {
@@ -433,4 +468,5 @@ public class Rfc {
     public void setCausaDetencion(String causaDetencion) {
         this.causaDetencion = causaDetencion;
     }
+
 }

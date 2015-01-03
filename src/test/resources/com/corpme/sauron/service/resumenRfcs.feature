@@ -1,3 +1,5 @@
+@resumenRfcs
+
 Feature: RfcService.resumenRfcs
 
   Scenario: Si no hay rfcs creadas todas las colecciones que devuelve el resumen deben estar vacias

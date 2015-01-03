@@ -6,7 +6,8 @@ import com.corpme.sauron.domain.UserRepository;
 import com.corpme.sauron.domain.Worklog;
 import com.corpme.sauron.domain.WorklogsRepository;
 import com.corpme.sauron.service.bean.CalendarEvent;
-import com.corpme.sauron.service.bean.UserEvents;
+import com.corpme.sauron.service.bean.CalendarEventType;
+import com.corpme.sauron.service.bean.UserTotalEvents;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,14 +32,17 @@ public class WorklogService {
     @Autowired
     WorklogsRepository worklogsRepository;
 
+    @Autowired
+    UtilsService utilsService;
+
     @Value("${app.imputa.alarma.min}")
     double alarmaMin;
 
     final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public Collection<CalendarEvent> anomalias(Date fdesde,Date fhasta,User user) {
+    public Iterable<CalendarEvent> anomalias(Date fdesde,Date fhasta,User user) {
 
-        Collection<CalendarEvent> result = worklogEvents(fdesde,fhasta,user,true);
+        Iterable<CalendarEvent> result = worklogEvents(fdesde,fhasta,user,true);
         Iterator it = result.iterator();
         while (it.hasNext()) {
             CalendarEvent event = (CalendarEvent)it.next();
@@ -50,13 +54,17 @@ public class WorklogService {
         return result;
     }
 
-    public Collection<CalendarEvent> worklogEvents(Date fdesde,Date fhasta,User user,boolean userInTitle) {
+    public Iterable<CalendarEvent> worklogEvents(final Date fdesde,
+                                                   final Date fhasta,
+                                                   final User user,
+                                                   final boolean userInTitle) {
+
 
         final DateFormat df = new SimpleDateFormat("EEEE dd/MM/yyyy");
 
-        final Calendar hasta = getComparableDate(fhasta);
+        final Calendar hasta = utilsService.getComparableDate(fhasta);
 
-        final Calendar desde = getComparableDate(fdesde);
+        final Calendar desde = utilsService.getComparableDate(fdesde);
 
         if(desde.after(hasta)) {
             throw new ApplicationException("La fecha desde no puede ser mayor que la fecha hasta. F.Desde="
@@ -66,7 +74,7 @@ public class WorklogService {
         final Collection<User> usersServiciosCentrales =
                 Lists.newArrayList(userRepository.findAllFromServiciosCentrales());
 
-        Collection<User> users = null;
+        final Collection<User> users;
         if(user != null) {
             users = new ArrayList();
             users.add(user);
@@ -77,121 +85,111 @@ public class WorklogService {
 
         final Iterable<Worklog> worklogs = worklogsRepository.findWorklogs(fdesde, fhasta, users);
 
-        final HashMap<String,HashMap<User,UserEvents>> calendario = new HashMap();
+        final HashMap<String,UserTotalEvents> totalByDayUser = new HashMap();
 
-        final Calendar fecha = getComparableDate(fdesde);
+        final Calendar fecha = utilsService.getComparableDate(fdesde);
         while(!fecha.after(hasta)) {
-            int dayOfWeek = fecha.get(Calendar.DAY_OF_WEEK);
-            if(dayOfWeek != Calendar.SATURDAY && dayOfWeek != Calendar.SUNDAY) {
-                HashMap<User,UserEvents> userevents = new HashMap();
-                calendario.put(df.format(fecha.getTime()),userevents);
 
+            final int dayOfWeek = fecha.get(Calendar.DAY_OF_WEEK);
+
+            if(dayOfWeek != Calendar.SATURDAY && dayOfWeek != Calendar.SUNDAY) {
                 for(User u : users) {
-                    userevents.put(u,new UserEvents(u,fecha.getTime()));
+                    totalByDayUser.put(df.format(fecha.getTime())+u.getName(),new UserTotalEvents(u,fecha.getTime()));
                 }
             }
             fecha.add(Calendar.DAY_OF_MONTH,1);
         }
 
-        for(Worklog w : worklogs) {
-            UserEvents ue = calendario.get(df.format(w.getStarted())).get(w.getAuthor());
+        final CalendarService calendarService = new CalendarService();
+
+        worklogs.forEach((w) -> {
+
+            final UserTotalEvents ue = totalByDayUser.get(df.format(w.getStarted()) + w.getAuthor().getName());
             ue.addTotal(w.getTimeSpentSeconds());
 
-            String time = String.format("%02d:%02d",
+            final String time = String.format("%02d:%02d",
                     TimeUnit.SECONDS.toHours(w.getTimeSpentSeconds()),
                     TimeUnit.SECONDS.toMinutes(w.getTimeSpentSeconds()) -
                             TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(w.getTimeSpentSeconds())));
 
 
-            String title = null;
+            final StringBuilder title = new StringBuilder();
 
             if(!userInTitle) {
-                title = "("+time+") " + w.getIssue().getIssuekey() + " - "+w.getIssue().getSummary();
+                title.append("(").append(time).append(") ")
+                        .append(w.getIssue().getIssuekey()).append(" - ").append(w.getIssue().getSummary());
             }
             else {
-                title = "("+time+") " + ue.getUser().getName() + " - " + w.getIssue().getIssuekey();
+                title.append("(").append(time).append(") ")
+                        .append(ue.getUser().getName()).append(" - ").append(w.getIssue().getIssuekey());
             }
 
 
-            String className = "calendar-normal";
+            final CalendarEventType type;
             if(w.getIssue().getProject().getProjectkey().equals("GI")) {
-                className = "calendar-vacaciones";
+               type = CalendarEventType.WARNING;
+            }
+            else {
+                type = CalendarEventType.INFO;
             }
 
-            CalendarEvent calendarEvent = new CalendarEvent(
-                    title,
-                    w.getStarted(),
-                    className,
-                    w.getIssue()
-            );
+            final CalendarEvent ev = calendarService.addEvent(w.getStarted(), title.toString(), type, w.getIssue());
 
-            calendarEvent.setComentario(w.getComment() == null || w.getComment().trim().length() == 0?null:w.getComment());
-            ue.getEvents().add(calendarEvent);
-        }
+            ev.setComentario(w.getComment() == null || w.getComment().trim().length() == 0?null:w.getComment());
+        });
 
-        Collection<CalendarEvent> result = new ArrayList();
+        Calendar hoy = utilsService.getComparableDate(new Date());
 
-        Calendar hoy = getComparableDate(new Date());
+        for(UserTotalEvents ue : totalByDayUser.values()) {
 
-        for(HashMap<User,UserEvents> userevents : calendario.values()) {
+            //--- Si hay anomalías
+            if (ue.getTotal() / (60 * 60) < alarmaMin
+                    && (hoy.getTime().after(ue.getFecha()) || hoy.getTime().equals(ue.getFecha()))) {
 
-            boolean presuntoDiaDeFiesta = false;
+                //--- Si no tiene eventos ese día
+                if (ue.getTotal() == 0) {
 
-            for (UserEvents ue : userevents.values()) {
-
-                //--- Si hay anomalías
-                if (ue.getTotal() / (60 * 60) < alarmaMin
-                        && (hoy.getTime().after(ue.getFecha()) || hoy.getTime().equals(ue.getFecha()))) {
-
-                    //--- Si no tiene eventos ese día
-                    if (ue.getEvents().size() == 0) {
-
-                        //--- Si está filtrando por usuario averigua si es un posible día de fiesta, para ello
-                        //    si ese día tienes menos imputacioes que el total usuarios dividido por dos
-                        //    entonces avisa de que podría tratarse de un día de fiesta
-                        if(user != null) {
-                            Iterable<Worklog> wlogs = worklogsRepository.findWorklogsInDay(ue.getFecha(), users);
-                            Collection<Worklog> list = Lists.newArrayList(wlogs);
-                            if(list.size() < (usersServiciosCentrales.size() / 2)) {
-                                ue.getEvents().add(new CalendarEvent("(00:00) "+ list.size()+" imputaciones" , ue.getFecha()
-                                        , "calendar-produccion", null));
-                            }
-                        }
-
-                        ue.getEvents().add(new CalendarEvent("(00:00) " + ue.getUser().getName(), ue.getFecha()
-                                    , "calendar-danger", null));
-
-                    } else {
-                        //--- Pone en rojo las anomalías
-                        for (CalendarEvent e : ue.getEvents()) {
-                            e.setClassName("calendar-danger");
+                    //--- Si está filtrando por usuario averigua si es un posible día de fiesta, para ello
+                    //    si ese día tienes menos imputacioes que el total usuarios dividido por dos
+                    //    entonces avisa de que podría tratarse de un día de fiesta
+                    if(user != null) {
+                        Iterable<Worklog> wlogs = worklogsRepository.findWorklogsInDay(ue.getFecha(), users);
+                        Collection<Worklog> list = Lists.newArrayList(wlogs);
+                        if(list.size() < (usersServiciosCentrales.size() / 2)) {
+                            calendarService.addEvent(ue.getFecha(), "(00:00) "+ list.size()+" imputaciones"
+                                    , CalendarEventType.INFO.SUCCESS,null);
                         }
                     }
+
+                    calendarService.addEvent(ue.getFecha(), "(00:00) " + ue.getUser().getName()
+                            , CalendarEventType.DANGER, null);
+
+                } else {
+                    calendarService.addEvent(ue.getFecha(), "(Incompleto) " + ue.getUser().getName()
+                            , CalendarEventType.DANGER, null);
                 }
-
-                Collections.addAll(result, ue.getEvents().toArray(new CalendarEvent[ue.getEvents().size()]));
-
-
             }
+
         }
 
-        return result;
+        return calendarService.getEvents();
+
     }
 
-    public Iterable<CalendarEvent> vacaciones(Date fdesde,Date fhasta,User user) {
+    public Iterable<CalendarEvent> vacaciones(final Date fdesde,final Date fhasta,final User user) {
 
         final DateFormat df = new SimpleDateFormat("EEEE dd/MM/yyyy");
 
-        final Calendar hasta = getComparableDate(fhasta);
+        final Calendar hasta = utilsService.getComparableDate(fhasta);
 
-        final Calendar desde = getComparableDate(fdesde);
+        final Calendar desde = utilsService.getComparableDate(fdesde);
 
         if (desde.after(hasta)) {
             throw new ApplicationException("La fecha desde no puede ser mayor que la fecha hasta. F.Desde="
                     + df.format(desde.getTime()) + ", F.Hasta=" + df.format(hasta.getTime()));
         }
 
-        Collection<User> users = null;
+        final Collection<User> users;
         if(user != null) {
             users = new ArrayList();
             users.add(user);
@@ -202,10 +200,10 @@ public class WorklogService {
 
         final Iterable<Worklog> worklogs = worklogsRepository.findVacaciones(fdesde, fhasta, users);
 
-        Collection<CalendarEvent> vacaciones = new ArrayList();
+        final CalendarService calendarService = new CalendarService();
 
-        for (Worklog w : worklogs) {
-            String title = w.getAuthor().getName();
+        worklogs.forEach((w) -> {
+            final StringBuilder title = new StringBuilder(w.getAuthor().getName());
             final long time = w.getTimeSpentSeconds();
             final String imputado = String.format("%02d:%02d",
                     TimeUnit.SECONDS.toHours(time),
@@ -213,27 +211,14 @@ public class WorklogService {
                             TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(time)));
 
             if(w.getIssue().getIssuekey().equals("GI-9")) {
-                title += " Ausencia("+imputado+")";
+                title.append(" Ausencia(").append(imputado).append(")");
             }
 
-            vacaciones.add(new CalendarEvent(title, w.getStarted(), "calendar-vacaciones",imputado));
-        }
+            calendarService.addEvent(w.getStarted(), title.toString(), CalendarEventType.GRAY, imputado);
+        });
 
-        return vacaciones;
+        return calendarService.getEvents();
     }
 
-    Calendar getComparableDate(Date fecha) {
 
-        if(fecha == null) return null;
-
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(fecha);
-
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-
-        return cal;
-    }
 }

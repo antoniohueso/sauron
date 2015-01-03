@@ -9,14 +9,13 @@ import java.util.Date;
 /**
  * Created by ahg on 25/12/14.
  */
-public class UserEvents {
+public class UserTotalEvents {
 
     User user;
     Date fecha;
     long total = 0;
-    Collection<CalendarEvent> events = new ArrayList();
 
-    public UserEvents(User user, Date fecha) {
+    public UserTotalEvents(final User user, final Date fecha) {
         this.user = user;
         this.fecha = fecha;
     }
@@ -35,10 +34,6 @@ public class UserEvents {
 
     public Date getFecha() {
         return fecha;
-    }
-
-    public Collection<CalendarEvent> getEvents() {
-        return events;
     }
 
     public void addTotal(Long sum) {

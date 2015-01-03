@@ -3,6 +3,8 @@ package com.corpme.sauron.service;
 import com.corpme.sauron.Application;
 import com.corpme.sauron.domain.*;
 import com.corpme.sauron.service.bean.AnomaliaRfc;
+import com.corpme.sauron.service.bean.CalendarEvent;
+import com.google.common.collect.Lists;
 import cucumber.api.DataTable;
 import cucumber.api.PendingException;
 import cucumber.api.java.Before;
@@ -17,6 +19,9 @@ import org.springframework.boot.test.SpringApplicationContextLoader;
 import org.springframework.test.context.ContextConfiguration;
 
 import javax.transaction.Transactional;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -36,10 +41,12 @@ public class ResumenRfcsStepdefs {
     RfcIssueLinkRepository rfcIssueLinkRepository;
 
     Map<String,Collection> resumen;
+
     Rfc rfc = null;
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    final Logger logger = LoggerFactory.getLogger(getClass());
 
+    final DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
     @Given("^no hay rfcs creadas$")
     public void no_hay_rfcs_creadas() throws Throwable {
@@ -288,16 +295,33 @@ public class ResumenRfcsStepdefs {
         return rfc;
     }
 
+    Date getSafeDate(String strfecha) {
+        if(strfecha == null || strfecha.trim().length() == 0) return null;
+        try {
+            return df.parse(strfecha);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Given("^Creo rfcs con el siguiente juego de datos:$")
     public void Creo_rfcs_con_el_siguiente_juego_de_datos(DataTable tableRfcs) throws Throwable {
         for(List<String> row : tableRfcs.cells(0)) {
+            Rfc rfc = creaRfcWithEstadoAndAsocioUnaTarea(StatusKey.valueOf(row.get(6)));
 
+            rfc.setIssuekey("RFC-"+row.get(0));
+            rfc.setfInicioDesarrollo(getSafeDate(row.get(1)));
+            rfc.setfFinDesarrollo(getSafeDate(row.get(2)));
+            rfc.setfInicioCalidad(getSafeDate(row.get(3)));
+            rfc.setfFinCalidad(getSafeDate(row.get(4)));
+            rfc.setfPasoProd(getSafeDate(row.get(5)));
             logger.info("Crea: " + row.get(0) + " " + row.get(1));
         }
     }
 
     @When("^realizo la consulta de los eventos rfcs$")
     public void realizo_la_consulta_de_los_eventos_rfcs() throws Throwable {
-
+        Collection<CalendarEvent> events = Lists.newArrayList(rfcService.rfcsEvents(df.parse("01/07/2014"), df.parse("31/07/2014")));
+        assertEquals(0,events.size());
     }
 }

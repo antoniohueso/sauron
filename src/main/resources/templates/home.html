@@ -12,26 +12,26 @@
 
     <div th:replace="layout :: pagetitle ('Vista semanal de rfcs planificadas y vacaciones del grupo')"></div>
 
-    <div class="row">
+    <div id="resumen-rfcs" class="row">
         <div class="btn-group btn-group-justified col-md-12" role="group" aria-label="Justified button group">
             <a href="/rfcs/listado/pendientes" target="_blank" class="btn btn-info" role="button">
-                <span th:text="${pendientes.size() + ' pendientes '}"></span>
+                <span class="resumen-rfcs-value" th:text="${pendientes.size() + ' pendientes '}"></span>
                 <span class="glyphicon glyphicon-list-alt"></span>
             </a>
             <a href="/rfcs/listado/encurso" target="_blank" class="btn btn-info" role="button">
-                <span th:text="${encurso.size() + ' en curso '}"></span>
+                <span class="resumen-rfcs-value" th:text="${encurso.size() + ' en curso '}"></span>
                 <span class="glyphicon glyphicon-time"></span>
             </a>
             <a href="/rfcs/listado/vencidas" target="_blank" class="btn btn-info" role="button">
-                <span th:text="${vencidas.size() + ' vencidas '}"></span>
+                <span class="resumen-rfcs-value" th:text="${vencidas.size() + ' vencidas '}"></span>
                 <span class="glyphicon glyphicon-fire"></span>
             </a>
             <a href="/rfcs/listado/anomalias" target="_blank" class="btn btn-info" role="button">
-                <span th:text="${anomalias.size() + ' anomalías '}"></span>
+                <span class="resumen-rfcs-value" th:text="${anomalias.size() + ' anomalías '}"></span>
                 <span class="glyphicon glyphicon-warning-sign"></span>
             </a>
             <a href="/rfcs/listado/paradas" target="_blank" class="btn btn-info" role="button">
-                <span th:text="${paradas.size() + ' paradas '}"></span>
+                <span class="resumen-rfcs-value" th:text="${paradas.size() + ' paradas '}"></span>
                 <span class="glyphicon glyphicon-ban-circle"></span>
             </a>
         </div>

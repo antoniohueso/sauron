@@ -58,12 +58,12 @@ public class HomeController {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
         try {
-            Collection<CalendarEvent> rfcs = rfcService.rfcsEvents(df.parse(start), df.parse(end));
+            Iterable<CalendarEvent> rfcs = rfcService.rfcsEvents(df.parse(start), df.parse(end));
 
             Iterable<CalendarEvent> vacaciones = worklogService.vacaciones(df.parse(start), df.parse(end),null);
 
             Collection<CalendarEvent> result = Lists.newArrayList(vacaciones);
-            result.addAll(rfcs);
+            result.addAll(Lists.newArrayList(rfcs));
 
             return result;
 

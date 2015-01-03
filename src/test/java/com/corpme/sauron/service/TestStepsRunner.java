@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         format = { "pretty", "html: html-report" },
         dryRun = false,
-        tags = {"@rfcsEvents"},
+        tags = {"@resumenRfcs"},
         glue = "com.corpme.sauron.service" )
 public class TestStepsRunner {
 }

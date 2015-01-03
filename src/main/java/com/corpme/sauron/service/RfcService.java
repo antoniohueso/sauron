@@ -4,10 +4,13 @@ import com.corpme.sauron.config.ApplicationException;
 import com.corpme.sauron.domain.*;
 import com.corpme.sauron.service.bean.AnomaliaRfc;
 import com.corpme.sauron.service.bean.CalendarEvent;
+import com.corpme.sauron.service.bean.CalendarEventType;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
@@ -28,66 +31,56 @@ public class RfcService {
     @Autowired
     RfcRepository rfcRepository;
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    @Autowired
+    UtilsService utilsService;
+
+    final Logger logger = LoggerFactory.getLogger(getClass());
 
     public Map<String,Collection> resumenRfcs() {
         final DateFormat df = new SimpleDateFormat("EEEE dd/MM/yyyy");
 
-        final Calendar hoy = getComparableDate(new Date());
 
-        Iterable<Rfc> rfcs = rfcRepository.findRfcsEnCurso();
+        final Collection<Rfc> pendientes = new ArrayList();
+        final Collection<Rfc> paradas = new ArrayList();
+        final Collection<AnomaliaRfc> anomalias = new ArrayList();
+        final Collection<Rfc> vencidas = new ArrayList();
+        final Collection<Rfc> encurso = new ArrayList();
 
-        Collection<Rfc> pendientes = new ArrayList();
-        Collection<Rfc> paradas = new ArrayList();
-        Collection<AnomaliaRfc> anomalias = new ArrayList();
-        Collection<Rfc> vencidas = new ArrayList();
-        Collection<Rfc> encurso = new ArrayList();
-
-        Map<String,Collection> result = new HashMap();
+        final Map<String,Collection> result = new HashMap();
         result.put("encurso",encurso);
         result.put("anomalias",anomalias);
         result.put("vencidas",vencidas);
         result.put("pendientes",pendientes);
         result.put("paradas",paradas);
 
-        for(Rfc rfc : rfcs) {
+        final Iterable<Rfc> rfcs = rfcRepository.findRfcsEnCurso();
 
-            calculaPorcentajeCompletado(rfc);
-
-            final Calendar fInicioDesarrollo = getComparableDate(rfc.getfInicioDesarrollo());
-            final Calendar fFinDesarrollo = getComparableDate(rfc.getfFinDesarrollo());
-            final Calendar fInicioCalidad = getComparableDate(rfc.getfInicioCalidad());
-            final Calendar fFinCalidad = getComparableDate(rfc.getfFinCalidad());
-            final Calendar fPasoProd = getComparableDate(rfc.getfPasoProd());
-
-            if(rfc.getStatus().getId() != StatusKey.OPEN.getValue() && rfc.getStatus().getId() != StatusKey.DETENIDA.getValue()
-                    && rfc.getIssuelinks().size() == 0) {
-                anomalias.add(new AnomaliaRfc(rfc,"La rfc no tiene issues asociadas"));
+        rfcs.forEach((rfc) -> {
+            String anomalia = valid(rfc);
+            if(anomalia != null) {
+                anomalias.add(new AnomaliaRfc(rfc,anomalia));
             }
-            else if(rfc.getStatus().getId() == StatusKey.OPEN.getValue()){
-                pendientes.add(rfc);
-            }
-            else if(rfc.getStatus().getId() == StatusKey.DETENIDA.getValue()){
-                paradas.add(rfc);
-            }
-            else if(rfc.getStatus().getId() == StatusKey.DESARROLLANDO.getValue()
-                    || rfc.getStatus().getId() == StatusKey.RESOLVED.getValue()){
-
-                String anomalia = null;
-
-                if(fInicioDesarrollo == null || fFinDesarrollo == null) {
-                    anomalia = "El desarrollo está en curso y no tiene fechas de inicio " +
-                            "y/o fin de planificación desarrollo";
+            else {
+                if(isPendienteStatus(rfc.getStatus())) pendientes.add(rfc);
+                else if(isDetenidaStatus(rfc.getStatus())) paradas.add(rfc);
+                else if(isDesarrolloStatus(rfc.getStatus())) {
+                    if(isVencida(rfc.getfFinDesarrollo())) {
+                        vencidas.add(rfc);
+                    }
+                    else {
+                        encurso.add(rfc);
+                    }
                 }
-                else if(fInicioDesarrollo.after(fFinDesarrollo)) {
-                    anomalia = "La fecha de fin de desarrollo es mayor que la fecha de inicio";
+                else if(isCalidadStatus(rfc.getStatus())) {
+                    if(isVencida(rfc.getfFinCalidad())) {
+                        vencidas.add(rfc);
+                    }
+                    else {
+                        encurso.add(rfc);
+                    }
                 }
-
-                if(anomalia != null) {
-                    anomalias.add(new AnomaliaRfc(rfc,anomalia));
-                }
-                else {
-                    if(hoy.after(fFinDesarrollo)) {
+                else if(isFinalizadaStatus(rfc.getStatus())) {
+                    if(isVencida(rfc.getfPasoProd())) {
                         vencidas.add(rfc);
                     }
                     else {
@@ -95,225 +88,166 @@ public class RfcService {
                     }
                 }
             }
-            else if(rfc.getStatus().getId() == StatusKey.DISPONIBLE_PARA_PRUEBAS.getValue()
-                    || rfc.getStatus().getId() == StatusKey.PROBANDO.getValue()
-                    || rfc.getStatus().getId() == StatusKey.DETECTADO_ERROR_PRUEBAS.getValue()){
-
-
-                String anomalia = null;
-
-                if(fInicioDesarrollo == null || fFinDesarrollo == null) {
-                    anomalia = anomalia!=null?", ":"" + "Las pruebas están en curso  y no tiene fechas de inicio " +
-                            "y/o fin de planificación desarrollo";
-                }
-                else if(fInicioDesarrollo.after(fFinDesarrollo)) {
-                    anomalia = anomalia!=null?", ":"" + "La fecha de fin de desarrollo es mayor que la fecha de inicio";
-                }
-
-                if(fInicioCalidad == null || fFinCalidad == null) {
-                    anomalia = anomalia!=null?", ":"" + "Las pruebas están en curso y no tiene fechas de inicio y/o " +
-                            "fin de planificación de pruebas";
-                }
-                else if(fInicioCalidad.after(fFinCalidad)) {
-                    anomalia = anomalia!=null?", ":"" + "La fechas de fin de pruebas es mayor que la fecha de inicio";
-                }
-
-                if(anomalia != null) {
-                    anomalias.add(new AnomaliaRfc(rfc,anomalia));
-                }
-                else {
-                    if(hoy.after(fFinCalidad)) {
-                        vencidas.add(rfc);
-                    }
-                    else {
-                        encurso.add(rfc);
-                    }
-                }
-
-            }
-            else if(rfc.getStatus().getId() == StatusKey.FINALIZADA.getValue()){
-
-                String anomalia = null;
-
-                if(fInicioDesarrollo == null || fFinDesarrollo == null) {
-                    anomalia = "El desarrollo está finalizado y no tiene fechas de inicio " +
-                            "y/o fin de planificación desarrollo";
-                }
-                else if(fInicioDesarrollo.after(fFinDesarrollo)) {
-                    anomalia = "La fecha de fin de desarrollo es mayor que la fecha de inicio";
-                }
-
-                if(fInicioCalidad == null || fFinCalidad == null) {
-                    anomalia = anomalia!=null?", ":"" + "El desarrollo está finalizado y y no tiene fechas de inicio y/o " +
-                            "fin de planificación de pruebas";
-                }
-                else if(fInicioCalidad.after(fFinCalidad)) {
-                    anomalia = anomalia!=null?", ":"" + "La fechas de fin de pruebas es mayor que la fecha de inicio";
-                }
-
-                if(fPasoProd == null) {
-                    anomalia = anomalia!=null?", ":"" + "El desarrollo está finalizado " +
-                            "y no tiene fecha de paso a producción";
-                }
-
-                if(anomalia != null) {
-                    anomalias.add(new AnomaliaRfc(rfc,anomalia));
-                }
-                else {
-                    if(hoy.after(fPasoProd)) {
-                        vencidas.add(rfc);
-                    }
-                    else {
-                        encurso.add(rfc);
-                    }
-                }
-            }
-        }
+        });
 
         return result;
     }
 
-    public Collection<CalendarEvent> rfcsEvents(Date fdesde,Date fhasta) {
+    public boolean isVencida(final Date fecha) {
+        return utilsService.getComparableDate(new Date()).after(utilsService.getComparableDate(fecha));
+    }
+
+    public boolean isCalidadStatus(final Status status) {
+        return status.getId() == StatusKey.DISPONIBLE_PARA_PRUEBAS.getValue()
+                || status.getId() == StatusKey.PROBANDO.getValue()
+                || status.getId() == StatusKey.DETECTADO_ERROR_PRUEBAS.getValue();
+    }
+
+    public boolean isCerradaStatus(final Status status) {
+        return status.getId() == StatusKey.CERRADA.getValue()
+                || status.getId() == StatusKey.EN_PRODUCCION.getValue();
+    }
+
+    public boolean isFinalizadaStatus(final Status status) {
+        return status.getId() == StatusKey.FINALIZADA.getValue();
+    }
+
+    public boolean isDesarrolloStatus(final Status status) {
+        return status.getId() == StatusKey.DESARROLLANDO.getValue()
+                || status.getId() == StatusKey.RESOLVED.getValue();
+    }
+
+    public boolean isPendienteStatus(final Status status) {
+        return status.getId() == StatusKey.OPEN.getValue();
+    }
+
+    public boolean isDetenidaStatus(final Status status) {
+        return status.getId() == StatusKey.DETENIDA.getValue();
+    }
+
+    /**
+     * Comprueba si una Rfc es válida y tiene los campos necesarios según el estado
+     * @param rfc
+     * @return
+     */
+    public String valid(final Rfc rfc) {
+
+        final Collection<String> anomalias = new ArrayList();
+
+        final Calendar fInicioDesarrollo = utilsService.getComparableDate(rfc.getfInicioDesarrollo());
+        final Calendar fFinDesarrollo = utilsService.getComparableDate(rfc.getfFinDesarrollo());
+        final Calendar fInicioCalidad = utilsService.getComparableDate(rfc.getfInicioCalidad());
+        final Calendar fFinCalidad = utilsService.getComparableDate(rfc.getfFinCalidad());
+        final Calendar fPasoProd = utilsService.getComparableDate(rfc.getfPasoProd());
+
+
+        if(isPendienteStatus(rfc.getStatus())
+                || isDetenidaStatus(rfc.getStatus())
+                || isCerradaStatus(rfc.getStatus())) return null;
+
+        if(rfc.getIssuelinks().size() == 0) {
+            anomalias.add("La rfc no tiene tareas asociadas");
+        }
+
+        if(fInicioDesarrollo == null || fFinDesarrollo == null) {
+            anomalias.add("La rfc no tiene fechas de inicio " +
+                    "y/o fin de planificación desarrollo");
+        }
+        else if(fInicioDesarrollo.after(fFinDesarrollo)) {
+            anomalias.add("La fecha de fin de desarrollo es mayor que la fecha de inicio");
+        }
+
+        if(isCalidadStatus(rfc.getStatus()) || isFinalizadaStatus(rfc.getStatus())) {
+            if(fInicioCalidad == null || fFinCalidad == null){
+                anomalias.add("La rfc no tiene fechas de inicio y/o fin de planificación de pruebas");
+            }
+            else if(fInicioCalidad.after(fFinCalidad)) {
+                anomalias.add("La fechas de fin de pruebas es mayor que la fecha de inicio");
+            }
+        }
+
+        if(isFinalizadaStatus(rfc.getStatus()) && fPasoProd == null) {
+            anomalias.add("la rfc está finalizada y no tiene fecha de paso a producción");
+        }
+
+        if(anomalias.size() == 0) return null;
+
+        return String.join(",",anomalias);
+    }
+
+
+    public Iterable<CalendarEvent> rfcsEvents(final Date fdesde,final Date fhasta) {
 
         final DateFormat df = new SimpleDateFormat("EEEE dd/MM/yyyy");
 
-        final Calendar hasta = getComparableDate(fhasta);
-        final Calendar desde = getComparableDate(fdesde);
-
+        final Calendar hasta = utilsService.getComparableDate(fhasta);
+        final Calendar desde = utilsService.getComparableDate(fdesde);
 
         if (desde.after(hasta)) {
             throw new ApplicationException("La fecha desde no puede ser mayor que la fecha hasta. F.Desde="
                     + df.format(desde.getTime()) + ", F.Hasta=" + df.format(hasta.getTime()));
         }
 
-        Iterable<Rfc> rfcs = rfcRepository.findRfcsByDate(desde.getTime(),hasta.getTime());
+        final Iterable<Rfc> rfcs = rfcRepository.findRfcsByDate(desde.getTime(),hasta.getTime());
+        final CalendarService calendarService = new CalendarService();
+        final Calendar hoy = utilsService.getComparableDate(new Date());
 
-        Collection<CalendarEvent> rfcEv = new ArrayList();
+        rfcs.forEach((rfc) -> {
 
-        for(Rfc rfc : rfcs) {
+            final Calendar fdueDate;
+            if(rfc.getfPasoProd() != null) fdueDate = utilsService.getComparableDate(rfc.getfPasoProd());
+            else if(rfc.getfFinCalidad() != null) fdueDate = utilsService.getComparableDate(rfc.getfFinCalidad());
+            else if(rfc.getfFinDesarrollo() != null) fdueDate = utilsService.getComparableDate(rfc.getfFinDesarrollo());
+            else fdueDate = null;
 
-            calculaPorcentajeCompletado(rfc);
+            final boolean vencida = (fdueDate != null && hoy.after(fdueDate));
 
-            final Calendar fInicioDesarrollo = getComparableDate(rfc.getfInicioDesarrollo());
-            final Calendar fFinDesarrollo = getComparableDate(rfc.getfFinDesarrollo());
-            final Calendar fInicioCalidad = getComparableDate(rfc.getfInicioCalidad());
-            final Calendar fFinCalidad = getComparableDate(rfc.getfFinCalidad());
-            final Calendar fPasoProd = getComparableDate(rfc.getfPasoProd());
+            final StringBuilder title = new StringBuilder(vencida?"(V)":"")
+                    .append(rfc.getIssuekey()).append(" - ").append(rfc.getSummary());
 
-            Calendar fMax = null;
-            if(fFinDesarrollo != null) fMax = getComparableDate(fFinDesarrollo.getTime());
-            if(fFinCalidad != null) fMax = getComparableDate(fFinCalidad.getTime());
-            if(fPasoProd != null) fMax = getComparableDate(fPasoProd.getTime());
+            calendarService.addEvents(rfc.getfInicioDesarrollo(),rfc.getfFinDesarrollo(),(fecha)-> {
+                CalendarEvent ev = new CalendarEvent(fecha.getTime(), title.toString(), CalendarEventType.INFO,rfc);
+                if(vencida) ev.setAlerta("Vencida");
+                return ev;
+            });
 
-            generaEventos(rfc,"calendar-normal",fInicioDesarrollo,fFinDesarrollo,rfcEv,fMax);
-            generaEventos(rfc,"calendar-calidad",fInicioCalidad,fFinCalidad,rfcEv,fMax);
-            generaEventos(rfc,"calendar-produccion",fPasoProd,fPasoProd,rfcEv,fMax);
-        }
+            calendarService.addEvents(rfc.getfInicioCalidad(),rfc.getfFinCalidad(),(fecha)-> {
+                CalendarEvent ev = new CalendarEvent(fecha.getTime(), title.toString(), CalendarEventType.WARNING,rfc);
+                if(vencida) ev.setAlerta("Vencida");
+                return ev;
+            });
 
-        return rfcEv;
+            calendarService.addEvents(rfc.getfPasoProd(),rfc.getfPasoProd(),(fecha)-> {
+                CalendarEvent ev = new CalendarEvent(fecha.getTime(), title.toString(), CalendarEventType.SUCCESS,rfc);
+                if(vencida) ev.setAlerta("Vencida");
+                return ev;
+            });
+
+        });
+
+        return calendarService.getEvents();
     }
 
-    public Rfc rfc(String key) {
-        Rfc rfc = rfcRepository.findByIssuekey(key);
+    public Rfc rfc(final String key) {
+        final Rfc rfc = rfcRepository.findByIssuekey(key);
         if (rfc == null) {
             throw new ApplicationException("La RFC " + key + " no existe");
         }
 
-        calculaPorcentajeCompletado(rfc);
-
-        rfc.setDescription(stringToHtml(rfc.getDescription()));
-        rfc.setPlanpasoprod(stringToHtml(rfc.getPlanpasoprod()));
-        rfc.setPlanmarchaatras(stringToHtml(rfc.getPlanmarchaatras()));
-        rfc.setSolucion(stringToHtml(rfc.getSolucion()));
-        rfc.setTablasAfectadas(stringToHtml(rfc.getTablasAfectadas()));
-        rfc.setAcuerdoFuncional(stringToHtml(rfc.getAcuerdoFuncional()));
-        rfc.setCausaDetencion(stringToHtml(rfc.getCausaDetencion()));
-        rfc.setObservaciones(stringToHtml(rfc.getObservaciones()));
-        rfc.setPlanpruebas(stringToHtml(rfc.getPlanpruebas()));
-        rfc.setPlanPruebasValidacion(stringToHtml(rfc.getPlanPruebasValidacion()));
+        rfc.setDescription(utilsService.parseUrlsToHtml(rfc.getDescription()));
+        rfc.setPlanpasoprod(utilsService.parseUrlsToHtml(rfc.getPlanpasoprod()));
+        rfc.setPlanmarchaatras(utilsService.parseUrlsToHtml(rfc.getPlanmarchaatras()));
+        rfc.setSolucion(utilsService.parseUrlsToHtml(rfc.getSolucion()));
+        rfc.setTablasAfectadas(utilsService.parseUrlsToHtml(rfc.getTablasAfectadas()));
+        rfc.setAcuerdoFuncional(utilsService.parseUrlsToHtml(rfc.getAcuerdoFuncional()));
+        rfc.setCausaDetencion(utilsService.parseUrlsToHtml(rfc.getCausaDetencion()));
+        rfc.setObservaciones(utilsService.parseUrlsToHtml(rfc.getObservaciones()));
+        rfc.setPlanpruebas(utilsService.parseUrlsToHtml(rfc.getPlanpruebas()));
+        rfc.setPlanPruebasValidacion(utilsService.parseUrlsToHtml(rfc.getPlanPruebasValidacion()));
 
 
 
         return rfc;
-    }
-
-    String stringToHtml(String cad) {
-        if(cad == null) return null;
-
-        Pattern pattern = Pattern.compile("\\(?\\b(http://|www[.])[-A-Za-z0-9+&amp;@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&amp;@#/%=~_()|]");
-        Matcher m = pattern.matcher(cad);
-        StringBuffer sb = new StringBuffer();
-        while(m.find()){
-            String found = m.group(0);
-            m.appendReplacement(sb,"<a target=\"_blank\" href=\"" + found + "\">" + found + "</a>");
-        }
-
-        m.appendTail(sb);
-
-        return sb.toString().replaceAll("(\r\n|\n)", "<br/>");
-
-    }
-
-
-
-    void generaEventos(Rfc rfc,String className,Calendar desde,Calendar hasta
-            ,Collection<CalendarEvent> events,Calendar fechaMax) {
-
-        if(desde == null || hasta == null) return;
-
-        boolean vencida = false;
-
-        final Calendar hoy = getComparableDate(new Date());
-
-        final Calendar fecha = new GregorianCalendar();
-        fecha.setTime(desde.getTime());
-
-        String comment = null;
-
-        String title = rfc.getIssuekey() + " - "+rfc.getSummary();
-
-        if(hoy.after(fechaMax)) {
-            comment = "Rfc vencida";
-            title = "(V)"+title;
-            vencida = true;
-        }
-
-        if(rfc.getStatus().getId() == StatusKey.EN_PRODUCCION.getValue()
-                || rfc.getStatus().getId() == StatusKey.CERRADA.getValue()) {
-            title = "(P)"+title;
-        }
-
-        while(!fecha.after(hasta)) {
-            CalendarEvent calendarEvent = new CalendarEvent(title
-                    ,fecha.getTime(),className,rfc);
-            if(vencida) {
-                calendarEvent.setAlerta("Vencida");
-            }
-            events.add(calendarEvent);
-
-            fecha.add(Calendar.DAY_OF_MONTH,1);
-        }
-
-    }
-
-    /**
-     * Helper que devuelve una fecha son las HH:MM:SS.SSS a cero
-     * @param fecha
-     * @return
-     */
-    Calendar getComparableDate(Date fecha) {
-
-        if(fecha == null) return null;
-
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(fecha);
-
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-
-        return cal;
     }
 
     /**
@@ -330,7 +264,7 @@ public class RfcService {
 
         final DateFormat df = new SimpleDateFormat("EEEE dd/MM/yyyy");
 
-        final Calendar hoy = getComparableDate(new Date());
+        final Calendar hoy = utilsService.getComparableDate(new Date());
 
         Iterable<Rfc> rfcs = rfcRepository.findRfcsEnCurso();
 
@@ -352,8 +286,6 @@ public class RfcService {
 
         for(Rfc rfc : rfcs) {
 
-            calculaPorcentajeCompletado(rfc);
-
             if(rfc.getStatus().getId() == StatusKey.OPEN.getValue()){
                 pendientes.add(rfc);
             }
@@ -374,8 +306,8 @@ public class RfcService {
             }
         }
 
-        Calendar desde = getComparableDate(new Date());
-        Calendar hasta = getComparableDate(new Date());
+        Calendar desde = utilsService.getComparableDate(new Date());
+        Calendar hasta = utilsService.getComparableDate(new Date());
         desde.add(Calendar.DAY_OF_MONTH, -60);
 
         rfcs = rfcRepository.findRfcsEnProduccionByDate(desde.getTime(),hasta.getTime());
@@ -385,52 +317,6 @@ public class RfcService {
         return result;
     }
 
-    /**
-     * Helper que calcula en la variable @Trasient porcentajeCompletado de la clase Rfc
-     * @param rfc
-     */
-    void calculaPorcentajeCompletado(Rfc rfc) {
 
-        if(rfc.getIssuelinks() == null) return;
-
-        int total = rfc.getIssuelinks().size();
-        Double tareas = 0.0;
-
-        if(total == 0) {
-            rfc.setPorcentajeCompletado(0);
-            return;
-        }
-        for (RfcIssueLink rfcIssueLink : rfc.getIssuelinks()) {
-            Issue issue = rfcIssueLink.getIssue();
-            if(issue.getStatus().getId() == StatusKey.DESARROLLANDO.getValue()) {
-                tareas += 0.2;
-            }
-            else if(issue.getStatus().getId() == StatusKey.RESOLVED.getValue()){
-                tareas += 0.35;
-            }
-            else if(issue.getStatus().getId() == StatusKey.DISPONIBLE_PARA_PRUEBAS.getValue()) {
-                tareas += 0.5;
-            }
-            else if(issue.getStatus().getId() == StatusKey.PROBANDO.getValue()) {
-                tareas += 0.7;
-            }
-            else if(issue.getStatus().getId() == StatusKey.DETECTADO_ERROR_PRUEBAS.getValue()){
-                tareas += 0.5;
-            }
-            else if(issue.getStatus().getId() == StatusKey.FINALIZADA.getValue()
-                    || issue.getStatus().getId() == StatusKey.CERRADA.getValue()
-                    || issue.getStatus().getId() == StatusKey.EN_PRODUCCION.getValue()){
-                tareas += 1.0;
-            }
-            // El resto las considero pendientes (Abierta, Detenida...)
-            else {
-                tareas += 0.0;
-            }
-        }
-
-        Double perc = Math.floor((tareas * 100) / total);
-
-        rfc.setPorcentajeCompletado(perc.intValue());
-    }
 
 }
