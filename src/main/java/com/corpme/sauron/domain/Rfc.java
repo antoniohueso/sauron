@@ -9,7 +9,7 @@ import java.util.Date;
 public class Rfc {
 
     @Id
-    long id;
+    Long id;
 
     @Column(name = "issuekey")
     String issuekey;
@@ -126,11 +126,11 @@ public class Rfc {
     @Column(name = "causaDetencion")
     String causaDetencion;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
