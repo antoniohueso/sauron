@@ -55,8 +55,8 @@ Feature: Resumen de rfcs en curso.
     When Consulto el resumen de rfcs
     Then No debe devolver ninguna RFC
 
-  Scenario: En el resumen deberá aparecer clasificadas como En curso las tareas RFCS en estado En pruebas que
-  cumplan las reglas descritas en el enunciado.
+  Scenario: En el resumen deberá aparecer clasificadas como En curso las RFCS que cumplan las reglas descritas en el
+  enunciado.
     Given 1 rfc valida creada en estado "DESARROLLANDO"
     And 1 rfc valida creada en estado "DISPONIBLE_PARA_PRUEBAS"
     And 1 rfc valida creada en estado "PROBANDO"
@@ -68,3 +68,34 @@ Feature: Resumen de rfcs en curso.
     Then Debe devolver 5 rfc en la clasificación "encurso"
     And  Debe devolver 1 rfc en la clasificación "paradas"
     And  Debe devolver 1 rfc en la clasificación "pendientes"
+
+  Scenario: Las RFCS sin tareas asociadas aparecerán clasificadas como Anomalías.
+    Given 1 rfc creada en estado "DESARROLLANDO"
+    And 1 rfc creada en estado "DISPONIBLE_PARA_PRUEBAS"
+    And 1 rfc creada en estado "PROBANDO"
+    And 1 rfc creada en estado "DETECTADO_ERROR_PRUEBAS"
+    And 1 rfc creada en estado "FINALIZADA"
+    When Consulto el resumen de rfcs
+    Then Debe devolver 5 rfc en la clasificación "anomalias"
+
+  Scenario: Las RFCS sin fecha de planificación válida aparecerán clasificadas como Anomalías.
+    Given 1 rfc creada en estado "DESARROLLANDO" con tareas asociadas con una fecha no valida
+    And 1 rfc creada en estado "DESARROLLANDO" con tareas asociadas con una fecha de inicio mayor que la de fin
+    And 1 rfc creada en estado "DISPONIBLE_PARA_PRUEBAS" con tareas asociadas con una fecha no valida
+    And 1 rfc creada en estado "DISPONIBLE_PARA_PRUEBAS" con tareas asociadas con una fecha de inicio mayor que la de fin
+    And 1 rfc creada en estado "PROBANDO" con tareas asociadas con una fecha no valida
+    And 1 rfc creada en estado "PROBANDO" con tareas asociadas con una fecha de inicio mayor que la de fin
+    And 1 rfc creada en estado "DETECTADO_ERROR_PRUEBAS" con tareas asociadas con una fecha no valida
+    And 1 rfc creada en estado "DETECTADO_ERROR_PRUEBAS" con tareas asociadas con una fecha de inicio mayor que la de fin
+    When Consulto el resumen de rfcs
+    Then Debe devolver 8 rfc en la clasificación "anomalias"
+
+  Scenario: Las RFCS con la fecha de fin menor que la fecha actual aparecerán clasificadas como anomalías.
+    Given 1 rfc creada en estado "DESARROLLANDO" con fecha de fin vencida
+    And 1 rfc creada en estado "DISPONIBLE_PARA_PRUEBAS" con fecha de fin vencida
+    And 1 rfc creada en estado "PROBANDO" con fecha de fin vencida
+    And 1 rfc creada en estado "DETECTADO_ERROR_PRUEBAS" con fecha de fin vencida
+    And 1 rfc creada en estado "FINALIZADA" con fecha de fin vencida
+    When Consulto el resumen de rfcs
+    Then Debe devolver 5 rfc en la clasificación "vencidas"
+

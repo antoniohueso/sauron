@@ -117,4 +117,73 @@ public class ResumenRfcsStepdefs {
         }
 
     }
+
+    @Given("^(\\d+) rfc creada en estado \"([^\"]*)\" con tareas asociadas con una fecha no valida$")
+    public void rfc_creada_en_estado_con_tareas_asociadas_con_una_fecha_no_valida(int num, String estado) throws Throwable {
+        StatusKey statusKey = StatusKey.valueOf(estado);
+
+        for(int i = 0 ; i < num ; i++) {
+
+            Rfc rfc = rfcsHelper.addRfcWithEstado(statusKey);
+            if (statusKey.equals(StatusKey.DESARROLLANDO)) {
+                rfcsHelper.planificaDesarrollo(null, null, rfc);
+            } else if (statusKey.equals(StatusKey.FINALIZADA)) {
+                rfcsHelper.planificaDesarrollo(new Date(), new Date(), rfc);
+                rfcsHelper.planificaPruebas(new Date(), new Date(), rfc);
+                rfcsHelper.planificaPasoProduccion(null, rfc);
+            } else {
+                rfcsHelper.planificaDesarrollo(new Date(), new Date(), rfc);
+                rfcsHelper.planificaPruebas(null, null, rfc);
+            }
+            rfcsHelper.asignaTarea(rfc);
+        }
+    }
+
+    @Given("^(\\d+) rfc creada en estado \"([^\"]*)\" con tareas asociadas con una fecha de inicio mayor que la de fin$")
+    public void rfc_creada_en_estado_con_tareas_asociadas_con_una_fecha_de_inicio_mayor_que_la_de_fin(int num, String estado)
+            throws Throwable {
+
+        StatusKey statusKey = StatusKey.valueOf(estado);
+
+        Calendar fecha = new GregorianCalendar();
+        fecha.add(Calendar.MONTH, -1);
+
+        for(int i = 0 ; i < num ; i++) {
+
+            Rfc rfc = rfcsHelper.addRfcWithEstado(statusKey);
+            if (statusKey.equals(StatusKey.DESARROLLANDO)) {
+                rfcsHelper.planificaDesarrollo(new Date(), fecha.getTime(), rfc);
+            } else {
+                rfcsHelper.planificaDesarrollo(new Date(), new Date(), rfc);
+                rfcsHelper.planificaPruebas(new Date(), fecha.getTime(), rfc);
+            }
+            rfcsHelper.asignaTarea(rfc);
+        }
+    }
+
+    @Given("^(\\d+) rfc creada en estado \"([^\"]*)\" con fecha de fin vencida$")
+    public void rfc_creada_en_estado_con_fecha_de_fin_vencida(int num, String estado) throws Throwable {
+        StatusKey statusKey = StatusKey.valueOf(estado);
+
+        Calendar desde = new GregorianCalendar();
+        desde.add(Calendar.DAY_OF_MONTH, -15);
+        Calendar hasta = new GregorianCalendar();
+        hasta.add(Calendar.DAY_OF_MONTH, -5);
+
+        for(int i = 0 ; i < num ; i++) {
+
+            Rfc rfc = rfcsHelper.addRfcWithEstado(statusKey);
+            if (statusKey.equals(StatusKey.DESARROLLANDO)) {
+                rfcsHelper.planificaDesarrollo(desde.getTime(), hasta.getTime(), rfc);
+            } else if (statusKey.equals(StatusKey.FINALIZADA)) {
+                rfcsHelper.planificaDesarrollo(new Date(), new Date(), rfc);
+                rfcsHelper.planificaPruebas(new Date(), new Date(), rfc);
+                rfcsHelper.planificaPasoProduccion(hasta.getTime(), rfc);
+            } else {
+                rfcsHelper.planificaDesarrollo(new Date(), new Date(), rfc);
+                rfcsHelper.planificaPruebas(desde.getTime(), hasta.getTime(), rfc);
+            }
+            rfcsHelper.asignaTarea(rfc);
+        }
+    }
 }
