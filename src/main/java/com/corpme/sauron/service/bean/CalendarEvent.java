@@ -8,17 +8,17 @@ public class CalendarEvent {
 
     String title;
     String start;
-    CalendarEventType type;
+    CalendarEventType eventType;
     String alerta;
     String comentario;
     Object data;
 
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-    public CalendarEvent(final Date fecha, final String title, final CalendarEventType type,final Object data) {
+    public CalendarEvent(final Date fecha, final String title, final CalendarEventType eventType,final Object data) {
         this.title = title;
         this.start = df.format(fecha);
-        this.type = type;
+        this.eventType = eventType;
         this.data = data;
     }
 
@@ -47,15 +47,15 @@ public class CalendarEvent {
     }
 
     public String getClassName() {
-        return type.getValue();
+        return eventType.getValue();
     }
 
-    public CalendarEventType getType() {
-        return type;
+    public CalendarEventType getEventType() {
+        return eventType;
     }
 
-    public void setType(CalendarEventType type) {
-        this.type = type;
+    public void setEventType(CalendarEventType eventType) {
+        this.eventType = eventType;
     }
 
     public String getAlerta() {

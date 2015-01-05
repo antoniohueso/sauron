@@ -46,7 +46,7 @@ public class WorklogService {
         Iterator it = result.iterator();
         while (it.hasNext()) {
             CalendarEvent event = (CalendarEvent)it.next();
-            if(!event.getClassName().equalsIgnoreCase("calendar-danger") && !event.getClassName().equals("calendar-produccion")) {
+            if(!event.getEventType().equals(CalendarEventType.DANGER) && !event.getEventType().equals(CalendarEventType.SUCCESS)) {
                 it.remove();
             }
         }
@@ -155,6 +155,7 @@ public class WorklogService {
                     if(user != null) {
                         Iterable<Worklog> wlogs = worklogsRepository.findWorklogsInDay(ue.getFecha(), users);
                         Collection<Worklog> list = Lists.newArrayList(wlogs);
+
                         if(list.size() < (usersServiciosCentrales.size() / 2)) {
                             calendarService.addEvent(ue.getFecha(), "(00:00) "+ list.size()+" imputaciones"
                                     , CalendarEventType.INFO.SUCCESS,null);
