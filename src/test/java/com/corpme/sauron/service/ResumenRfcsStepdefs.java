@@ -186,4 +186,10 @@ public class ResumenRfcsStepdefs {
             rfcsHelper.asignaTarea(rfc);
         }
     }
+
+    @And("^(\\d+) rfc que no tenga equipo asignado$")
+    public void rfc_que_no_tenga_equipo_asignado(int arg1) throws Throwable {
+        // Express the Regexp above with the code you wish you had
+        throw new PendingException();
+    }
 }
