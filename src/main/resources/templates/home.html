@@ -37,6 +37,19 @@
         </div>
     </div>
 
+    <div class="row" style="margin-top: 1.5em;">
+        <div class="col-md-12">
+            <form>
+                <div class="input-group">
+                    <input id="filter" type="text" class="form-control" placeholder="La RFC contiene..."/>
+                    <span class="input-group-btn">
+                        <button id="btn-filter" class="btn btn-default" type="button">Filtrar</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="row" id="content">
 
         <div class="col-md-12">
@@ -56,7 +69,9 @@
 
 <script>
 
-    config_calendar('/home/home-events',null,'basicWeek');
+    config_calendar_rfcs('/home/home-events','basicWeek');
+
+
 
 </script>
 

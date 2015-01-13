@@ -44,12 +44,12 @@ public class RfcController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/rfcs-events")
     public @ResponseBody Iterable<CalendarEvent> rfcsEvents(
-            @RequestParam String start, @RequestParam String end) {
+            @RequestParam String start, @RequestParam String end, @RequestParam(required = false) String filtro) {
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
         try {
-            return rfcService.rfcsEvents(df.parse(start), df.parse(end));
+            return rfcService.rfcsEvents(df.parse(start), df.parse(end), filtro);
         } catch (ParseException e) {
             throw new ApplicationException("Se ha producido un error al parsear las fechas: " + start + " y " + end);
         }

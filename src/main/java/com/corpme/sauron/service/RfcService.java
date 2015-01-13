@@ -176,7 +176,7 @@ public class RfcService {
     }
 
 
-    public Iterable<CalendarEvent> rfcsEvents(final Date fdesde,final Date fhasta) {
+    public Iterable<CalendarEvent> rfcsEvents(final Date fdesde,final Date fhasta,String filtro) {
 
         final DateFormat df = new SimpleDateFormat("EEEE dd/MM/yyyy");
 
@@ -194,38 +194,80 @@ public class RfcService {
 
         rfcs.forEach((rfc) -> {
 
-            final Calendar fdueDate;
-            if(rfc.getfPasoProd() != null) fdueDate = utilsService.getComparableDate(rfc.getfPasoProd());
-            else if(rfc.getfFinCalidad() != null) fdueDate = utilsService.getComparableDate(rfc.getfFinCalidad());
-            else if(rfc.getfFinDesarrollo() != null) fdueDate = utilsService.getComparableDate(rfc.getfFinDesarrollo());
-            else fdueDate = null;
+            if(rfcContains(rfc,filtro)) {
 
-            final boolean vencida = (fdueDate != null && hoy.after(fdueDate));
+                final Calendar fdueDate;
+                if (rfc.getfPasoProd() != null) fdueDate = utilsService.getComparableDate(rfc.getfPasoProd());
+                else if (rfc.getfFinCalidad() != null) fdueDate = utilsService.getComparableDate(rfc.getfFinCalidad());
+                else if (rfc.getfFinDesarrollo() != null)
+                    fdueDate = utilsService.getComparableDate(rfc.getfFinDesarrollo());
+                else fdueDate = null;
 
-            final StringBuilder title = new StringBuilder(vencida?"(V)":"")
-                    .append(rfc.getIssuekey()).append(" - ").append(rfc.getSummary());
+                final boolean vencida = (fdueDate != null && hoy.after(fdueDate));
 
-            calendarService.addEvents(rfc.getfInicioDesarrollo(),rfc.getfFinDesarrollo(),(fecha)-> {
-                CalendarEvent ev = new CalendarEvent(fecha.getTime(), title.toString(), CalendarEventType.INFO,rfc);
-                if(vencida) ev.setAlerta("Vencida");
-                return ev;
-            });
+                final StringBuilder title = new StringBuilder(vencida ? "(V)" : "")
+                        .append(rfc.getIssuekey()).append(" - ").append(rfc.getSummary());
 
-            calendarService.addEvents(rfc.getfInicioCalidad(),rfc.getfFinCalidad(),(fecha)-> {
-                CalendarEvent ev = new CalendarEvent(fecha.getTime(), title.toString(), CalendarEventType.WARNING,rfc);
-                if(vencida) ev.setAlerta("Vencida");
-                return ev;
-            });
+                calendarService.addEvents(rfc.getfInicioDesarrollo(), rfc.getfFinDesarrollo(), (fecha) -> {
+                    CalendarEvent ev = new CalendarEvent(fecha.getTime(), title.toString(), CalendarEventType.INFO, rfc);
+                    if (vencida) ev.setAlerta("Vencida");
+                    return ev;
+                });
 
-            calendarService.addEvents(rfc.getfPasoProd(),rfc.getfPasoProd(),(fecha)-> {
-                CalendarEvent ev = new CalendarEvent(fecha.getTime(), title.toString(), CalendarEventType.SUCCESS,rfc);
-                if(vencida) ev.setAlerta("Vencida");
-                return ev;
-            });
+                calendarService.addEvents(rfc.getfInicioCalidad(), rfc.getfFinCalidad(), (fecha) -> {
+                    CalendarEvent ev = new CalendarEvent(fecha.getTime(), title.toString(), CalendarEventType.WARNING, rfc);
+                    if (vencida) ev.setAlerta("Vencida");
+                    return ev;
+                });
+
+                calendarService.addEvents(rfc.getfPasoProd(), rfc.getfPasoProd(), (fecha) -> {
+                    CalendarEvent ev = new CalendarEvent(fecha.getTime(), title.toString(), CalendarEventType.SUCCESS, rfc);
+                    if (vencida) ev.setAlerta("Vencida");
+                    return ev;
+                });
+            }
 
         });
 
         return calendarService.getEvents();
+    }
+
+    public boolean rfcContains(Rfc rfc,final String strfiltro) {
+        if(strfiltro == null || strfiltro.trim().length() == 0) return true;
+
+        final String filtro = strfiltro.toLowerCase();
+
+        if (rfc.getIssuekey().toLowerCase().contains(filtro)) {
+            return true;
+        }
+
+        if (rfc.getSummary().toLowerCase().contains(filtro)) {
+            return true;
+        }
+
+        if (rfc.getEquipodesarrollo().stream().anyMatch(u->
+            u.getUser().getDisplayName().toLowerCase().contains(filtro)
+                    || u.getUser().getEmailAddress().toLowerCase().contains(filtro)
+                    || u.getUser().getName().toLowerCase().contains(filtro)
+        )) {
+            return true;
+        }
+
+        if (rfc.getEquipocalidad().stream().anyMatch(u->
+            u.getUser().getDisplayName().toLowerCase().contains(filtro)
+                    || u.getUser().getEmailAddress().toLowerCase().contains(filtro)
+                    || u.getUser().getName().toLowerCase().contains(filtro)
+        )) {
+            return true;
+        }
+
+        if (rfc.getAssignee().getDisplayName().toLowerCase().contains(filtro)
+                || rfc.getAssignee().getEmailAddress().toLowerCase().contains(filtro)
+                || rfc.getAssignee().getName().toLowerCase().contains(filtro)) {
+            return true;
+        }
+
+        return false;
     }
 
     public Rfc rfc(final String key) {

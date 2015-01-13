@@ -53,12 +53,12 @@ public class HomeController {
     @RequestMapping(method = RequestMethod.GET, value = "/home/home-events")
     public @ResponseBody
     Iterable<CalendarEvent> rfcsEvents(
-            @RequestParam String start, @RequestParam String end) {
+            @RequestParam String start, @RequestParam String end, @RequestParam(required = false) String filtro) {
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
         try {
-            Iterable<CalendarEvent> rfcs = rfcService.rfcsEvents(df.parse(start), df.parse(end));
+            Iterable<CalendarEvent> rfcs = rfcService.rfcsEvents(df.parse(start), df.parse(end), filtro);
 
             Iterable<CalendarEvent> vacaciones = worklogService.vacaciones(df.parse(start), df.parse(end),null);
 
