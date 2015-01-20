@@ -173,9 +173,6 @@ function config_calendar_rfcs(urlEvents,type) {
                     filtro:$("#filter").val()
                 }
             }).success(function(result){
-
-                console.log(result);
-
                 callback(result);
                 waitmodal.modal('hide');
             }).error(function(error){
