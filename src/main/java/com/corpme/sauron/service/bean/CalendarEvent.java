@@ -2,12 +2,15 @@ package com.corpme.sauron.service.bean;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class CalendarEvent {
 
     String title;
     String start;
+    String end;
     CalendarEventType eventType;
     String alerta;
     String comentario;
@@ -15,9 +18,17 @@ public class CalendarEvent {
 
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-    public CalendarEvent(final Date fecha, final String title, final CalendarEventType eventType,final Object data) {
+    public CalendarEvent(final Date fstart, final Date fend, final String title, final CalendarEventType eventType,final Object data) {
         this.title = title;
-        this.start = df.format(fecha);
+        this.start = df.format(fstart);
+        this.end = df.format(fend);
+        //--- Si no es el mismo día suma uno al día final ya que en el calendario la fecha end es 'hasta' la fecha end no incluida
+        if(!this.start.equals(this.end)) {
+            Calendar cend = new GregorianCalendar();
+            cend.setTime(fend);
+            cend.add(Calendar.DAY_OF_MONTH,1);
+            this.end = df.format(cend.getTime());
+        }
         this.eventType = eventType;
         this.data = data;
     }
@@ -28,6 +39,14 @@ public class CalendarEvent {
 
     public String getStart() {
         return start;
+    }
+
+    public String getEnd() {
+        return end;
+    }
+
+    public void setEnd(String end) {
+        this.end = end;
     }
 
     public Object getData() {

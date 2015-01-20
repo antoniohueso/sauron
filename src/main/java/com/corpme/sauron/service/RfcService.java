@@ -208,23 +208,14 @@ public class RfcService {
                 final StringBuilder title = new StringBuilder(vencida ? "(V)" : "")
                         .append(rfc.getIssuekey()).append(" - ").append(rfc.getSummary());
 
-                calendarService.addEvents(rfc.getfInicioDesarrollo(), rfc.getfFinDesarrollo(), (fecha) -> {
-                    CalendarEvent ev = new CalendarEvent(fecha.getTime(), title.toString(), CalendarEventType.INFO, rfc);
-                    if (vencida) ev.setAlerta("Vencida");
-                    return ev;
-                });
+                CalendarEvent ev = calendarService.addEvent(rfc.getfInicioDesarrollo(), rfc.getfFinDesarrollo(), title.toString(), CalendarEventType.INFO, rfc);
+                if (ev!=null && vencida) ev.setAlerta("Vencida");
 
-                calendarService.addEvents(rfc.getfInicioCalidad(), rfc.getfFinCalidad(), (fecha) -> {
-                    CalendarEvent ev = new CalendarEvent(fecha.getTime(), title.toString(), CalendarEventType.WARNING, rfc);
-                    if (vencida) ev.setAlerta("Vencida");
-                    return ev;
-                });
+                ev = calendarService.addEvent(rfc.getfInicioCalidad(),rfc.getfFinCalidad(), title.toString(), CalendarEventType.WARNING, rfc);
+                if (ev!=null && vencida) ev.setAlerta("Vencida");
 
-                calendarService.addEvents(rfc.getfPasoProd(), rfc.getfPasoProd(), (fecha) -> {
-                    CalendarEvent ev = new CalendarEvent(fecha.getTime(), title.toString(), CalendarEventType.SUCCESS, rfc);
-                    if (vencida) ev.setAlerta("Vencida");
-                    return ev;
-                });
+                ev = calendarService.addEvent(rfc.getfPasoProd(),rfc.getfPasoProd(), title.toString(), CalendarEventType.SUCCESS, rfc);
+                if (ev!=null && vencida) ev.setAlerta("Vencida");
             }
 
         });

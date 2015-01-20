@@ -133,7 +133,7 @@ public class WorklogService {
                 type = CalendarEventType.INFO;
             }
 
-            final CalendarEvent ev = calendarService.addEvent(w.getStarted(), title.toString(), type, w.getIssue());
+            final CalendarEvent ev = calendarService.addEvent(w.getStarted(), w.getStarted(),title.toString(), type, w.getIssue());
 
             ev.setComentario(w.getComment() == null || w.getComment().trim().length() == 0?null:w.getComment());
         });
@@ -157,16 +157,16 @@ public class WorklogService {
                         Collection<Worklog> list = Lists.newArrayList(wlogs);
 
                         if(list.size() < (usersServiciosCentrales.size() / 2)) {
-                            calendarService.addEvent(ue.getFecha(), "(00:00) "+ list.size()+" imputaciones"
+                            calendarService.addEvent(ue.getFecha(),ue.getFecha(), "(00:00) "+ list.size()+" imputaciones"
                                     , CalendarEventType.INFO.SUCCESS,null);
                         }
                     }
 
-                    calendarService.addEvent(ue.getFecha(), "(00:00) " + ue.getUser().getName()
+                    calendarService.addEvent(ue.getFecha(),ue.getFecha(), "(00:00) " + ue.getUser().getName()
                             , CalendarEventType.DANGER, null);
 
                 } else {
-                    calendarService.addEvent(ue.getFecha(), "(Incompleto) " + ue.getUser().getName()
+                    calendarService.addEvent(ue.getFecha(),ue.getFecha(), "(Incompleto) " + ue.getUser().getName()
                             , CalendarEventType.DANGER, null);
                 }
             }
@@ -215,7 +215,7 @@ public class WorklogService {
                 title.append(" Ausencia(").append(imputado).append(")");
             }
 
-            calendarService.addEvent(w.getStarted(), title.toString(), CalendarEventType.GRAY, imputado);
+            calendarService.addEvent(w.getStarted(), w.getStarted(), title.toString(), CalendarEventType.GRAY, imputado);
         });
 
         return calendarService.getEvents();

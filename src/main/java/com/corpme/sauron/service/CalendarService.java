@@ -28,12 +28,15 @@ public class CalendarService {
         events.add(ev);
     }
 
-    public CalendarEvent addEvent(final Date fecha,final String title,final CalendarEventType type,final Object data) {
-        final CalendarEvent ev = new CalendarEvent(fecha, title, type, data);
+    public CalendarEvent addEvent(final Date fstart, final Date fend,final String title,final CalendarEventType type,final Object data) {
+
+        if(fstart == null || fend == null) return null;
+
+        final CalendarEvent ev = new CalendarEvent(fstart, fend, title, type, data);
         events.add(ev);
         return ev;
     }
-
+/*
     public void addEvents(final Date fdesde
             ,final Date fhasta
             ,final String title
@@ -41,7 +44,7 @@ public class CalendarService {
             ,final Object data) {
 
         addEvents(fdesde,fhasta,(fecha) -> {
-             return new CalendarEvent(fecha.getTime(), title, type, data);
+             return new CalendarEvent(fecha.getTime(), fecha.getTime(), title, type, data);
         });
 
     }
@@ -61,7 +64,7 @@ public class CalendarService {
             fecha.add(Calendar.DAY_OF_MONTH,1);
         }
     }
-
+*/
     public void removeAllEvents() {
         events.clear();
     }
