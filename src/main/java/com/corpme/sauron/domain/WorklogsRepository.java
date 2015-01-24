@@ -11,7 +11,8 @@ import java.util.List;
 public interface WorklogsRepository extends Repository<Worklog, Long> {
 
     @Query("select w from Worklog w join fetch w.author join fetch w.updateAuthor join fetch w.issue " +
-            "where w.started >= :fdesde and w.started <= :fhasta and w.author in (:users)")
+            "where w.started >= :fdesde and w.started <= :fhasta and w.author in (:users) " +
+            "order by w.author.id, w.started")
     public List<Worklog> findWorklogs(
             @Param("fdesde") Date fdesde,
             @Param("fhasta") Date fhasta,
@@ -25,7 +26,7 @@ public interface WorklogsRepository extends Repository<Worklog, Long> {
 
     @Query("select w from Worklog w join fetch w.author join fetch w.updateAuthor join fetch w.issue i " +
             "where w.started >= :fdesde and w.started <= :fhasta and w.author in (:users) " +
-            "and (i.issuekey = 'GI-8'or i.issuekey = 'GI-9')")
+            "and (i.issuekey = 'GI-8'or i.issuekey = 'GI-9') order by w.author.id, w.started")
     public List<Worklog> findVacaciones(
             @Param("fdesde") Date fdesde,
             @Param("fhasta") Date fhasta,

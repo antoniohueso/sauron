@@ -126,6 +126,9 @@ public class Rfc {
     @Column(name = "causaDetencion")
     String causaDetencion;
 
+    @Transient
+    boolean vencida = false;
+
     public Long getId() {
         return id;
     }
@@ -469,4 +472,11 @@ public class Rfc {
         this.causaDetencion = causaDetencion;
     }
 
+    public boolean isVencida() {
+        return vencida;
+    }
+
+    public void setVencida(boolean vencida) {
+        this.vencida = vencida;
+    }
 }

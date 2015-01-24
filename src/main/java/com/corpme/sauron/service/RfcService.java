@@ -295,8 +295,6 @@ public class RfcService {
      */
     public Map<String,Collection<Rfc>> informeRfcsEnCurso() {
 
-        final DateFormat df = new SimpleDateFormat("EEEE dd/MM/yyyy");
-
         final Calendar hoy = utilsService.getComparableDate(new Date());
 
         Iterable<Rfc> rfcs = rfcRepository.findRfcsEnCurso();
@@ -318,6 +316,15 @@ public class RfcService {
         result.put("En produccion (Últimos 60 días)",produccion);
 
         for(Rfc rfc : rfcs) {
+
+            final Calendar fdueDate;
+            if (rfc.getfPasoProd() != null) fdueDate = utilsService.getComparableDate(rfc.getfPasoProd());
+            else if (rfc.getfFinCalidad() != null) fdueDate = utilsService.getComparableDate(rfc.getfFinCalidad());
+            else if (rfc.getfFinDesarrollo() != null)
+                fdueDate = utilsService.getComparableDate(rfc.getfFinDesarrollo());
+            else fdueDate = null;
+
+            rfc.setVencida(fdueDate != null && hoy.after(fdueDate));
 
             if(rfc.getStatus().getId() == StatusKey.OPEN.getValue()){
                 pendientes.add(rfc);
