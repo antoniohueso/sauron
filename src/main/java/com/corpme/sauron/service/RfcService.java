@@ -162,7 +162,7 @@ public class RfcService {
                 anomalias.add("La rfc no tiene fechas de inicio y/o fin de planificación de pruebas");
             }
             else if(fInicioCalidad.after(fFinCalidad)) {
-                anomalias.add("La fechas de fin de pruebas es mayor que la fecha de inicio");
+                anomalias.add("La fecha de fin de pruebas es mayor que la fecha de inicio");
             }
         }
 
@@ -325,6 +325,7 @@ public class RfcService {
             else fdueDate = null;
 
             rfc.setVencida(fdueDate != null && hoy.after(fdueDate));
+            rfc.setAnomalias(valid(rfc));
 
             if(rfc.getStatus().getId() == StatusKey.OPEN.getValue()){
                 pendientes.add(rfc);

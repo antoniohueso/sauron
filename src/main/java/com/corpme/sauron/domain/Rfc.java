@@ -129,6 +129,9 @@ public class Rfc {
     @Transient
     boolean vencida = false;
 
+    @Transient
+    String anomalias;
+
     public Long getId() {
         return id;
     }
@@ -478,5 +481,13 @@ public class Rfc {
 
     public void setVencida(boolean vencida) {
         this.vencida = vencida;
+    }
+
+    public String getAnomalias() {
+        return anomalias;
+    }
+
+    public void setAnomalias(String anomalias) {
+        this.anomalias = anomalias;
     }
 }

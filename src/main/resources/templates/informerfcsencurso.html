@@ -33,7 +33,7 @@
                         <a th:href="${'/rfcs/'+rfc.issuekey + '?app'}" target="_blank"
                            th:text="${rfc.issuekey+ ' - ' + rfc.summary}"></a></td>
                     <td style="width: 40%;">
-                        <span th:if="${rfc.vencida}" class="visible-print label label-danger">Vencida</span>
+                        <div th:if="${rfc.vencida}" class="visible-print label label-danger">Vencida</div>
                         <span class="label label-primary"
                               th:each="e : ${rfc.equipodesarrollo}" th:text="${e.user.name}"></span>
                         <span class="label label-warning"
@@ -54,6 +54,7 @@
                             <span>F.Paso producción: </span>
                             <span th:if="${rfc.fPasoProd!=null}" th:text="${#dates.format(rfc.fPasoProd,'EEEE, dd MMM yyyy')}"></span>
                         </div>
+                        <div th:if="${rfc.anomalias != null}" th:text="${rfc.anomalias}" class="label label-danger"></div>
                     </td>
                     <td>
                         <span  th:class="${'label '+templateUtil.statusClass(rfc.status)}" th:text="${rfc.status.name}"></span>
