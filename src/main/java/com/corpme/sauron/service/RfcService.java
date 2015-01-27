@@ -353,7 +353,7 @@ public class RfcService {
 
         rfcs = rfcRepository.findRfcsEnProduccionByDate(desde.getTime(),hasta.getTime());
 
-        finalizadas.addAll(Lists.newArrayList(rfcs));
+        produccion.addAll(Lists.newArrayList(rfcs));
 
         return result;
     }
