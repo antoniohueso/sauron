@@ -18,7 +18,8 @@ public interface RfcRepository extends CrudRepository<Rfc, Long> {
             "left join fetch i.reporter " +
             "left join fetch i.assignee " +
             "left join fetch i.project " +
-            "where i.status.id not in(6,10003)")
+            "where i.status.id not in(6,10003) " +
+            "order by i.issuekey")
     Iterable<Rfc> findRfcsEnCurso();
 
     @Query(value = "" +
@@ -34,7 +35,8 @@ public interface RfcRepository extends CrudRepository<Rfc, Long> {
             " or i.fFinDesarrollo between :desde and :hasta " +
             " or i.fInicioCalidad between :desde and :hasta " +
             " or i.fFinCalidad between :desde and :hasta " +
-            " or i.fPasoProd between :desde and :hasta ")
+            " or i.fPasoProd between :desde and :hasta " +
+            "order by i.issuekey")
     Iterable<Rfc> findRfcsByDate(@Param("desde") Date desde
             , @Param("hasta") Date hasta);
 
@@ -46,7 +48,8 @@ public interface RfcRepository extends CrudRepository<Rfc, Long> {
             "left join fetch i.reporter " +
             "left join fetch i.assignee " +
             "left join fetch i.project " +
-            "where i.fPasoProd between :desde and :hasta and i.status.id = 10003")
+            "where i.fPasoProd between :desde and :hasta and i.status.id = 10003 " +
+            "order by i.issuekey")
     Iterable<Rfc> findRfcsEnProduccionByDate(@Param("desde") Date desde
             , @Param("hasta") Date hasta);
 

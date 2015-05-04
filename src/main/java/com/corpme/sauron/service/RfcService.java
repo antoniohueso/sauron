@@ -313,7 +313,7 @@ public class RfcService {
         result.put("En desarrollo",desarrollo);
         result.put("En pruebas",pruebas);
         result.put("Finalizadas",finalizadas);
-        result.put("En produccion (Últimos 60 días)",produccion);
+        result.put("En produccion (Últimas dos semanas)",produccion);
 
         for(Rfc rfc : rfcs) {
 
@@ -347,13 +347,146 @@ public class RfcService {
             }
         }
 
-        Calendar desde = utilsService.getComparableDate(new Date());
         Calendar hasta = utilsService.getComparableDate(new Date());
-        desde.add(Calendar.DAY_OF_MONTH, -60);
+        hasta.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY);
+        Calendar desde = utilsService.getComparableDate(hasta.getTime());
+        desde.add(Calendar.DAY_OF_MONTH, -15);
 
         rfcs = rfcRepository.findRfcsEnProduccionByDate(desde.getTime(),hasta.getTime());
 
         produccion.addAll(Lists.newArrayList(rfcs));
+
+        return result;
+    }
+
+    /**
+     * Devuelve las Rfcs planificadas agrupadas en los siguientes grupos:
+     * - Pendientes
+     * - Paradas
+     * - Sin planificar
+     * - Vencidas
+     * - Hoy
+     * - La semana que viene
+     * - A Futuro
+     * @return
+     */
+    public Map<String,Collection<Rfc>> informeRfcsPlanificadas() {
+
+        final Calendar hoy = utilsService.getComparableDate(new Date());
+
+        final Calendar principiosemana = utilsService.getComparableDate(new Date());
+        final Calendar semana = utilsService.getComparableDate(new Date());
+        final Calendar nsemana = utilsService.getComparableDate(new Date());
+
+        Iterable<Rfc> rfcs = rfcRepository.findRfcsEnCurso();
+
+        Collection<Rfc> pendientes = new ArrayList();
+        Collection<Rfc> paradas = new ArrayList();
+        Collection<Rfc> sinplanificar = new ArrayList();
+        Collection<Rfc> vencidas = new ArrayList();
+        Collection<Rfc> estasemana = new ArrayList();
+        Collection<Rfc> proximasemana = new ArrayList();
+        Collection<Rfc> afuturo = new ArrayList();
+        Collection<Rfc> produccion = new ArrayList();
+
+        LinkedHashMap<String,Collection<Rfc>> result = new LinkedHashMap();
+        result.put("Pendientes",pendientes);
+        result.put("Paradas",paradas);
+        result.put("Sin planificar",sinplanificar);
+        result.put("Vencidas",vencidas);
+        result.put("Esta semana",estasemana);
+        result.put("Próxima semana",proximasemana);
+        result.put("A futuro",afuturo);
+
+        principiosemana.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY);
+        semana.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY);
+        semana.add(Calendar.DAY_OF_MONTH,7);
+        nsemana.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        nsemana.add(Calendar.DAY_OF_MONTH, 14);
+
+        for(Rfc rfc : rfcs) {
+
+            final Calendar fdueDate;
+            if (rfc.getfPasoProd() != null) {
+                fdueDate = utilsService.getComparableDate(rfc.getfPasoProd());
+                rfc.setfPlanIni(rfc.getfPasoProd());
+                rfc.setfPlanFin(rfc.getfPasoProd());
+            }
+            else if (rfc.getfFinCalidad() != null) {
+                fdueDate = utilsService.getComparableDate(rfc.getfFinCalidad());
+                rfc.setfPlanIni(rfc.getfInicioCalidad());
+                rfc.setfPlanFin(rfc.getfFinCalidad());
+            }
+            else if (rfc.getfFinDesarrollo() != null) {
+                fdueDate = utilsService.getComparableDate(rfc.getfFinDesarrollo());
+                rfc.setfPlanIni(rfc.getfInicioDesarrollo());
+                rfc.setfPlanFin(rfc.getfFinDesarrollo());
+            }
+            else fdueDate = null;
+
+            rfc.setVencida(fdueDate != null && hoy.after(fdueDate));
+            rfc.setAnomalias(valid(rfc));
+
+            if(rfc.getStatus().getId() == StatusKey.OPEN.getValue()){
+                pendientes.add(rfc);
+            }
+            else if(rfc.getStatus().getId() == StatusKey.DETENIDA.getValue()){
+                paradas.add(rfc);
+            }
+            else if(rfc.getStatus().getId() != StatusKey.FINALIZADA.getValue()
+                    && rfc.getStatus().getId() != StatusKey.EN_PRODUCCION.getValue()
+                    && rfc.getStatus().getId() != StatusKey.CERRADA.getValue()){
+
+                if(fdueDate == null) {
+                    sinplanificar.add(rfc);
+                }
+                else if(fdueDate.compareTo(principiosemana) < 0) {
+                    vencidas.add(rfc);
+                }
+                else if(fdueDate.compareTo(semana) < 0) {
+                    estasemana.add(rfc);
+                }
+                else if(fdueDate.compareTo(nsemana) < 0) {
+                    proximasemana.add(rfc);
+                }
+                else {
+                    afuturo.add(rfc);
+                }
+            }
+        }
+
+        vencidas = Arrays.asList(
+        vencidas.stream()
+                .sorted((e1, e2) -> e1.getfPlanFin()
+                        .compareTo(e2.getfPlanFin())).toArray(size -> new Rfc[size]));
+        result.put("Vencidas",vencidas);
+
+        estasemana = Arrays.asList(
+                estasemana.stream()
+                        .sorted((e1, e2) -> e1.getfPlanFin()
+                                .compareTo(e2.getfPlanFin())).toArray(size -> new Rfc[size]));
+        result.put("Esta semana",estasemana);
+
+        proximasemana = Arrays.asList(
+                proximasemana.stream()
+                        .sorted((e1, e2) -> e1.getfPlanFin()
+                                .compareTo(e2.getfPlanFin())).toArray(size -> new Rfc[size]));
+        result.put("Próxima semana",proximasemana);
+
+        afuturo = Arrays.asList(
+                afuturo.stream()
+                        .sorted((e1, e2) -> e1.getfPlanFin()
+                                .compareTo(e2.getfPlanFin())).toArray(size -> new Rfc[size]));
+        result.put("A futuro",afuturo);
+
+        Calendar desde = utilsService.getComparableDate(principiosemana.getTime());
+        Calendar hasta = utilsService.getComparableDate(principiosemana.getTime());
+        desde.add(Calendar.DAY_OF_MONTH, -15);
+
+        rfcs = rfcRepository.findRfcsEnProduccionByDate(desde.getTime(),hasta.getTime());
+
+        produccion.addAll(Lists.newArrayList(rfcs));
+        result.put("En produccion (Últimas dos semanas)",produccion);
 
         return result;
     }

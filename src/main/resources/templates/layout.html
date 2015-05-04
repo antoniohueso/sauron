@@ -82,6 +82,11 @@
                         <span class="glyphicon glyphicon-bell"> Rfcs en curso</span>
                     </a>
                 </li>
+                <li th:class="${selected == 'informeplanificadas'?'active':''}">
+                    <a href="/rfcs/informe/rfcsplanificadas" >
+                        <span class="glyphicon glyphicon-bell"> Rfcs planificadas</span>
+                    </a>
+                </li>
                 <li th:class="${selected == 'worklogs'?'active':''}">
                     <a href="/worklogs" >
                         <span class="glyphicon glyphicon-time"> Worklogs</span>

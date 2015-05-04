@@ -114,4 +114,16 @@ public class RfcController {
         return "informerfcsencurso";
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/informe/rfcsplanificadas")
+    public String informeRfcPlanificadas(Model model) {
+
+
+        Map<String, Collection<Rfc>> informe = rfcService.informeRfcsPlanificadas();
+
+        model.addAttribute("templateUtil", templateUtil);
+        model.addAttribute("informe",informe);
+
+        return "informerfcsplanificadas";
+    }
+
 }

@@ -132,6 +132,12 @@ public class Rfc {
     @Transient
     String anomalias;
 
+    @Transient
+    Date fPlanIni;
+
+    @Transient
+    Date fPlanFin;
+
     public Long getId() {
         return id;
     }
@@ -407,7 +413,8 @@ public class Rfc {
                 tareas += 0.2;
             }
             else if(issue.getStatus().getId() == StatusKey.RESOLVED.getValue()){
-                tareas += 0.35;
+                if(getStatus().getId() == StatusKey.DESARROLLANDO.getValue()) tareas += 1.0;
+                else tareas += 0.35;
             }
             else if(issue.getStatus().getId() == StatusKey.DISPONIBLE_PARA_PRUEBAS.getValue()) {
                 tareas += 0.5;
@@ -489,5 +496,21 @@ public class Rfc {
 
     public void setAnomalias(String anomalias) {
         this.anomalias = anomalias;
+    }
+
+    public Date getfPlanFin() {
+        return fPlanFin;
+    }
+
+    public void setfPlanFin(Date fPlanFin) {
+        this.fPlanFin = fPlanFin;
+    }
+
+    public Date getfPlanIni() {
+        return fPlanIni;
+    }
+
+    public void setfPlanIni(Date fPlanIni) {
+        this.fPlanIni = fPlanIni;
     }
 }
