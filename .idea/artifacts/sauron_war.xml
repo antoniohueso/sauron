@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="sauron:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="sauron-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="sauron:war exploded" />
+    </root>
+  </artifact>
+</component>
