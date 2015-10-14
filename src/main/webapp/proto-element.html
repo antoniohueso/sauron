@@ -1,0 +1,75 @@
+<link rel="import"
+      href="bower_components/polymer/polymer.html">
+
+<dom-module id="dom-element">
+
+    <template>
+        <ul>
+            <template is="dom-repeat" items="{{data}}">
+            <li><span>{{item.nombre}}</span>-<span>{{item.edad}}</span><button on-click="onClick">Pincha</button></li>
+            </template>
+        </ul>
+
+        <hijo-element nombre="{{nombre}}"></hijo-element>
+    </template>
+
+    <script>
+
+        var arr = [];
+
+        for(var i = 0 ; i < 5000; i++) {
+            arr.push({nombre:'Antonio Huevo frito Polymer ouyeah '+i,edad:i});
+        }
+
+
+        Polymer({
+            is: "dom-element",
+
+
+            onClick:function(e) {
+                console.log(e.model.index);
+                //e.model.set('item.nombre',"Tio Mierda!");
+                this.splice('data',e.model.index,1);
+
+
+            },
+            ready: function() {
+                this.nombre = "Porras";
+                this.data = arr;
+                setTimeout(function(){
+                    this.splice('data',1,1);
+                    console.log("hi");
+                }.bind(this),5000);
+
+            }
+        });
+    </script>
+
+</dom-module>
+
+<dom-module id="hijo-element">
+
+    <template>
+        <h1 on-click="onClick">{{nombre}}</h1>
+    </template>
+
+    <script>
+
+        Polymer({
+            is: "hijo-element",
+            properties: {
+                nombre: String
+            },
+
+            onClick:function(e) {
+                console.log(this.nombre);
+                this.nombre = "Puta";
+            },
+            ready: function() {
+                this.data = arr;
+
+            }
+        });
+    </script>
+
+</dom-module>
