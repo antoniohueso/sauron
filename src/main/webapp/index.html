@@ -30,6 +30,20 @@
 
     <link rel="import" href="components/app.html">
 
+    <script src="vendor/react/browser.js"></script>
+    <script src="vendor/react/es6-module-loader-dev.js"></script>
+
+    <script>
+        System.transpiler = 'babel';
+
+        // load index.js
+        System.import('components/app.js').then(function(module) {
+            console.log("Yeah!");
+        }).catch(function (e) {
+            console.error(e);
+        });
+    </script>
+
 
 
 </head>

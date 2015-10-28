@@ -42,27 +42,5 @@
 
     </template>
 
-    <script>
-
-        Polymer({
-            is: "sauron-home",
-
-            data:{
-                data:[]
-            },
-
-            handleResponse: function() {
-                console.log("Dale, ",arguments);
-            },
-
-            ready: function() {
-                console.log("JIRA!");
-                this.url = "/jira";
-                this.params = {};
-                this.params.url = "/rest/api/2/issue/"+'RFC-10';
-            }
-        });
-    </script>
-
 </dom-module>
 
