@@ -1,0 +1,152 @@
+<link rel="import"
+      href="/bower_components/polymer/polymer.html">
+
+
+<dom-module id="my-app">
+
+    <template>
+        <app-treeview data="{{tree}}" coldefs="{{coldefs}}"></app-treeview>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: "my-app",
+
+            ready: function () {
+                console.log("Si");
+
+
+                this.tree = [
+                    {id: 1, nombre: 'Antonio Hueso 1', edad: 1, children: []},
+                    {
+                        id: 2, nombre: 'Antonio Hueso 2', edad: 2, children: [
+                        {id: 5, nombre: 'Antonio Hueso 5', edad: 5},
+                        {
+                            id: 6, nombre: 'Antonio Hueso 6', edad: 6, children: [
+                            {id: 3, nombre: 'Antonio Hueso 3', edad: 3, children: []},
+                            {id: 4, nombre: 'Antonio Hueso 4', edad: 4, children: []}
+                        ]
+                        }
+                    ]
+                    },
+                    {id: 3, nombre: 'Antonio Hueso 3', edad: 3, children: []},
+                    {id: 4, nombre: 'Antonio Hueso 4', edad: 4, children: []}
+                ];
+
+                this.coldefs = [{label: 'Nombre', property: 'nombre'}, {label: 'Edad', property: 'edad'}
+                    , {label: 'Id', property: 'id'}];
+            }
+        });
+    </script>
+
+</dom-module>
+
+<dom-module id="app-treeview">
+
+    <template>
+        <table class="table" style="width: 100%">
+            <thead>
+            <tr>
+                <template is="dom-repeat" items="{{coldefs}}">
+                    <th>{{item.label}}</th>
+                </template>
+            </tr>
+            </thead>
+            <tbody id="content">
+
+            </tbody>
+        </table>
+
+    </template>
+
+    <script>
+
+
+        Polymer({
+            is: "app-treeview",
+            properties: {
+                data: Array,
+                coldefs: Array
+            },
+
+            getProperty: function (row, property) {
+                return row[property];
+            },
+
+            _renderNode:function(data,level) {
+                var tr = new AppTreeNode(data, this.coldefs,level);
+                Polymer.dom(this.$.content).appendChild(tr);
+
+                if(!data.children) data.children = [];
+
+                data.children.map(function(child){
+                   this._renderNode(child,level + 1);
+                }.bind(this));
+            },
+
+            attached: function () {
+                this.data.map(function (m) {
+                    this._renderNode(m,0);
+                }.bind(this));
+            },
+
+            ready: function () {
+
+
+            }
+        });
+    </script>
+
+</dom-module>
+
+<dom-module id="app-treenode">
+
+    <template>
+        <template is="dom-repeat" items="{{coldefs}}" as="col">
+            <template is="dom-if" if="{{_isFirstElement(index)}}">
+                <td style="{{'padding-left:'+(level*10)+'px'}}">{{getProperty(data,col.property)}}</td>
+            </template>
+            <template is="dom-if" if="{{!_isFirstElement(index)}}">
+                <td>{{getProperty(data,col.property)}}</td>
+            </template>
+        </template>
+
+    </template>
+
+    <script>
+        AppTreeNode = Polymer({
+            is: "app-treenode",
+            extends: 'tr',
+            properties: {
+                root: Object,
+                data: Object,
+                coldefs: Array,
+                level: Number
+            },
+            factoryImpl: function (data, coldefs,level) {
+                console.log("Hiiii");
+                this.data = data;
+                this.coldefs = coldefs;
+                this.level = level;
+            },
+
+            _isFirstElement:function(index) {
+                return index == 0;
+            },
+
+            getProperty: function (row, property) {
+                return row[property];
+            },
+
+            attached: function () {
+            },
+
+            ready: function () {
+            }
+        });
+    </script>
+
+</dom-module>
+
+

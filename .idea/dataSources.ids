@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source name="MySQL - sauron@10.0.100.118" uuid="f6a44a3f-3153-4628-b9d0-1aefa69b5167">
+    <database-info product="MySQL" version="5.5.35-0ubuntu0.12.10.2" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.34 ( Revision: jess.balint@oracle.com-20141014163213-wqbwpf1ok2kvo1om )">
+      <extra-name-characters>#@</extra-name-characters>
+      <identifier-quote-string>`</identifier-quote-string>
+    </database-info>
+    <case-sensitivity plain-identifiers="exact" quoted-identifiers="exact"/>
+    <schema name="" catalog="sauron"/>
+    <table name="component" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="name" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="project_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+    </table>
+    <table name="issue" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="issuekey" sqlType="VARCHAR" precision="275" scale="0" nullable="true" jdbcType="12"/>
+      <column name="reporter_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+      <column name="assignee_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+      <column name="summary" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="description" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="project_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="duedate" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="status_id" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="issuetype_id" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="priority_id" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="timeestimate" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3" def="MA=="/>
+      <column name="timeoriginalestimate" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3" def="MA=="/>
+      <column name="timespent" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3" def="MA=="/>
+      <column name="resolution" sqlType="VARCHAR" precision="60" scale="0" nullable="true" jdbcType="12"/>
+      <column name="resolutiondate" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="projectcategory_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+      <column name="centro_de_coste" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+    </table>
+    <table name="issuecomponent" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="VARCHAR" precision="38" scale="0" nullable="true" jdbcType="12"/>
+      <column name="issue_id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="component_id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+    </table>
+    <table name="issueversion" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="VARCHAR" precision="38" scale="0" nullable="true" jdbcType="12"/>
+      <column name="issue_id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="version_id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+    </table>
+    <table name="priority" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="VARCHAR" precision="60" scale="0" nullable="false" jdbcType="12"/>
+      <column name="name" sqlType="VARCHAR" precision="60" scale="0" nullable="true" jdbcType="12"/>
+    </table>
+    <table name="project" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="projectkey" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="name" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="responsable" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="projectcategory_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+    </table>
+    <table name="rfc" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="issuekey" sqlType="VARCHAR" precision="275" scale="0" nullable="true" jdbcType="12"/>
+      <column name="reporter_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+      <column name="assignee_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+      <column name="summary" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="description" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="duedate" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="status_id" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="issuetype_id" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="priority_id" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="timeestimate" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3" def="MA=="/>
+      <column name="timeoriginalestimate" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3" def="MA=="/>
+      <column name="timespent" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3" def="MA=="/>
+      <column name="resolution" sqlType="VARCHAR" precision="60" scale="0" nullable="true" jdbcType="12"/>
+      <column name="resolutiondate" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="project_id" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="f_inicio_desa" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="f_fin_desa" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="f_inicio_test" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="f_fin_test" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="f_paso_prod" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="plan_pruebas" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="plan_pruebas_validacion" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="observaciones" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="tablas_afectadas" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="solucion" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="acuerdo_funcional" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="plan_paso_prod" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="causa_detencion" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="plan_marcha_atras" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="centro_de_coste" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+    </table>
+    <table name="rfcequipocalidad" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="rfc_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+      <column name="user_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+    </table>
+    <table name="rfcequipodesarrollo" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="rfc_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+      <column name="user_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+    </table>
+    <table name="rfcissuelink" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="rfc_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+      <column name="issue_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+    </table>
+    <table name="rfcriesgos" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="rfc_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+      <column name="name" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+    </table>
+    <table name="scuser" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="user_name" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="display_name" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="email_address" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+    </table>
+    <table name="status" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="VARCHAR" precision="60" scale="0" nullable="false" jdbcType="12"/>
+      <column name="name" sqlType="VARCHAR" precision="60" scale="0" nullable="true" jdbcType="12"/>
+    </table>
+    <table name="type" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="VARCHAR" precision="60" scale="0" nullable="false" jdbcType="12"/>
+      <column name="name" sqlType="VARCHAR" precision="60" scale="0" nullable="true" jdbcType="12"/>
+    </table>
+    <table name="user" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="user_name" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="display_name" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="email_address" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+    </table>
+    <table name="version" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="name" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="description" sqlType="TEXT" precision="65535" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="startdate" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="releasedate" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="project_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+    </table>
+    <table name="worklog" schema="" catalog="sauron" type="VIEW">
+      <column name="id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="author_id" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3"/>
+      <column name="updateauthor_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+      <column name="comment" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="started" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="timespentseconds" sqlType="DECIMAL" precision="18" scale="0" nullable="false" jdbcType="3" def="MA=="/>
+      <column name="issue_id" sqlType="DECIMAL" precision="18" scale="0" nullable="true" jdbcType="3"/>
+    </table>
+  </data-source>
+</component>

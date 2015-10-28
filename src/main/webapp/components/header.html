@@ -1,0 +1,78 @@
+<link rel="import"
+      href="/bower_components/polymer/polymer.html">
+
+
+
+<dom-module id="sauron-header">
+
+    <template>
+        <h1>Ave Ave <span>[[nombre]]</span></h1>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Edad</th>
+            </tr>
+            </thead>
+            <tbody>
+            <template is="dom-repeat" items="{{data}}">
+            <tr>
+                <td>{{item.id}}</td>
+                <td>{{item.nombre}}</td>
+                <td>
+                    <span>{{item.edad}}</span>
+                    <button on-click="handleUpdate">Update</button>
+                    <button on-click="handleDelete">Delete</button>
+                    <button on-click="handleAdd">Add</button>
+                </td>
+
+            </tr>
+            </template>
+            </tbody>
+
+        </table>
+
+    </template>
+
+    <script>
+
+        var PERSONAS = [];
+
+        for(var i = 0; i < 10; i++ ) {
+            PERSONAS.push({id: i, nombre: 'Antonio Hueso '+i, edad: 25+i});
+        }
+
+        var i = PERSONAS.length;
+        var nextId = function() {
+            return i++;
+        }
+
+        Polymer({
+            is: "sauron-header",
+            properties: {
+                nombre:String
+            },
+            data:{
+                data:[]
+            },
+
+            handleUpdate:function(e) {
+                e.model.set('item.nombre',"ZORRA!");
+
+            },
+            handleDelete:function(e) {
+                this.splice('data',e.model.index,1);
+            },
+            handleAdd:function(e) {
+                this.push('data',{id: 9999999, nombre: 'Pedro Seoane Delicado ', edad: 50});
+            },
+            ready: function() {
+                this.data = PERSONAS;
+            }
+        });
+    </script>
+
+</dom-module>
+

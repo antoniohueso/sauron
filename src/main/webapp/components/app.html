@@ -1,0 +1,125 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../components/home.html">
+<link rel="import" href="../components/header.html">
+
+
+
+<dom-module id="sauron-app">
+
+    <template>
+
+        <style>
+            .color-rojo {
+                color: red;
+            }
+            .color-azul {
+                color: blue;
+            }
+        </style>
+
+
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Sauron-Prj</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#/">Proyectos</a></li>
+                        <li><a href="#/recursos">Recursos</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div id="main-content" class="container">
+
+            <div id="container"></div>
+
+        </div>
+
+    </template>
+
+    <script>
+
+        Polymer({
+            is: "sauron-app",
+
+            isCurrentPage: function(page) {
+                console.log("PAGE: ",page,this.currentPage);
+                return this.currentPage == page;
+            },
+
+            handleClick:function() {
+                this.color = (this.color == "color-rojo"?"color-azul":"color-rojo");
+            },
+
+            ready: function() {
+                this.color = "color-rojo";
+
+
+
+            },
+
+            attached: function() {
+                this.currentPage = "home";
+
+                var self = this;
+
+                var AppRouter = Backbone.Router.extend({
+                    routes: {
+                        "": "home",
+                        "/": "home",
+                        "recursos": "recursos",
+                        "*actions": "defaultRoute"
+
+                    }
+                });
+
+                var app_router = new AppRouter;
+
+                app_router.on('route:home', function () {
+                    console.log("Home");
+                    self.currentPage = "home";
+
+                    var child = this.$.container.firstChild;
+                    if(child) this.$.container.removeChild(child);
+                    var el = document.createElement('sauron-home');
+                    this.$.container.appendChild(el);
+
+
+                }.bind(this));
+
+                app_router.on('route:recursos', function () {
+                    self.currentPage = "recursos";
+
+                    var child = this.$.container.firstChild;
+                    if(child) this.$.container.removeChild(child);
+
+
+                    var el = document.createElement('sauron-header');
+                    el.setAttribute("nombre","@Recursos");
+                    this.$.container.appendChild(el);
+                    return false;
+                }.bind(this));
+
+                app_router.on('route:defaultRoute', function (actions) {
+                    alert( actions );
+                });
+
+                Backbone.history.start();
+            },
+
+        });
+
+    </script>
+
+</dom-module>

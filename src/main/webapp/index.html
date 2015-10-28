@@ -8,7 +8,9 @@
 
     <!-- Bootstrap -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
+    <!--
+    <link href="stylesheets/style.css" rel="stylesheet">
+-->
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="vendor/other/html5shiv.min.js"></script>
@@ -20,26 +22,20 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 
-    <script src="vendor/react/react-with-addons.js"></script>
-    <script src="vendor/react/react-dom.js"></script>
+    <script src="vendor/backbone/underscore.js"></script>
 
-    <script src="vendor/react/JSXTransformer.js"></script>
+    <script src="vendor/backbone/backbone.js"></script>
 
-    <!--
-    <script src="vendor/react/babel-browser.min.js"></script>
--->
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 
-    <script type="text/jsx;harmony=true" src="components/header.jsx"></script>
-    <script type="text/jsx;harmony=true" src="components/app.jsx"></script>
-    <!--
-        <script type="text/babel" src="components/prjdatatable.jsx"></script>
-        <script type="text/babel" src="components/app.jsx"></script>
-    -->
+    <link rel="import" href="components/app.html">
+
+
 
 </head>
 <body>
 
-<div id="container"></div>
+<sauron-app></sauron-app>
 
 
 </body>

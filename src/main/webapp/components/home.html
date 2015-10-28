@@ -1,0 +1,68 @@
+<link rel="import"
+      href="/bower_components/polymer/polymer.html">
+
+
+
+<dom-module id="sauron-home">
+
+    <template>
+
+        <iron-ajax
+                auto
+                url={{url}}
+                method="POST"
+                content-type="application/json"
+                body={{params}}
+                handle-as="json"
+                on-response="handleResponse"
+                debounce-duration="300"></iron-ajax>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Edad</th>
+            </tr>
+            </thead>
+            <tbody>
+            <template is="dom-repeat" items="{{data}}">
+            <tr>
+                <td>{{item.id}}</td>
+                <td>{{item.nombre}}</td>
+                <td>
+
+                </td>
+
+            </tr>
+            </template>
+            </tbody>
+
+        </table>
+
+    </template>
+
+    <script>
+
+        Polymer({
+            is: "sauron-home",
+
+            data:{
+                data:[]
+            },
+
+            handleResponse: function() {
+                console.log("Dale, ",arguments);
+            },
+
+            ready: function() {
+                console.log("JIRA!");
+                this.url = "/jira";
+                this.params = {};
+                this.params.url = "/rest/api/2/issue/"+'RFC-10';
+            }
+        });
+    </script>
+
+</dom-module>
+
