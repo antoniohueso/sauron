@@ -1,0 +1,25 @@
+{
+  "name": "Sauron",
+  "homepage": "https://github.com/antoniohueso/sauron",
+  "authors": [
+    "ahg <antonio.hueso@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "~1.2.0",
+    "bower": "*",
+    "install": "~1.0.4",
+    "paper-elements": "PolymerElements/paper-elements#~1.0.5",
+    "iron-elements": "PolymerElements/iron-elements#~1.0.4"
+  }
+}

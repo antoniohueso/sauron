@@ -3,17 +3,15 @@
 export class JiraRestClient {
 
     constructor() {
-        this.server = document.createElement('iron-request');
-        console.log(this.server);
         this.rootPath = '/jira';
     }
 
     findIssueByKey(key) {
-        return this._send('GET',"/rest/api/2/issue/"+key);
+        return this._send('GET', "/rest/api/2/issue/" + key);
     }
 
 
-    _send(method,path,params) {
+    _send(method, path, params) {
 
         var data = {};
 
@@ -21,17 +19,18 @@ export class JiraRestClient {
         data.method = method;
         data.params = params;
 
-        var promise = this.server.send({
-            url: this.rootPath,
-            method:"post",
-            headers: {
-                'content-type':'application/json'
-            }
-        });
+        var promise = $.ajax(
+            {
+                url: this.rootPath,
+                method: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                dataType: "json"
 
-        promise.catch(() => {
-            console.log("Se ha producido un error al acceder a la URL: ",this.rootPath +"("+method+":"+path+")");
-        });
+            })
+            .fail((err) => {
+                console.log("Se ha producido un error al acceder a la URL: ", this.rootPath + " (" + method + ":" + path + ") ,", err);
+            });
 
         return promise;
     }

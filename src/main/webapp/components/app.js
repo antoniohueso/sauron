@@ -12,17 +12,14 @@ export class HomeComponent {
         };
     }
 
-    handleResponse(e) {
-        console.log("Dale, ", e.detail.xhr.response);
-    }
-
     ready() {
-        console.log("JIRA!");
-
         var j = new JiraRestClient();
-        j.findIssueByKey('RFC-10').then(() => {
-            console.log("llega ",arguments);
-        });
+
+        for(var i = 0; i < 100; i++ ) {
+            j.findIssueByKey('RFC-1'+i).then((response) => {
+                console.log("llega ", response);
+            });
+        }
     }
 
 }
@@ -47,6 +44,7 @@ export class AppComponent {
     }
 
     attached() {
+        /*
         this.currentPage = "home";
 
         var self = this;
@@ -93,6 +91,7 @@ export class AppComponent {
         });
 
         Backbone.history.start();
+        */
     }
 }
 
