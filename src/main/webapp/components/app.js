@@ -1,6 +1,8 @@
 'use strict';
 
-class HomeComponent {
+import {JiraRestClient} from "../components/jirarest.js"
+
+export class HomeComponent {
 
     beforeRegister() {
         this.is = 'sauron-home';
@@ -16,14 +18,16 @@ class HomeComponent {
 
     ready() {
         console.log("JIRA!");
-        this.url = "/jira";
-        this.params = {};
-        this.params.url = "/rest/api/2/issue/" + 'RFC-10';
+
+        var j = new JiraRestClient();
+        j.findIssueByKey('RFC-10').then(() => {
+            console.log("llega ",arguments);
+        });
     }
 
 }
 
-class AppComponent {
+export class AppComponent {
     beforeRegister() {
         this.is = 'sauron-app';
     }
