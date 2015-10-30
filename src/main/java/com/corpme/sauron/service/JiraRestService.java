@@ -1,5 +1,7 @@
 package com.corpme.sauron.service;
 
+import com.corpme.sauron.domain.jira.Issue;
+import com.corpme.sauron.domain.jira.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class JiraRestService {
@@ -92,17 +98,17 @@ public class JiraRestService {
     }
 
     private String login() {
-        String urlSession = "/rest/auth/1/session";
+        final String urlSession = "/rest/auth/1/session";
 
         logger.info("Logandose...");
 
-        HashMap<String,String> credentials = new HashMap();
+        final HashMap<String,String> credentials = new HashMap();
         credentials.put("username",jiraUser);
         credentials.put("password",jiraPwd);
 
-        HashMap loginInfo = jiraRestImpl(urlSession,HttpMethod.POST,HashMap.class,null,credentials);
+        final HashMap loginInfo = jiraRestImpl(urlSession,HttpMethod.POST,HashMap.class,null,credentials);
 
-        HashMap<String,String> session = (HashMap<String,String>)loginInfo.get("session");
+        final HashMap<String,String> session = (HashMap<String,String>)loginInfo.get("session");
 
         String loginresp = new StringBuilder(session.get("name")).append("=")
                 .append(session.get("value")).toString();
@@ -110,7 +116,38 @@ public class JiraRestService {
         logger.info("Logado, "+loginresp);
 
         return loginresp;
-
     }
 
+    public List<Issue> search(final String jql,final int startAt) {
+
+        Map<String,Object> params = new HashMap<>();
+
+        params.put("jql",jql);
+        params.put("maxResults","1000");
+        params.put("fields",new String[] {"*all"});
+
+        Response response = post("/rest/api/2/search",Response.class,params);
+
+        return response.getIssues().stream().map(responseIssue -> {
+            Issue issue = responseIssue.getFields();
+            issue.setKey(responseIssue.getKey());
+            return issue;
+        }).collect(Collectors.toList());
+
+
+    }
+/*
+    List<Issue> generateIssues(Response response) {
+        response.getIssues().stream().map(r -> {
+
+            Issue issue = new Issue();
+
+            r.getFields().forEach(field -> {
+                field.forEach((k,v)->{
+                    i
+                });
+            });
+        });
+    }
+*/
 }

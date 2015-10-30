@@ -1,27 +1,33 @@
-'use strict';
+function JiraRestClient () {
 
-export class JiraRestClient {
+    var rootPath = '/jira';
 
-    constructor() {
-        this.rootPath = '/jira';
-    }
 
-    findIssueByKey(key) {
+    this.findIssueByKey = function(key) {
         return this._send('GET', "/rest/api/2/issue/" + key);
     }
 
+    this.findAll = function() {
 
-    _send(method, path, params) {
+        var params = {
+            jql: "project in (RFC)"
+        };
+
+        return this._send('POST', "/rest/api/2/search",params);
+    }
+
+    this._send = function(method, path, params) {
 
         var data = {};
 
         data.url = path;
         data.method = method;
         data.params = params;
+        console.log(data.params);
 
         var promise = $.ajax(
             {
-                url: this.rootPath,
+                url: rootPath,
                 method: "POST",
                 contentType: 'application/json',
                 data: JSON.stringify(data),
@@ -29,7 +35,7 @@ export class JiraRestClient {
 
             })
             .fail((err) => {
-                console.log("Se ha producido un error al acceder a la URL: ", this.rootPath + " (" + method + ":" + path + ") ,", err);
+                console.log("Se ha producido un error al acceder a la URL: ", rootPath + " (" + method + ":" + path + ") ,", err);
             });
 
         return promise;

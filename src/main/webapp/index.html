@@ -22,27 +22,10 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 
-    <script src="vendor/backbone/underscore.js"></script>
-
-    <script src="vendor/backbone/backbone.js"></script>
-
-    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
 
     <link rel="import" href="components/app.html">
 
-    <script src="vendor/react/browser.js"></script>
-    <script src="vendor/react/es6-module-loader-dev.js"></script>
-
-    <script>
-        System.transpiler = 'babel';
-
-        // load index.js
-        System.import('components/app.js').then(function(module) {
-            console.log("Yeah!");
-        }).catch(function (e) {
-            console.error(e);
-        });
-    </script>
 
 
 

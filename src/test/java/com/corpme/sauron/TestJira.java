@@ -1,5 +1,6 @@
 package com.corpme.sauron;
 
+import com.corpme.sauron.domain.jira.Response;
 import com.corpme.sauron.service.JiraRestService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,35 +30,24 @@ public class TestJira {
     public void testJira() {
 
         String jql="key = 'RFC-1'";
+/*
+        Response resp = jiraRestService.search(jql,0);
 
-        HashMap<String,Object> params = new HashMap<>();
-        params.put("jql",jql);
-        params.put("maxResults","1000");
-        params.put("fields",new String[] {"*all"});
+        resp.getIssues().forEach((issue) ->{
+            HashMap<String,Object> hm = (HashMap<String,Object>)issue;
 
+            hm = (HashMap<String,Object>)hm.get("fields");
 
-        HashMap h = jiraRestService.post("/rest/api/2/search", HashMap.class, params);
+            hm.forEach((k,v) ->{
+                System.out.println(k + " -> " + (v!=null?v.toString().replaceAll("\n","").replaceAll("\r",""):"Null"));
+            });
+        });
+*/
 
-        logger.info("------------------------------------------------------------------------");
-        logger.info("-----------------------------  INICIO ----------------------------------");
-        logger.info("------------------------------------------------------------------------");
-
-
-        logger.info(h.toString());
-
-        List<HashMap> issues = (List)h.get("issues");
-
-        for(HashMap issue : issues) {
-            HashMap h1 =(HashMap)issue.get("fields");
-
-            logger.info(h1.get("status").toString());
-        }
-
-
-
-        logger.info("------------------------------------------------------------------------");
-        logger.info("-----------------------------  FIN -------------------------------------");
-        logger.info("------------------------------------------------------------------------");
+        jiraRestService.search(jql,0).forEach(issue ->  {
+            System.out.println(issue.getSummary());
+            System.out.println(issue.getAssignee().getName());
+        });
     }
 
 }

@@ -1,0 +1,57 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+
+
+<dom-module id="jira-rest">
+
+    <script>
+
+        Polymer({
+            id: 'jira-rest',
+
+            rootPath: '/jira',
+
+            _send: function (method, path, params) {
+
+                var data = {};
+
+                data.url = path;
+                data.method = method;
+                data.params = params;
+                console.log(data.params);
+
+                var promise = $.ajax(
+                        {
+                            url: this.rootPath,
+                            method: "POST",
+                            contentType: 'application/json',
+                            data: JSON.stringify(data),
+                            dataType: "json"
+
+                        })
+                        .fail(function (err) {
+                            console.log("Se ha producido un error al acceder a la URL: ", this.rootPath + " (" + method + ":" + path + ") ,", err);
+                        });
+
+                return promise;
+            },
+
+            findIssueByKey: function (key) {
+                return this._send('GET', "/rest/api/2/issue/" + key);
+            },
+
+            findAll: function () {
+
+                var params = {
+                    jql: "project in (RFC)"
+                };
+
+                return this._send('POST', "/rest/api/2/search", params);
+            }
+
+
+        });
+
+    </script>
+
+
+</dom-module>
