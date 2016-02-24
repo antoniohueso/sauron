@@ -9,7 +9,7 @@
     <div th:replace="layout :: menu ('rfcs')"></div>
 </div>
 
-<div id="main-content" class="container main-content" th:style="${param.app == null?'margin-top:1em;':''}">
+<div id="main-content" class="container main-content" th:style="${(param.app == null)?'margin-top:1em;':''}">
 
     <div class="row">
 

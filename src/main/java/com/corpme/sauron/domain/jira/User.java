@@ -10,7 +10,7 @@ public class User {
 
     String displayName;
 
-    String email;
+    String emailAddress;
 
     boolean active;
 
@@ -30,12 +30,12 @@ public class User {
         this.displayName = displayName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     public boolean isActive() {

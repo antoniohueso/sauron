@@ -2,16 +2,22 @@ package com.corpme.sauron.domain.jira;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
 @JsonIgnoreProperties
-public class Response {
+public class ResponseSprints {
 
     int startAt;
+
     int maxResults;
-    int total;
-    List<ResponseIssue> issues;
+
+    String isLast;
+
+
+    @JsonProperty("values")
+    List<Sprint> sprints;
 
     public int getStartAt() {
         return startAt;
@@ -29,19 +35,20 @@ public class Response {
         this.maxResults = maxResults;
     }
 
-    public int getTotal() {
-        return total;
+    public String getIsLast() {
+        return isLast;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
+    public void setIsLast(String isLast) {
+        this.isLast = isLast;
     }
 
-    public List<ResponseIssue> getIssues() {
-        return issues;
+    public List<Sprint> getSprints() {
+        return sprints;
     }
 
-    public void setIssues(List<ResponseIssue> issues) {
-        this.issues = issues;
+    public void setSprints(List<Sprint> sprints) {
+        this.sprints = sprints;
     }
+
 }
